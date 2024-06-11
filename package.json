@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "react-font-picker": "^1.1.8",
+    "react-number-picker": "^1.0.5",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5"
+  }
+}
