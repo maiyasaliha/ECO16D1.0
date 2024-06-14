@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 let db
-let collection = 'principale'
+let collection = 'principal'
 connectToDb((err) => {
     if (!err) {
         const server = http.createServer(app);

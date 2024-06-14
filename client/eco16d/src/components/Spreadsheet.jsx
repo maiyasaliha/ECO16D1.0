@@ -16,8 +16,6 @@ function Spreadsheet({ selectedCell,
     const [rowData, setRowData] = useState([]);
     const [colDefs, setColDefs] = useState([]);
     const gridRef = useRef(null);
-    const [selectionRange, setSelectionRange] = useState(null);
-    const [mouseDown, setMouseDown] = useState(false);
 
 
     useEffect(() => {
@@ -51,7 +49,6 @@ function Spreadsheet({ selectedCell,
     }
 
     useEffect(() => {
-        clearSelected();
         fetchData();
     }, []);
 
@@ -524,37 +521,6 @@ function Spreadsheet({ selectedCell,
         }
     }, [e]);
 
-    const clearSelected = () => {
-        axios.post('http://localhost:3001/clearSelected')
-        .then(response => {
-            //socket.emit('updateCell');
-            fetchData();
-        })
-        .catch(error => {
-            console.error('Error updating data:', error);
-        });
-    }
-    
-
-    const setSelection = (params) => {
-        const field = params.column.getId();
-
-        const updateData = {
-            _id: params.data._id,
-            field: field,
-            property: 'selected',
-            value: true,
-        };
-        axios.post('http://localhost:3001/updateCellProperty', updateData)
-        .then(response => {
-            socket.emit('updateCell', updateData);
-            fetchData();
-        })
-        .catch(error => {
-            console.error('Error updating data:', error);
-        });
-    }
-
     const addColumn = () => {
         const newColumnName = prompt('Enter new column name:');
         if (newColumnName) {
@@ -591,47 +557,6 @@ function Spreadsheet({ selectedCell,
         }
     };
 
-    const onCellMouseDown = (params) => {
-        setMouseDown(false);
-        setMouseDown(true);
-        console.log("mouse down")
-        // setStartRow(params.rowIndex);
-        // setStartCol(params.column.getId());
-        setSelectionRange({
-            startRowIndex: params.rowIndex,
-            startColId: params.column.getId(),
-            endRowIndex: params.rowIndex,
-            endColId: params.column.getId()
-        });
-        setSelection(params);
-        console.log("selecting range")
-        console.log("setting range start r " + params.rowIndex)
-        console.log("setting range start c " + params.column.getId())
-    };
-
-    const onCellMouseOver = (params) => {
-        if (selectionRange && mouseDown) {
-            console.log("mouse over")
-            // setEndRow(params.rowIndex);
-            // setEndCol(params.column.getId());
-            setSelectionRange(prevRange => ({
-                ...prevRange,
-                endRowIndex: params.rowIndex,
-                endColId: params.column.getId()
-            }));
-            setSelection(params);
-        }
-    };
-
-    const onCellMouseUp = () => {
-        if (mouseDown) {
-            console.log("mouse up")
-            setMouseDown(false);
-            setSelectionRange(null);
-        }
-    };
-
-
     return (
         <div>
             <button onClick={addColumn}>Add Column</button>
@@ -651,9 +576,6 @@ function Spreadsheet({ selectedCell,
                     }}
                     onCellValueChanged={onCellValueChanged}
                     onCellClicked={onCellClicked}
-                    onCellMouseUp={onCellMouseUp}
-                    onCellMouseDown={onCellMouseDown}
-                    onCellMouseOver={onCellMouseOver}
                     columnHoverHighlight={true}
                     suppressDragLeaveHidesColumns={true}
                     suppressRowTransform={true}
