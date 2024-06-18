@@ -1,65 +1,41 @@
-.ag-theme-quartz .ag-cell {
-    border-left: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-}
-
-.ag-header-cell.selected {
-    background-color: #c5e1a5;
-}
-.ag-cell.selected {
-    background-color: #c5e1a5;
-}
-
-.ag-header-cell-label .ag-header-cell-text {
-    width: 100%;
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    font-weight: bold;
-}
-.header-group-style1 {
+.header-group-style1 .htNestedHeaders {
     background-color: hsl(331, 36%, 74%);
     color: #000;
     font-weight: bold;
     text-align: right;
-    width: 100%;
-    align-items: center;
-    justify-content: right;
-    display: flex;
 }
 
-.header-group-style2 {
+.header-group-style2 .htNestedHeaders {
     background-color: #ea4335;
     color: #000;
     font-weight: bold;
     text-align: center;
 }
 
-.header-group-style3 {
+.header-group-style3 .htNestedHeaders {
     background-color: #ffff00;
     color: #000;
     font-weight: bold;
     text-align: center;
-    width: 100%;
-    align-items: center;
-    justify-content: center;
-    display: flex;
 }
 
-.header-group-style4 {
+.header-group-style4 .htNestedHeaders {
     background-color: #00ff00;
     color: #000;
     font-weight: bold;
     text-align: center;
-    width: 100%;
-    align-items: center;
-    justify-content: center;
-    display: flex;
 }
 
-.header-group-style5 {
+.header-group-style5 .htNestedHeaders {
     background-color: #ff0000;
     color: #000;
     font-weight: bold;
     text-align: center;
+}
+
+.htNestedHeaders .htHead {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    width: 100%;
 }
