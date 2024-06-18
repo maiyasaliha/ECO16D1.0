@@ -2,8 +2,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
 import axios from 'axios';
+import io from 'socket.io-client';
 import './styles.css';
 
+const socket = io('http://localhost:3001');
 
 function Spreadsheet() {
     const [hotInstance, setHotInstance] = useState(null);
@@ -16,10 +18,10 @@ function Spreadsheet() {
         const fetchData = async () => {
             try {
                 const response = await axios.get('http://localhost:3001/cellRows');
-                const extractedData = response.data.map(({ _id, ...rest }) => rest);
+                const extractedDataBeforeMap = response.data;
+                const extractedData = extractedDataBeforeMap.map(({ _id, ...rest }) => rest);
                 setData(extractedData);
                 setRows(extractedData.length);
-                console.log(extractedData);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -47,6 +49,38 @@ function Spreadsheet() {
             },
         });
     }
+    // const onCellValueChanged = (params) => {
+    //     const field = params.colDef.field;
+    //     const updateData = {
+    //         _id: params.data._id,
+    //         field: field,
+    //         property: "value",
+    //         value: params.data[field]
+    //     };
+
+    //     axios.post('http://localhost:3001/updateCellProperty', updateData)
+    //         .then(response => {
+    //             socket.emit('updateCell', updateData);
+    //             fetchData();
+    //         })
+    //         .catch(err => {
+    //             console.log('Error updating data:', err);
+    //         });
+    // };
+
+    // const onCellClicked = (params) => {
+    //     const colId = params.column.getId();
+    //     const cellData = params.data[colId];
+    //     setSelectedCell({
+    //         rowIndex: params.rowIndex,
+    //         colId: colId,
+    //         data: cellData ? cellData.value : null,
+    //         _id: params.data._id
+    //     });
+    //     console.log("selected cell");
+    //     console.log(selectedCell);
+    // };
+
     useEffect(() => {
         if (hotElementRef.current && data.length > 0 && !hotInstance) {
 
@@ -63,7 +97,6 @@ function Spreadsheet() {
                     'Lien Google pour les images (https://drive.google.com/drive/folders/1SNzn0LkNwHqi_IO4i-FcuWr7ytwRjS3D?usp=sharing)'
                 ],
               ]
-
               const columns = [
                 { type: 'date', dateFormat: 'DD/MM/YYYY' }, // date ajoutée
                 { type: 'numeric' }, // BMID
@@ -89,8 +122,33 @@ function Spreadsheet() {
                 { type: 'text' }, // Lien Google pour les images
             ];
 
+            const mappedData = data.map(row => [
+                row.dateAjoutee,
+                row.BMID,
+                row.nomDuClient,
+                row.raisonDuRetour,
+                row.bmRaisonDuRetour,
+                row.SKU,
+                row.nomDuProduit,
+                row.IMEI,
+                row.Transporteur,
+                row.numeroDeSuivi,
+                row.customerInformedAboutNonCompliance,
+                row.customerInformedIfLocked,
+                row.refunded,
+                row.returnedToSG,
+                row.dateReturnedToSG,
+                row.waybillNo,
+                row.dateDeReceptionAxe,
+                row.contenuConforme,
+                row.IMEIDeReception,
+                row.etatDeLAppareil,
+                row.commentaires,
+                row.lienGooglePourLesImages
+            ]);
+
             const hot = new Handsontable(hotElementRef.current, {
-                data: data,
+                data: mappedData,
                 rowHeaders: true,
                 colHeaders: true,
                 nestedHeaders: nestedHeaders,
@@ -105,9 +163,23 @@ function Spreadsheet() {
                 colWidths: 100,
 
                 afterChange: (changes, source) => {
+                    console.log("source")
+                    console.log(source)
+                    console.log("changes")
+                    console.log(changes)
                     if (source === 'edit') {
-                        // Handle change if needed
+
+                        
                     }
+                },
+                afterOnCellMouseDown: (event, coords, TD) => {
+                    console.log(event)
+                    console.log(coords)
+                    console.log(TD)
+                    const clickedRowIndex = coords.row;
+                    const clickedColIndex = coords.col;
+                    const clickedCellValue = hot.getDataAtCell(clickedRowIndex, clickedColIndex);
+                    console.log('Cell clicked:', clickedRowIndex, clickedColIndex, clickedCellValue);
                 }
             });
 

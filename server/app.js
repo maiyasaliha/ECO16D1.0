@@ -201,3 +201,28 @@ app.post('/clearSelected', (req, res) => {
             res.status(500).json({ error: 'Could not set formatting properties to default', details: err });
         });
 });
+
+app.put('/updateCellValue/:id', (req, res) => {
+    const { id } = req.params;
+    const { field, value } = req.body;
+
+    if (ObjectId.isValid(id)) {
+        const updateQuery = { $set: {} };
+        updateQuery.$set[field] = value;
+
+        db.collection(collection)
+            .updateOne({ _id: new ObjectId(id) }, updateQuery)
+            .then(result => {
+                if (result.modifiedCount > 0) {
+                    res.status(200).json({ message: `Field ${field} updated successfully` });
+                } else {
+                    res.status(404).json({ error: 'Document not found' });
+                }
+            })
+            .catch(err => {
+                res.status(500).json({ error: 'Could not update the field', details: err });
+            });
+    } else {
+        res.status(400).json({ error: 'Invalid document ID' });
+    }
+});
