@@ -7,6 +7,19 @@ import './styles.css';
 
 const socket = io('http://localhost:3001');
 
+function getColorClassForValue(value) {
+    switch (value) {
+        case 'Yes':
+            return 'custom-cell-yes';
+        case 'No':
+            return 'custom-cell-no';
+        case 'Standby':
+            return 'custom-cell-standby';
+        default:
+            return '';
+    }
+}
+
 function Spreadsheet() {
     const [hotInstance, setHotInstance] = useState(null);
     const [data, setData] = useState([]);
@@ -30,57 +43,6 @@ function Spreadsheet() {
         fetchData();
     }, []);
 
-    Handsontable.renderers.registerRenderer('customStylesRenderer', (hotInstance, TD, ...rest) => {
-        Handsontable.renderers.TextRenderer(hotInstance, TD, ...rest);
-      
-        TD.style.fontWeight = 'bold';
-        TD.style.color = 'green';
-        TD.style.background = '#d7f1e1';
-      });
-
-
-    for (let row = 0; row < rows; row++) {
-        customBorders.push({
-            row: row,
-            col: 15,
-            right: {
-                width: 3,
-                color: 'black',
-            },
-        });
-    }
-    // const onCellValueChanged = (params) => {
-    //     const field = params.colDef.field;
-    //     const updateData = {
-    //         _id: params.data._id,
-    //         field: field,
-    //         property: "value",
-    //         value: params.data[field]
-    //     };
-
-    //     axios.post('http://localhost:3001/updateCellProperty', updateData)
-    //         .then(response => {
-    //             socket.emit('updateCell', updateData);
-    //             fetchData();
-    //         })
-    //         .catch(err => {
-    //             console.log('Error updating data:', err);
-    //         });
-    // };
-
-    // const onCellClicked = (params) => {
-    //     const colId = params.column.getId();
-    //     const cellData = params.data[colId];
-    //     setSelectedCell({
-    //         rowIndex: params.rowIndex,
-    //         colId: colId,
-    //         data: cellData ? cellData.value : null,
-    //         _id: params.data._id
-    //     });
-    //     console.log("selected cell");
-    //     console.log(selectedCell);
-    // };
-
     useEffect(() => {
         if (hotElementRef.current && data.length > 0 && !hotInstance) {
 
@@ -96,8 +58,8 @@ function Spreadsheet() {
                     'IMEI de réception', 'État de l`appareil', 'Commentaires (Rayures ? Bosses ?)', 
                     'Lien Google pour les images (https://drive.google.com/drive/folders/1SNzn0LkNwHqi_IO4i-FcuWr7ytwRjS3D?usp=sharing)'
                 ],
-              ]
-              const columns = [
+            ]
+            const columns = [
                 { type: 'date', dateFormat: 'DD/MM/YYYY' }, // date ajoutée
                 { type: 'numeric' }, // BMID
                 { type: 'text' }, // Nom du client
@@ -131,7 +93,7 @@ function Spreadsheet() {
                 row.SKU,
                 row.nomDuProduit,
                 row.IMEI,
-                row.Transporteur,
+                row.transporteur,
                 row.numeroDeSuivi,
                 row.customerInformedAboutNonCompliance,
                 row.customerInformedIfLocked,
@@ -154,6 +116,18 @@ function Spreadsheet() {
                 nestedHeaders: nestedHeaders,
                 customBorders: customBorders,
                 columns: columns,
+                cells: (row, col, prop) => {
+                    const cellProperties = {};
+
+                    if (col === 11) {
+                        const cellValue = hot.getDataAtCell(row, col);
+                        const cellClass = getColorClassForValue(cellValue);
+                        cellProperties.className = cellClass;
+                        //cellProperties.className = 'custom-cell-yes';
+                    }
+
+                    return cellProperties;
+                },
                 contextMenu: true,
                 dropdownMenu: true,
                 licenseKey: 'non-commercial-and-evaluation',

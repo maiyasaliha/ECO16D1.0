@@ -39,3 +39,25 @@
     display: flex;
     width: 100%;
 }
+
+.centered-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  td.custom-cell-yes {
+    color: #fff;
+    background-color: #37bc6c;
+  }
+  
+  td.custom-cell-no {
+    color: #fff;
+    background-color: #ff0000;
+  }
+  
+  td.custom-cell-standby {
+    color: #000;
+    background-color: #ffff00;
+  }
+  
