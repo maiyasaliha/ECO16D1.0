@@ -90,25 +90,6 @@ app.get('/cellRows/:id', (req, res) => {
     
 })
 
-app.get('/getCellProperty/:id/:colId/:property', (req, res) => {
-
-    if (ObjectId.isValid(req.params.id)) {
-        db.collection(collection)
-        .findOne(
-            {_id: new ObjectId(req.params.id)},
-            {projection: { [`${req.params.colId}.${req.params.property}`]: 1 }}
-        )
-        .then(doc => {
-            res.status(200).json(doc)
-        })
-        .catch(() => {
-            res.status(500).json({error: 'Could not fetch property ' + req.params.property})
-        })
-    } else {
-        res.status(500).json({error: 'not a valid Cell Row id'})
-    }
-    
-})
 
 app.post('/postCellRow', (req, res) => {
     const cr = req.body;
@@ -141,65 +122,6 @@ app.post('/updateCellRow', (req, res) => {
     } else {
         res.status(400).json({ error: 'Invalid document ID' });
     }
-});
-
-app.post('/updateCellProperty', (req, res) => {
-    const { _id, field, property, value } = req.body;
-
-    if (ObjectId.isValid(_id)) {
-        const updateQuery = { $set: {} };
-        updateQuery.$set[`${field}.${property}`] = value;
-
-        db.collection(collection)
-            .updateOne({ _id: new ObjectId(_id) }, updateQuery)
-            .then(result => {
-                if (result.modifiedCount > 0) {
-                    res.status(200).json({ message: 'Property ' + property + ' updated to ' + value + ' successfully' });
-                }
-            })
-            .catch(err => {
-                res.status(500).json({ error: 'Could not update the property', details: err });
-            });
-    } else {
-        res.status(400).json({ error: 'Invalid document ID' });
-    }
-});
-
-app.post('/clearSelected', (req, res) => {
-    db.collection(collection)
-        .find()
-        .toArray()
-        .then(documents => {
-            const bulkUpdateOperations = documents.map(doc => {
-                const updateOperations = [];
-                Object.keys(doc).forEach(key => {
-                    if (key !== '_id') {
-                        if (typeof doc[key] === 'object' && doc[key] !== null && !Array.isArray(doc[key])) {
-                            if (doc[key].hasOwnProperty('selected')) {
-                                updateOperations.push({
-                                    updateOne: {
-                                        filter: { _id: doc._id },
-                                        update: { $set: { [`${key}.selected`]: false } }
-                                    }
-                                });
-                            }
-                        }
-                    }
-                });
-                return updateOperations;
-            }).flat();
-
-            return db.collection(collection).bulkWrite(bulkUpdateOperations);
-        })
-        .then(result => {
-            const modifiedCount = result.modifiedCount;
-            if (modifiedCount > 0) {
-                res.status(200).json({ message: 'Selection cleared for all' });
-            } 
-        })
-        .catch(err => {
-            res.status(500).json({ error: 'Could not set formatting properties to default', details: err });
-        });
 });
 
 app.put('/updateCellValue/:id', (req, res) => {
