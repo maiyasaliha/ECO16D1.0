@@ -86,9 +86,13 @@ function Spreadsheet() {
 
             const nestedHeaders = [
                 [{ label: 'le rouge suggère un identifiant de commande incorrect de plus de 8 caractères', colspan: 16, className: 'header-group-style5' }, 
-                    { label: 'le vert suggère que le numéro de commande existe déjà dans la page colis manquants', colspan: 6, className: 'header-group-style4' }],
-                [{ label: 'Last Updated [GMT+8]', colspan: 2, className: 'header-group-style1' }, { label: '16/05/2024 16:03:39', colspan: 2, className: 'header-group-style5' },
-                     { label: 'ECO À REMPLIR', colspan: 12, className: 'header-group-style3' }, { label: 'AXE À REMPLIR', colspan: 6, className: 'header-group-style4' }],
+                 { label: 'le vert suggère que le numéro de commande existe déjà dans la page colis manquants', colspan: 6, className: 'header-group-style4' }
+                ],
+                [{ label: 'Last Updated [GMT+8]', colspan: 2, className: 'header-group-style1' }, 
+                 { label: '16/05/2024 16:03:39', colspan: 2, className: 'header-group-style5' },
+                 { label: 'ECO À REMPLIR', colspan: 12, className: 'header-group-style3' }, 
+                 { label: 'AXE À REMPLIR', colspan: 6, className: 'header-group-style4' }
+                ],
                 [
                     'date ajoutée', 'BMID', 'Nom du client', 'Raison du retour', 'BM Raison du retour', 'SKU', 'Nom du produit', 
                     'IMEI', 'Transporteur', 'Numéro de suivi', 'Customer Informed about non-compliance', 'Customer informed if locked?', 
@@ -151,7 +155,7 @@ function Spreadsheet() {
                 data: mappedData,
                 rowHeaders: true,
                 colHeaders: true,
-                nestedHeaders: nestedHeaders,
+                //nestedHeaders: nestedHeaders,
                 customBorders: customBorders,
                 columns: columns,
                 contextMenu: true,
