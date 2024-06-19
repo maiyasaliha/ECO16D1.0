@@ -13,6 +13,7 @@ function Spreadsheet() {
     const hotElementRef = useRef(null);
     const customBorders = [];
     const [rows, setRows] = useState([]);
+    const [selectedCell, setSelectedCell] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -49,37 +50,6 @@ function Spreadsheet() {
             },
         });
     }
-    // const onCellValueChanged = (params) => {
-    //     const field = params.colDef.field;
-    //     const updateData = {
-    //         _id: params.data._id,
-    //         field: field,
-    //         property: "value",
-    //         value: params.data[field]
-    //     };
-
-    //     axios.post('http://localhost:3001/updateCellProperty', updateData)
-    //         .then(response => {
-    //             socket.emit('updateCell', updateData);
-    //             fetchData();
-    //         })
-    //         .catch(err => {
-    //             console.log('Error updating data:', err);
-    //         });
-    // };
-
-    // const onCellClicked = (params) => {
-    //     const colId = params.column.getId();
-    //     const cellData = params.data[colId];
-    //     setSelectedCell({
-    //         rowIndex: params.rowIndex,
-    //         colId: colId,
-    //         data: cellData ? cellData.value : null,
-    //         _id: params.data._id
-    //     });
-    //     console.log("selected cell");
-    //     console.log(selectedCell);
-    // };
 
     useEffect(() => {
         if (hotElementRef.current && data.length > 0 && !hotInstance) {
@@ -131,7 +101,7 @@ function Spreadsheet() {
                 row.SKU,
                 row.nomDuProduit,
                 row.IMEI,
-                row.Transporteur,
+                row.transporteur,
                 row.numeroDeSuivi,
                 row.customerInformedAboutNonCompliance,
                 row.customerInformedIfLocked,
@@ -160,27 +130,35 @@ function Spreadsheet() {
                 language: 'en-US',
                 manualRowResize: true,
                 manualColumnResize: true,
-                colWidths: 100,
+                colWidths: 120,
 
                 afterChange: (changes, source) => {
-                    console.log("source")
-                    console.log(source)
-                    console.log("changes")
-                    console.log(changes)
-                    if (source === 'edit') {
-
-                        
+                    console.log("source");
+                    console.log(source);
+                    if (source !== 'loadData' && changes) {
+                        const updateRequests = changes.map(change => {
+                            const updateData = {
+                                rowIndex: change[0],
+                                colIndex: change[1],
+                                newValue: change[3] == null ? "" : change[3]
+                            };
+                            console.log(updateData);
+                
+                            return axios.post('http://localhost:3001/updateCell', updateData);
+                        });
+                
+                        axios.all(updateRequests)
+                            .then(axios.spread((...responses) => {
+                                console.log('All cells updated successfully.');
+                                responses.forEach(response => {
+                                    console.log(response.data);
+                                });
+                            }))
+                            .catch(err => {
+                                console.log('Error updating data:', err);
+                            });
                     }
-                },
-                afterOnCellMouseDown: (event, coords, TD) => {
-                    console.log(event)
-                    console.log(coords)
-                    console.log(TD)
-                    const clickedRowIndex = coords.row;
-                    const clickedColIndex = coords.col;
-                    const clickedCellValue = hot.getDataAtCell(clickedRowIndex, clickedColIndex);
-                    console.log('Cell clicked:', clickedRowIndex, clickedColIndex, clickedCellValue);
-                }
+                }                
             });
 
             setHotInstance(hot);
