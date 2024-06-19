@@ -208,8 +208,6 @@ app.post('/updateCell', async (req, res) => {
 
         const keys = Object.keys(rowData);
         const keyToUpdate = keys[fieldIndex + 1];
-        console.log(keyToUpdate)
-
         const updatedDocument = {
             ...rowData,
             [keyToUpdate]: newValue

@@ -150,9 +150,6 @@ function Spreadsheet() {
                         axios.all(updateRequests)
                             .then(axios.spread((...responses) => {
                                 console.log('All cells updated successfully.');
-                                responses.forEach(response => {
-                                    console.log(response.data);
-                                });
                             }))
                             .catch(err => {
                                 console.log('Error updating data:', err);
