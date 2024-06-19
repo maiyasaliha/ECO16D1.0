@@ -142,7 +142,6 @@ function Spreadsheet() {
                                 colIndex: change[1],
                                 newValue: change[3] == null ? "" : change[3]
                             };
-                            console.log(updateData);
                 
                             return axios.post('http://localhost:3001/updateCell', updateData);
                         });
