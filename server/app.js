@@ -148,3 +148,80 @@ app.put('/updateCellValue/:id', (req, res) => {
         res.status(400).json({ error: 'Invalid document ID' });
     }
 });
+
+app.get('/getCell/:rowIndex/:colIndex', async (req, res) => {
+    try {
+        const { rowIndex, colIndex } = req.params;
+        const skip = parseInt(rowIndex, 10) || 0;
+        const fieldIndex = parseInt(colIndex, 10);
+
+        const results = await db.collection(collection)
+            .find({})
+            .skip(skip)
+            .limit(1)
+            .toArray();
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'No data found for the given rowIndex.' });
+        }
+
+        const rowData = results[0];
+        const values = Object.values(rowData);
+        
+        if (fieldIndex < 0 || fieldIndex >= values.length) {
+            return res.status(400).json({ error: 'Invalid colIndex.' });
+        }
+
+        const fieldValue = values[fieldIndex + 1];
+
+        console.log('Field value:', fieldValue);
+        res.status(200).json({ value: fieldValue });
+    } catch (error) {
+        console.error('Error fetching cell data:', error);
+        res.status(500).json({ error: 'An error occurred while fetching cell data.' });
+    }
+});
+
+app.post('/updateCell', async (req, res) => {
+    try {
+        const { rowIndex, colIndex, newValue } = req.body;
+
+        const skip = parseInt(rowIndex, 10) || 0;
+        const fieldIndex = parseInt(colIndex, 10);
+
+        const results = await db.collection(collection)
+            .find({})
+            .skip(skip)
+            .limit(1)
+            .toArray();
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'No data found for the given rowIndex.' });
+        }
+
+        const rowData = results[0];
+        const values = Object.values(rowData);
+
+        if (fieldIndex < 0 || fieldIndex >= values.length) {
+            return res.status(400).json({ error: 'Invalid colIndex.' });
+        }
+
+        const keys = Object.keys(rowData);
+        const keyToUpdate = keys[fieldIndex + 1];
+        const updatedDocument = {
+            ...rowData,
+            [keyToUpdate]: newValue
+        };
+
+        await db.collection(collection).updateOne(
+            { _id: rowData._id },
+            { $set: updatedDocument }
+        );
+
+        console.log(`Document with _id ${rowData._id} updated with ${keyToUpdate} successfully.`);
+        res.status(200).json({ message: 'Cell updated successfully.' });
+    } catch (error) {
+        console.error('Error updating cell data:', error);
+        res.status(500).json({ error: 'An error occurred while updating cell data.' });
+    }
+});

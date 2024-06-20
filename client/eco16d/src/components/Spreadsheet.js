@@ -43,6 +43,17 @@ function Spreadsheet() {
         fetchData();
     }, []);
 
+    for (let row = 0; row < rows; row++) {
+        customBorders.push({
+            row: row,
+            col: 15,
+            right: {
+                width: 3,
+                color: 'black',
+            },
+        });
+    }
+
     useEffect(() => {
         if (hotElementRef.current && data.length > 0 && !hotInstance) {
 
@@ -134,27 +145,31 @@ function Spreadsheet() {
                 language: 'en-US',
                 manualRowResize: true,
                 manualColumnResize: true,
-                colWidths: 100,
+                colWidths: 120,
 
                 afterChange: (changes, source) => {
-                    console.log("source")
-                    console.log(source)
-                    console.log("changes")
-                    console.log(changes)
-                    if (source === 'edit') {
-
-                        
+                    console.log("source");
+                    console.log(source);
+                    if (source !== 'loadData' && changes) {
+                        const updateRequests = changes.map(change => {
+                            const updateData = {
+                                rowIndex: change[0],
+                                colIndex: change[1],
+                                newValue: change[3] == null ? "" : change[3]
+                            };
+                
+                            return axios.post('http://localhost:3001/updateCell', updateData);
+                        });
+                
+                        axios.all(updateRequests)
+                            .then(axios.spread((...responses) => {
+                                console.log('All cells updated successfully.');
+                            }))
+                            .catch(err => {
+                                console.log('Error updating data:', err);
+                            });
                     }
-                },
-                afterOnCellMouseDown: (event, coords, TD) => {
-                    console.log(event)
-                    console.log(coords)
-                    console.log(TD)
-                    const clickedRowIndex = coords.row;
-                    const clickedColIndex = coords.col;
-                    const clickedCellValue = hot.getDataAtCell(clickedRowIndex, clickedColIndex);
-                    console.log('Cell clicked:', clickedRowIndex, clickedColIndex, clickedCellValue);
-                }
+                }                
             });
 
             setHotInstance(hot);
