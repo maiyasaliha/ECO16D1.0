@@ -13,7 +13,6 @@ function Spreadsheet() {
     const hotElementRef = useRef(null);
     const customBorders = [];
     const [rows, setRows] = useState([]);
-    const [selectedCell, setSelectedCell] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
