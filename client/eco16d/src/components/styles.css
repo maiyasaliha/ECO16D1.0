@@ -73,6 +73,11 @@
     color: #000;
     background-color: #00ff00;
   }
+  
+  td.custom-cell-bo {
+    color: #000;
+    background-color: #ff9900;
+  }
 
   td.custom-cell-dr {
     color: #000;

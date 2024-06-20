@@ -6,7 +6,7 @@ import io from 'socket.io-client';
 import './styles.css';
 import { nestedHeaders, columns } from './Principale/PrincipaleSheetStructure';
 import { getColorClassForCb, getColorClassForDd, getColorClassForBMID, getColorClassForIMEI } from './Principale/ConditionalColoring'
-import { validate, getCompliance, getLocked, getWaybill, getWaybill13 } from './Principale/ValidateFunctions';
+import { validate, getCompliance, getLocked, getWaybill, getWaybill13, fetchDuplicates } from './Principale/ValidateFunctions';
 
 const socket = io('http://localhost:3001');
 
@@ -80,40 +80,44 @@ function Spreadsheet() {
                 nestedHeaders: nestedHeaders,
                 customBorders: customBorders,
                 columns: columns,
-                afterGetCellMeta: function (row, col, cellProperties) {
+                afterGetCellMeta: async function (row, col, cellProperties) {
                     const cellValue = this.getDataAtCell(row, col);
-                    let cellClass;
 
-                    if (col === 7 || col === 18) {
+                    if (col === 1) {
+                        try {
+                            const compareValue = await fetchDuplicates(cellValue);
+                            console.log(compareValue.data);
+                            const className = getColorClassForBMID(cellValue, compareValue.data);
+                            cellProperties.className = className;
+                        } catch (error) {
+                            console.error('Error getting color class:', error);
+                        }
+                    } else if (col === 7 || col === 18) {
                         let other;
-                        col === 7 ? other = 18 : other = 7
+                        col === 7 ? (other = 18) : (other = 7);
                         const compareValue = this.getDataAtCell(row, other);
-                        cellClass = getColorClassForIMEI(validate(cellValue, compareValue));
-                    }
-
-                    if (col === 17 || col === 19) {
-                        cellClass = getColorClassForDd(cellValue);
-                    }
-                   
-                    if (col === 10) {
+                        const cellClass = getColorClassForIMEI(validate(cellValue, compareValue));
+                        cellProperties.className = cellClass;
+                    } else if (col === 17 || col === 19) {
+                        const cellClass = getColorClassForDd(cellValue);
+                        cellProperties.className = cellClass;
+                    } else if (col === 10) {
                         const compareValue = this.getDataAtCell(row, 17);
-                        cellClass = getColorClassForCb(getCompliance(compareValue));
-
+                        const cellClass = getColorClassForCb(getCompliance(cellValue, compareValue));
+                        cellProperties.className = cellClass;
                     } else if (col === 11) {
                         const compareValue = this.getDataAtCell(row, 19);
-                        cellClass = getColorClassForCb(getLocked(compareValue));
-
+                        const cellClass = getColorClassForCb(getLocked(cellValue, compareValue));
+                        cellProperties.className = cellClass;
                     } else if (col === 12) {
                         const compareValue = this.getDataAtCell(row, 15);
-                        cellClass = getColorClassForCb(getWaybill(compareValue));
-
+                        const cellClass = getColorClassForCb(getWaybill(cellValue, compareValue));
+                        cellProperties.className = cellClass;
                     } else if (col === 13) {
                         const compareValue = this.getDataAtCell(row, 15);
-                        cellClass = getColorClassForCb(getWaybill13(compareValue));
+                        const cellClass = getColorClassForCb(getWaybill13(cellValue, compareValue));
+                        cellProperties.className = cellClass;
                     }
-                    
-                    cellProperties.className = cellClass;
-
                 },
                 contextMenu: true,
                 dropdownMenu: true,

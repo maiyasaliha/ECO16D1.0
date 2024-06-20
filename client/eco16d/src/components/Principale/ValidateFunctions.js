@@ -1,37 +1,64 @@
+import axios from 'axios';
+
 function validate(value, otherValue) {
     if (value != "" && otherValue != "" && value == otherValue) {
         return 'green';
-    } else if (value != "" && otherValue != "" && value != otherValue) {
+    }
+    if (value != "" && otherValue != "" && value != otherValue) {
         return 'red';
-    } else {
+    }
+    if (value == "" || value == null) {
         return 'clear';
     }
 }
 
-function getCompliance(value) {
+function getCompliance(cellValue, value) {
     if (value == "No" || value == "Standby") {
-        return "TRUE";
+        return cellValue;
+    }
+    if (cellValue == "TRUE" || cellValue == true) {
+        return cellValue;
     }
 }
 
-function getLocked(value) {
+function getLocked(cellValue, value) {
     if (value == "LOCKED") {
-        return "TRUE";
+        return cellValue;
+    }
+    if (cellValue == "TRUE" || cellValue == true) {
+        return cellValue;
     }
 }
 
-function getWaybill(value) {
+function getWaybill(cellValue, value) {
     if (value != "") {
-        return "TRUE";
+        return cellValue;
+    }
+    if (cellValue == "TRUE" || cellValue == true) {
+        return cellValue;
     }
 }
 
-function getWaybill13(value) {
+function getWaybill13(cellValue, value) {
     if (value != "") {
-        return "TRUE";
+        return cellValue;
+    } 
+    if (cellValue == "TRUE" || cellValue == true) {
+        return cellValue;
+
     } else {
         return "FALSE";
     }
 }
 
-export { validate, getCompliance, getLocked, getWaybill, getWaybill13 };
+const fetchDuplicates = async (bmid) => {
+    try {
+        const response = await axios.get(`http://localhost:3001/BMID/${bmid}`);
+        return response;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
+};
+
+export { validate, getCompliance, getLocked, getWaybill, getWaybill13, fetchDuplicates };

@@ -1,11 +1,23 @@
-function getColorClassForBMID(value) {
-    switch (value) {
-        case value.length > 8:
-            return 'custom-cell-br';
-        default:
-            return 'custome-cell-bg';
+import { fetchDuplicates } from "./ValidateFunctions";
+
+ function getColorClassForBMID(value, length) {
+    if (value.toString().length !== 8) {
+        return 'custom-cell-br';
     }
+    // try {
+    //     const response = await fetchDuplicates(value);
+    //     const length = response.data.length;
+
+        if (length > 1) {
+            return 'custom-cell-bo';
+        } else {
+            return 'custom-cell-bg';
+        }
+    // } catch (error) {
+    //     console.error('Error fetching duplicates:', error);
+    // }
 }
+
 
 function getColorClassForIMEI(value) {
     if (value === 'green') {
