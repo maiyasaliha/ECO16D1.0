@@ -1,21 +1,14 @@
-import { fetchDuplicates } from "./ValidateFunctions";
-
- function getColorClassForBMID(value, length) {
+function getColorClassForBMID(value, bmidValues) {
     if (value.toString().length !== 8) {
         return 'custom-cell-br';
     }
-    // try {
-    //     const response = await fetchDuplicates(value);
-    //     const length = response.data.length;
-
-        if (length > 1) {
-            return 'custom-cell-bo';
-        } else {
-            return 'custom-cell-bg';
-        }
-    // } catch (error) {
-    //     console.error('Error fetching duplicates:', error);
-    // }
+    const occurrences = bmidValues.filter(v => v === value).length;
+    
+    if (occurrences > 1) {
+        return 'custom-cell-bo';
+    } else {
+        return 'custom-cell-bg';
+    }
 }
 
 

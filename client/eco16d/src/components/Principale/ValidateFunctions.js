@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 function validate(value, otherValue) {
     if (value != "" && otherValue != "" && value == otherValue) {
         return 'green';
@@ -51,14 +49,4 @@ function getWaybill13(cellValue, value) {
     }
 }
 
-const fetchDuplicates = async (bmid) => {
-    try {
-        const response = await axios.get(`http://localhost:3001/BMID/${bmid}`);
-        return response;
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        throw error;
-    }
-};
-
-export { validate, getCompliance, getLocked, getWaybill, getWaybill13, fetchDuplicates };
+export { validate, getCompliance, getLocked, getWaybill, getWaybill13 };

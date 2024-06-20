@@ -6,7 +6,7 @@ import io from 'socket.io-client';
 import './styles.css';
 import { nestedHeaders, columns } from './Principale/PrincipaleSheetStructure';
 import { getColorClassForCb, getColorClassForDd, getColorClassForBMID, getColorClassForIMEI } from './Principale/ConditionalColoring'
-import { validate, getCompliance, getLocked, getWaybill, getWaybill13, fetchDuplicates } from './Principale/ValidateFunctions';
+import { validate, getCompliance, getLocked, getWaybill, getWaybill13 } from './Principale/ValidateFunctions';
 
 const socket = io('http://localhost:3001');
 
@@ -80,18 +80,13 @@ function Spreadsheet() {
                 nestedHeaders: nestedHeaders,
                 customBorders: customBorders,
                 columns: columns,
-                afterGetCellMeta: async function (row, col, cellProperties) {
+                afterGetCellMeta: function (row, col, cellProperties) {
                     const cellValue = this.getDataAtCell(row, col);
 
                     if (col === 1) {
-                        try {
-                            const compareValue = await fetchDuplicates(cellValue);
-                            console.log(compareValue.data);
-                            const className = getColorClassForBMID(cellValue, compareValue.data);
-                            cellProperties.className = className;
-                        } catch (error) {
-                            console.error('Error getting color class:', error);
-                        }
+                        const bmidValues = this.getDataAtCol(col);
+                        const cellClass = getColorClassForBMID(cellValue, bmidValues);
+                        cellProperties.className = cellClass;
                     } else if (col === 7 || col === 18) {
                         let other;
                         col === 7 ? (other = 18) : (other = 7);
