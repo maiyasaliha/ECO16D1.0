@@ -40,10 +40,10 @@
     width: 100%;
 }
 
-.centered-checkbox {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  td.centered-checkbox {
+    text-align: center;
+    vertical-align: middle;
+    line-height: normal;
   }
   
   td.custom-cell-green {
@@ -62,6 +62,26 @@
     color: #000;
     background-color: #ffe5a0;
     border-radius: 10px;
+  }
+
+  td.custom-cell-br {
+    color: #000;
+    background-color: #ff0000;
+  }
+
+  td.custom-cell-bg {
+    color: #000;
+    background-color: #00ff00;
+  }
+
+  td.custom-cell-dr {
+    color: #000;
+    background-color: #e06666;
+  }
+
+  td.custom-cell-dg {
+    color: #000;
+    background-color: #6aa84f;
   }
 
   td.custom-cell-true {

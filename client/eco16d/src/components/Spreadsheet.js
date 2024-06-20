@@ -4,7 +4,9 @@ import 'handsontable/dist/handsontable.full.css';
 import axios from 'axios';
 import io from 'socket.io-client';
 import './styles.css';
-import { nestedHeaders, columns, getColorClassForCb, getColorClassForDd } from './PrincipaleSheetStructure';
+import { nestedHeaders, columns } from './Principale/PrincipaleSheetStructure';
+import { getColorClassForCb, getColorClassForDd, getColorClassForBMID, getColorClassForIMEI } from './Principale/ConditionalColoring'
+import { validate, getCompliance, getLocked, getWaybill, getWaybill13 } from './Principale/ValidateFunctions';
 
 const socket = io('http://localhost:3001');
 
@@ -82,13 +84,34 @@ function Spreadsheet() {
                     const cellValue = this.getDataAtCell(row, col);
                     let cellClass;
 
+                    if (col === 7 || col === 18) {
+                        let other;
+                        col === 7 ? other = 18 : other = 7
+                        const compareValue = this.getDataAtCell(row, other);
+                        cellClass = getColorClassForIMEI(validate(cellValue, compareValue));
+                    }
+
                     if (col === 17 || col === 19) {
                         cellClass = getColorClassForDd(cellValue);
                     }
-                    if (col === 10 || col === 11 || col === 12 || col === 13) {
-                        cellClass = getColorClassForCb(cellValue);
-                        console.log(cellValue);
+                   
+                    if (col === 10) {
+                        const compareValue = this.getDataAtCell(row, 17);
+                        cellClass = getColorClassForCb(getCompliance(compareValue));
+
+                    } else if (col === 11) {
+                        const compareValue = this.getDataAtCell(row, 19);
+                        cellClass = getColorClassForCb(getLocked(compareValue));
+
+                    } else if (col === 12) {
+                        const compareValue = this.getDataAtCell(row, 15);
+                        cellClass = getColorClassForCb(getWaybill(compareValue));
+
+                    } else if (col === 13) {
+                        const compareValue = this.getDataAtCell(row, 15);
+                        cellClass = getColorClassForCb(getWaybill13(compareValue));
                     }
+                    
                     cellProperties.className = cellClass;
 
                 },
@@ -101,8 +124,6 @@ function Spreadsheet() {
                 colWidths: 120,
 
                 afterChange: (changes, source) => {
-                    console.log("source");
-                    console.log(source);
                     if (source !== 'loadData' && changes) {
                         const updateRequests = changes.map(change => {
                             const updateData = {

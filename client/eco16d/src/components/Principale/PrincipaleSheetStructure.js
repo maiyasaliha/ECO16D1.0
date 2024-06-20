@@ -13,7 +13,7 @@ const nestedHeaders = [
 ];
 const columns = [
     { type: 'date', dateFormat: 'DD/MM/YYYY' }, // date ajoutée
-    { type: 'numeric' }, // BMID
+    { type: 'text' }, // BMID
     { type: 'text' }, // Nom du client
     { type: 'text' }, // Raison du retour
     { type: 'text' }, // BM Raison du retour
@@ -36,36 +36,4 @@ const columns = [
     { type: 'text' }, // Lien Google pour les images
 ];
 
-function getColorClassForDd(value) {
-    switch (value) {
-        case 'Yes':
-            return 'custom-cell-green';
-        case 'No':
-            return 'custom-cell-red';
-        case 'Unlocked':
-            return 'custom-cell-green';
-        case 'LOCKED':
-            return 'custom-cell-red';
-        case 'Standby':
-            return 'custom-cell-cream';
-        default:
-            return '';
-    }
-}
-
-function getColorClassForCb(value) {
-    switch (value) {
-        case 'TRUE':
-            return 'custom-cell-true';
-        case true:
-            return 'custom-cell-true';
-        case 'FALSE':
-            return 'custom-cell-false';
-        case false:
-            return 'custom-cell-false';
-        default:
-            return '';
-    }
-}
-
-export {nestedHeaders, columns, getColorClassForCb, getColorClassForDd};
+export {nestedHeaders, columns};
