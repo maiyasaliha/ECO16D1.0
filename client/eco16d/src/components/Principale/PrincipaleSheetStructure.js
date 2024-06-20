@@ -1,3 +1,5 @@
+// import { linkRenderer } from "./LinkRenderer";
+
 const nestedHeaders = [
     [{ label: 'le rouge suggère un identifiant de commande incorrect de plus de 8 caractères', colspan: 16, className: 'header-group-style5' }, 
         { label: 'le vert suggère que le numéro de commande existe déjà dans la page colis manquants', colspan: 6, className: 'header-group-style4' }],
