@@ -225,3 +225,20 @@ app.post('/updateCell', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while updating cell data.' });
     }
 });
+
+app.get('/BMID/:bmid', async (req, res) => {
+    try {
+        const bmid = req.params.bmid;        
+        const records = await db.collection(collection).find({ BMID: bmid }).toArray();
+        const length = records.length;
+        
+        if (records.length > 0) {
+            res.status(200).json(length);
+        } else {
+            res.status(404).json({ message: 'No documents found with the given BMID' });
+        }
+    } catch (error) {
+        console.error('Error fetching documents by BMID:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
