@@ -1,3 +1,4 @@
+import { linkRenderer } from "./LinkRenderer";
 const nestedHeaders = [
     [
         { label: 'le rouge suggère un identifiant de commande incorrect de plus de 8 caractères', colspan: 16 }, 
@@ -39,7 +40,7 @@ const columns = [
     { type: 'text' }, // IMEI de réception
     { type: 'dropdown', source: ['', 'Unlocked', 'LOCKED', 'Standby'] }, // État de l`appareil
     { type: 'text' }, // Commentaires (Rayures ? Bosses ?)
-    { type: 'text' }, // Lien Google pour les images
+    { type: 'text', renderer: linkRenderer }, // Lien Google pour les images
 ];
 
 export {nestedHeaders, columns};
