@@ -11,39 +11,26 @@ function validate(value, otherValue) {
 }
 
 function getCompliance(cellValue, value) {
-    if (value == "No" || value == "Standby") {
-        return cellValue;
-    }
-    if (cellValue == "TRUE" || cellValue == true) {
+    if (value == "No" || value == "Standby" || cellValue == "TRUE" || cellValue == true) {
         return cellValue;
     }
 }
 
 function getLocked(cellValue, value) {
-    if (value == "LOCKED") {
-        return cellValue;
-    }
-    if (cellValue == "TRUE" || cellValue == true) {
+    if (value == "LOCKED" || cellValue == "TRUE" || cellValue == true) {
         return cellValue;
     }
 }
 
 function getWaybill(cellValue, value) {
-    if (value != "") {
-        return cellValue;
-    }
-    if (cellValue == "TRUE" || cellValue == true) {
+    if (value != ""  || cellValue == "TRUE" || cellValue == true) {
         return cellValue;
     }
 }
 
 function getWaybill13(cellValue, value) {
-    if (value != "") {
+    if (value != "" || cellValue == "TRUE" || cellValue == true) {
         return cellValue;
-    } 
-    if (cellValue == "TRUE" || cellValue == true) {
-        return cellValue;
-
     } else {
         return "FALSE";
     }
