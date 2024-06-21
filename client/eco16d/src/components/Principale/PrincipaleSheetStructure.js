@@ -1,4 +1,5 @@
 // import { linkRenderer } from "./LinkRenderer";
+import Handsontable from 'handsontable';
 
 const nestedHeaders = [
     [{ label: 'le rouge suggère un identifiant de commande incorrect de plus de 8 caractères', colspan: 16, className: 'header-group-style5' }, 
@@ -35,7 +36,31 @@ const columns = [
     { type: 'text' }, // IMEI de réception
     { type: 'dropdown', source: ['', 'Unlocked', 'LOCKED', 'Standby'] }, // État de l`appareil
     { type: 'text' }, // Commentaires (Rayures ? Bosses ?)
-    { type: 'text' }, // Lien Google pour les images
+    { type: 'text', renderers: linkRenderer }, // Lien Google pour les images
 ];
+
+// function linkRenderer(instance, td, row, col, prop, value, cellProperties) {
+//     Handsontable.renderers.TextRenderer.apply(this, arguments);
+
+//     if (value && typeof value === 'string' && value.startsWith('http')) {
+//         td.innerHTML = `<a href="${value}" target="_blank">${value}</a>`;
+//     } else {
+//         td.innerHTML = value;
+//     }
+
+//     return td;
+// }
+
+function linkRenderer(instance, td, row, col, prop, value, cellProperties) {
+    Handsontable.renderers.TextRenderer.apply(this, arguments);
+    td.style.color = 'blue';
+    td.style.textDecoration = 'underline';
+    td.style.cursor = 'pointer';
+
+    td.onclick = function () {
+        const url = value;
+        window.open(url, '_blank');
+    };
+}
 
 export {nestedHeaders, columns};
