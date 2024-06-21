@@ -4,8 +4,12 @@ import 'handsontable/dist/handsontable.full.css';
 import axios from 'axios';
 import io from 'socket.io-client';
 import './styles.css';
+import { nestedHeaders, columns } from './Principale/PrincipaleSheetStructure';
+import { getColorClassForCb, getColorClassForDd, getColorClassForBMID, getColorClassForIMEI } from './Principale/ConditionalColoring'
+import { validate, getCompliance, getLocked, getWaybill, getWaybill13 } from './Principale/ValidateFunctions';
 
 const socket = io('http://localhost:3001');
+
 
 function Spreadsheet() {
     const [hotInstance, setHotInstance] = useState(null);
@@ -30,15 +34,6 @@ function Spreadsheet() {
         fetchData();
     }, []);
 
-    Handsontable.renderers.registerRenderer('customStylesRenderer', (hotInstance, TD, ...rest) => {
-        Handsontable.renderers.TextRenderer(hotInstance, TD, ...rest);
-      
-        TD.style.fontWeight = 'bold';
-        TD.style.color = 'green';
-        TD.style.background = '#d7f1e1';
-      });
-
-
     for (let row = 0; row < rows; row++) {
         customBorders.push({
             row: row,
@@ -52,44 +47,6 @@ function Spreadsheet() {
 
     useEffect(() => {
         if (hotElementRef.current && data.length > 0 && !hotInstance) {
-
-            const nestedHeaders = [
-                [{ label: 'le rouge suggère un identifiant de commande incorrect de plus de 8 caractères', colspan: 16, className: 'header-group-style5' }, 
-                    { label: 'le vert suggère que le numéro de commande existe déjà dans la page colis manquants', colspan: 6, className: 'header-group-style4' }],
-                [{ label: 'Last Updated [GMT+8]', colspan: 2, className: 'header-group-style1' }, { label: '16/05/2024 16:03:39', colspan: 2, className: 'header-group-style5' },
-                     { label: 'ECO À REMPLIR', colspan: 12, className: 'header-group-style3' }, { label: 'AXE À REMPLIR', colspan: 6, className: 'header-group-style4' }],
-                [
-                    'date ajoutée', 'BMID', 'Nom du client', 'Raison du retour', 'BM Raison du retour', 'SKU', 'Nom du produit', 
-                    'IMEI', 'Transporteur', 'Numéro de suivi', 'Customer Informed about non-compliance', 'Customer informed if locked?', 
-                    'Refunded', 'Returned to SG', 'Date returned to SG', 'Waybill No.', 'Date de réception Axe', 'Contenu conforme ?', 
-                    'IMEI de réception', 'État de l`appareil', 'Commentaires (Rayures ? Bosses ?)', 
-                    'Lien Google pour les images (https://drive.google.com/drive/folders/1SNzn0LkNwHqi_IO4i-FcuWr7ytwRjS3D?usp=sharing)'
-                ],
-              ]
-              const columns = [
-                { type: 'date', dateFormat: 'DD/MM/YYYY' }, // date ajoutée
-                { type: 'numeric' }, // BMID
-                { type: 'text' }, // Nom du client
-                { type: 'text' }, // Raison du retour
-                { type: 'text' }, // BM Raison du retour
-                { type: 'text' }, // SKU
-                { type: 'text' }, // Nom du produit
-                { type: 'text' }, // IMEI
-                { type: 'text' }, // Transporteur
-                { type: 'text' }, // Numéro de suivi
-                { type: 'checkbox', className: 'htCenter htMiddle' }, // Customer Informed about non-compliance
-                { type: 'checkbox', className: 'htCenter htMiddle' }, // Customer informed if locked?
-                { type: 'checkbox', className: 'htCenter htMiddle' }, // Refunded
-                { type: 'checkbox', className: 'htCenter htMiddle' }, // Returned to SG
-                { type: 'date', dateFormat: 'MM/DD/YYYY' }, // Date returned to SG
-                { type: 'numeric' }, // Waybill No.
-                { type: 'date', dateFormat: 'DD/MM/YYYY' }, // Date de réception Axe
-                { type: 'dropdown', source: ['', 'Yes', 'No', 'Standby'] }, // Contenu conforme?
-                { type: 'text' }, // IMEI de réception
-                { type: 'dropdown', source: ['', 'Unlocked', 'LOCKED', 'Standby'] }, // État de l`appareil
-                { type: 'text' }, // Commentaires (Rayures ? Bosses ?)
-                { type: 'text' }, // Lien Google pour les images
-            ];
 
             const mappedData = data.map(row => [
                 row.dateAjoutee,
@@ -123,6 +80,40 @@ function Spreadsheet() {
                 nestedHeaders: nestedHeaders,
                 customBorders: customBorders,
                 columns: columns,
+                afterGetCellMeta: function (row, col, cellProperties) {
+                    const cellValue = this.getDataAtCell(row, col);
+
+                    if (col === 1) {
+                        const bmidValues = this.getDataAtCol(col);
+                        const cellClass = getColorClassForBMID(cellValue, bmidValues);
+                        cellProperties.className = cellClass;
+                    } else if (col === 7 || col === 18) {
+                        let other;
+                        col === 7 ? (other = 18) : (other = 7);
+                        const compareValue = this.getDataAtCell(row, other);
+                        const cellClass = getColorClassForIMEI(validate(cellValue, compareValue));
+                        cellProperties.className = cellClass;
+                    } else if (col === 17 || col === 19) {
+                        const cellClass = getColorClassForDd(cellValue);
+                        cellProperties.className = cellClass;
+                    } else if (col === 10) {
+                        const compareValue = this.getDataAtCell(row, 17);
+                        const cellClass = getColorClassForCb(getCompliance(cellValue, compareValue));
+                        cellProperties.className = cellClass;
+                    } else if (col === 11) {
+                        const compareValue = this.getDataAtCell(row, 19);
+                        const cellClass = getColorClassForCb(getLocked(cellValue, compareValue));
+                        cellProperties.className = cellClass;
+                    } else if (col === 12) {
+                        const compareValue = this.getDataAtCell(row, 15);
+                        const cellClass = getColorClassForCb(getWaybill(cellValue, compareValue));
+                        cellProperties.className = cellClass;
+                    } else if (col === 13) {
+                        const compareValue = this.getDataAtCell(row, 15);
+                        const cellClass = getColorClassForCb(getWaybill13(cellValue, compareValue));
+                        cellProperties.className = cellClass;
+                    }
+                },
                 contextMenu: true,
                 dropdownMenu: true,
                 licenseKey: 'non-commercial-and-evaluation',
@@ -132,8 +123,6 @@ function Spreadsheet() {
                 colWidths: 120,
 
                 afterChange: (changes, source) => {
-                    console.log("source");
-                    console.log(source);
                     if (source !== 'loadData' && changes) {
                         const updateRequests = changes.map(change => {
                             const updateData = {
