@@ -1,4 +1,7 @@
 function getColorClassForBMID(value, bmidValues) {
+    if (value == null || value == '') {
+        return '';
+    }
     if (value.toString().length !== 8) {
         return 'custom-cell-br';
     }
