@@ -1,3 +1,38 @@
+.header-red {
+  background-color: #b10202;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+}
+
+.header-green {
+  background-color: #11734b;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+}
+
+.header-yellow {
+  background-color: #ffe5a0;
+  color: #000;
+  font-weight: bold;
+  text-align: center;
+}
+
+.header-blue {
+  background-color: #0000ff;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+}
+
+.htNestedHeaders .htHead {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  width: 100%;
+}
+
 .htNestedHeaders .htHead {
     align-items: center;
     justify-content: center;
@@ -5,65 +40,65 @@
     width: 100%;
 }
 
-  td.centered-checkbox {
-    text-align: center;
-    vertical-align: middle;
-    line-height: normal;
-  }
-  
-  td.custom-cell-green {
-    color: #fff;
-    background-color: #11734b;
-    border-radius: 10px;
-  }
-  
-  td.custom-cell-red {
-    color: #fff;
-    background-color: #b10202;
-    border-radius: 10px;
-  }
-  
-  td.custom-cell-cream {
-    color: #000;
-    background-color: #ffe5a0;
-    border-radius: 10px;
-  }
+td.centered-checkbox {
+  text-align: center;
+  vertical-align: middle;
+  line-height: normal;
+}
 
-  td.custom-cell-br {
-    color: #000;
-    background-color: #ff0000;
-  }
+td.custom-cell-green {
+  color: #fff;
+  background-color: #11734b;
+  border-radius: 10px;
+}
 
-  td.custom-cell-bg {
-    color: #000;
-    background-color: #00ff00;
-  }
-  
-  td.custom-cell-bo {
-    color: #000;
-    background-color: #ff9900;
-  }
+td.custom-cell-red {
+  color: #fff;
+  background-color: #b10202;
+  border-radius: 10px;
+}
 
-  td.custom-cell-dr {
-    color: #000;
-    background-color: #e06666;
-  }
+td.custom-cell-cream {
+  color: #000;
+  background-color: #ffe5a0;
+  border-radius: 10px;
+}
 
-  td.custom-cell-dg {
-    color: #000;
-    background-color: #6aa84f;
-  }
+td.custom-cell-br {
+  color: #000;
+  background-color: #ff0000;
+}
 
-  td.custom-cell-true {
-    background-color: #00ff00;
-    text-align: center;
-    vertical-align: middle;
-    line-height: normal;
-  }
-  
-  td.custom-cell-false {
-    background-color: #ff0000;
-    text-align: center;
-    vertical-align: middle;
-    line-height: normal;
-  }
+td.custom-cell-bg {
+  color: #000;
+  background-color: #00ff00;
+}
+
+td.custom-cell-bo {
+  color: #000;
+  background-color: #ff9900;
+}
+
+td.custom-cell-dr {
+  color: #000;
+  background-color: #e06666;
+}
+
+td.custom-cell-dg {
+  color: #000;
+  background-color: #6aa84f;
+}
+
+td.custom-cell-true {
+  background-color: #00ff00;
+  text-align: center;
+  vertical-align: middle;
+  line-height: normal;
+}
+
+td.custom-cell-false {
+  background-color: #ff0000;
+  text-align: center;
+  vertical-align: middle;
+  line-height: normal;
+}
