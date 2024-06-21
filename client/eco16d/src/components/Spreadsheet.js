@@ -47,7 +47,6 @@ function Spreadsheet() {
 
     useEffect(() => {
         if (hotElementRef.current && data.length > 0 && !hotInstance) {
-
             const mappedData = data.map(row => [
                 row.dateAjoutee,
                 row.BMID,
@@ -80,6 +79,7 @@ function Spreadsheet() {
                 nestedHeaders: nestedHeaders,
                 customBorders: customBorders,
                 columns: columns,
+                className: 'custom-table',
                 afterGetCellMeta: function (row, col, cellProperties) {
                     const cellValue = this.getDataAtCell(row, col);
 
@@ -121,7 +121,6 @@ function Spreadsheet() {
                 manualRowResize: true,
                 manualColumnResize: true,
                 colWidths: 120,
-
                 afterChange: (changes, source) => {
                     if (source !== 'loadData' && changes) {
                         const updateRequests = changes.map(change => {
