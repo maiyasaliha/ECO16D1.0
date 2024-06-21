@@ -18,20 +18,34 @@ function Spreadsheet() {
     const customBorders = [];
     const [rows, setRows] = useState([]);
 
+    const fetchData = async () => {
+        try {
+            const response = await axios.get('http://localhost:3001/cellRows');
+            const extractedDataBeforeMap = response.data;
+            const extractedData = extractedDataBeforeMap.map(({ _id, ...rest }) => rest);
+            setData(extractedData);
+            setRows(extractedData.length);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('http://localhost:3001/cellRows');
-                const extractedDataBeforeMap = response.data;
-                const extractedData = extractedDataBeforeMap.map(({ _id, ...rest }) => rest);
-                setData(extractedData);
-                setRows(extractedData.length);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
+        socket.on('connect', () => {
+            console.log("connecteddd!!")
+        });
 
         fetchData();
+
+        socket.on('cellUpdated', (data) => {
+            console.log('cellUpdated event received:', data);
+            fetchData();
+        });
+
+        return () => {
+            socket.off('connect');
+            socket.off('cellUpdated');
+        };
     }, []);
 
     for (let row = 0; row < rows; row++) {
@@ -93,9 +107,6 @@ function Spreadsheet() {
                         const compareValue = this.getDataAtCell(row, other);
                         const cellClass = getColorClassForIMEI(validate(cellValue, compareValue));
                         cellProperties.className = cellClass;
-                    } else if (col === 17 || col === 19) {
-                        const cellClass = getColorClassForDd(cellValue);
-                        cellProperties.className = cellClass;
                     } else if (col === 10) {
                         const compareValue = this.getDataAtCell(row, 17);
                         const cellClass = getColorClassForCb(getCompliance(cellValue, compareValue));
@@ -112,6 +123,9 @@ function Spreadsheet() {
                         const compareValue = this.getDataAtCell(row, 15);
                         const cellClass = getColorClassForCb(getWaybill13(cellValue, compareValue));
                         cellProperties.className = cellClass;
+                    } else if (col === 17 || col === 19) {
+                        const cellClass = getColorClassForDd(cellValue);
+                        cellProperties.className = cellClass;
                     }
                 },
                 contextMenu: true,
@@ -123,20 +137,29 @@ function Spreadsheet() {
                 colWidths: 120,
                 allowHtml: true,
                 afterChange: (changes, source) => {
+                    let updateData;
                     if (source !== 'loadData' && changes) {
                         const updateRequests = changes.map(change => {
-                            const updateData = {
+                            updateData = {
                                 rowIndex: change[0],
                                 colIndex: change[1],
                                 newValue: change[3] == null ? "" : change[3]
                             };
-                
                             return axios.post('http://localhost:3001/updateCell', updateData);
                         });
+                        socket.emit('updateCell', updateData);
                 
                         axios.all(updateRequests)
                             .then(axios.spread((...responses) => {
                                 console.log('All cells updated successfully.');
+
+                                responses.forEach(response => {
+                                    console.log("upadting many")
+                                    const { rowIndex, colIndex, newValue } = response.data;
+                                    //socket.emit('updateCell', updateData);
+                                    console.log("socket emitting");
+
+                                });
                             }))
                             .catch(err => {
                                 console.log('Error updating data:', err);

@@ -22,31 +22,58 @@ connectToDb((err) => {
         });
 
         io.on('connection', (socket) => {
-            console.log('A user connected');
+            console.log('A user connected hehe');
 
             socket.on('disconnect', () => {
                 console.log('A user disconnected');
             });
 
-            socket.on('updateCell', (data) => {
+            socket.on('updateCell', async (data) => {
                 console.log('Received updateCell event:', data);
-                if (ObjectId.isValid(data?._id)) {
-                    const updateQuery = { $set: {} };
-                    updateQuery.$set[`${data.field.property}`] = data?.value;
+                try {
+                    const { rowIndex, colIndex, newValue } = data;
 
-                    db.collection(collection)
-                        .updateOne({ _id: new ObjectId(data._id) }, updateQuery)
-                        .then(
-                            socket.broadcast.emit('cellUpdated', data)
-                        )
-                        .catch(err => {
-                            console.error('Error updating document:', err);
-                        });
-                } else {
-                    console.error('Invalid document ID');
+                    const skip = parseInt(rowIndex, 10) || 0;
+                    const fieldIndex = parseInt(colIndex, 10);
+
+                    const results = await db.collection(collection)
+                        .find({})
+                        .skip(skip)
+                        .limit(1)
+                        .toArray();
+
+                    if (results.length === 0) {
+                        console.error('No data found for the given rowIndex.');
+                        return;
+                    }
+
+                    const rowData = results[0];
+                    const values = Object.values(rowData);
+
+                    if (fieldIndex < 0 || fieldIndex >= values.length) {
+                        console.error('Invalid colIndex.');
+                        return;
+                    }
+
+                    const keys = Object.keys(rowData);
+                    const keyToUpdate = keys[fieldIndex + 1];
+                    const updatedDocument = {
+                        ...rowData,
+                        [keyToUpdate]: newValue
+                    };
+
+                    await db.collection(collection).updateOne(
+                        { _id: rowData._id },
+                        { $set: { [keyToUpdate]: newValue } }
+                    );
+
+                    console.log(`Document with _id ${rowData._id} updated with ${keyToUpdate} successfully.`);
+
+                    socket.broadcast.emit('cellUpdated', data);
+                } catch (error) {
+                    console.error('Error updating document:', error);
                 }
             });
-            
         });
 
         server.listen(3001, () => {
@@ -58,7 +85,6 @@ connectToDb((err) => {
         console.error('Failed to connect to database:', err);
     }
 });
-
 
 app.get('/cellRows', (req, res) => {
     let cr = []
