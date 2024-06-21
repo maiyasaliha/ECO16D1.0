@@ -79,6 +79,7 @@ function Spreadsheet() {
                 nestedHeaders: nestedHeaders,
                 customBorders: customBorders,
                 columns: columns,
+                className: 'custom-table',
                 afterGetCellMeta: function (row, col, cellProperties) {
                     const cellValue = this.getDataAtCell(row, col);
 

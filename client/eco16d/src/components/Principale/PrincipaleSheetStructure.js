@@ -1,15 +1,13 @@
-import '../styles.css';
-
 const nestedHeaders = [
     [
-        { label: 'le rouge suggère un identifiant de commande incorrect de plus de 8 caractères', colspan: 16, className: 'header-red' }, 
-        { label: 'le vert suggère que le numéro de commande existe déjà dans la page colis manquants', colspan: 6, className: 'header-green' }
+        { label: 'le rouge suggère un identifiant de commande incorrect de plus de 8 caractères', colspan: 16 }, 
+        { label: 'le vert suggère que le numéro de commande existe déjà dans la page colis manquants', colspan: 6 }
     ],
     [
-        { label: 'Last Updated [GMT+8]', colspan: 2, className: 'header-red' }, 
-        { label: '16/05/2024 16:03:39', colspan: 2, className: 'header-green' },
-        { label: 'ECO À REMPLIR', colspan: 12, className: 'header-blue' }, 
-        { label: 'AXE À REMPLIR', colspan: 6, className: 'header-red' }
+        { label: 'Last Updated [GMT+8]', colspan: 2 }, 
+        { label: '16/05/2024 16:03:39', colspan: 2 },
+        { label: 'ECO À REMPLIR', colspan: 12 }, 
+        { label: 'AXE À REMPLIR', colspan: 6 }
     ],
     [
         'date ajoutée', 'BMID', 'Nom du client', 'Raison du retour', 'BM Raison du retour', 'SKU', 'Nom du produit', 
