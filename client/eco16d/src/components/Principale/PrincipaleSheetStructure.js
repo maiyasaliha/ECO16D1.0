@@ -1,11 +1,16 @@
-// import { linkRenderer } from "./LinkRenderer";
 import Handsontable from 'handsontable';
 
 const nestedHeaders = [
-    [{ label: 'le rouge suggère un identifiant de commande incorrect de plus de 8 caractères', colspan: 16, className: 'header-group-style5' }, 
-        { label: 'le vert suggère que le numéro de commande existe déjà dans la page colis manquants', colspan: 6, className: 'header-group-style4' }],
-    [{ label: 'Last Updated [GMT+8]', colspan: 2, className: 'header-group-style1' }, { label: '16/05/2024 16:03:39', colspan: 2, className: 'header-group-style5' },
-         { label: 'ECO À REMPLIR', colspan: 12, className: 'header-group-style3' }, { label: 'AXE À REMPLIR', colspan: 6, className: 'header-group-style4' }],
+    [
+        { label: 'le rouge suggère un identifiant de commande incorrect de plus de 8 caractères', colspan: 16 }, 
+        { label: 'le vert suggère que le numéro de commande existe déjà dans la page colis manquants', colspan: 6 }
+    ],
+    [
+        { label: 'Last Updated [GMT+8]', colspan: 2 }, 
+        { label: '16/05/2024 16:03:39', colspan: 2 },
+        { label: 'ECO À REMPLIR', colspan: 12 }, 
+        { label: 'AXE À REMPLIR', colspan: 6 }
+    ],
     [
         'date ajoutée', 'BMID', 'Nom du client', 'Raison du retour', 'BM Raison du retour', 'SKU', 'Nom du produit', 
         'IMEI', 'Transporteur', 'Numéro de suivi', 'Customer Informed about non-compliance', 'Customer informed if locked?', 
@@ -36,31 +41,19 @@ const columns = [
     { type: 'text' }, // IMEI de réception
     { type: 'dropdown', source: ['', 'Unlocked', 'LOCKED', 'Standby'] }, // État de l`appareil
     { type: 'text' }, // Commentaires (Rayures ? Bosses ?)
-    { type: 'text', renderers: linkRenderer }, // Lien Google pour les images
+    { type: 'text', renderer: linkRenderer }, // Lien Google pour les images
 ];
-
-// function linkRenderer(instance, td, row, col, prop, value, cellProperties) {
-//     Handsontable.renderers.TextRenderer.apply(this, arguments);
-
-//     if (value && typeof value === 'string' && value.startsWith('http')) {
-//         td.innerHTML = `<a href="${value}" target="_blank">${value}</a>`;
-//     } else {
-//         td.innerHTML = value;
-//     }
-
-//     return td;
-// }
 
 function linkRenderer(instance, td, row, col, prop, value, cellProperties) {
     Handsontable.renderers.TextRenderer.apply(this, arguments);
-    td.style.color = 'blue';
-    td.style.textDecoration = 'underline';
-    td.style.cursor = 'pointer';
 
-    td.onclick = function () {
-        const url = value;
-        window.open(url, '_blank');
-    };
+    if (value && typeof value === 'string' && value.startsWith('http')) {
+        td.innerHTML = `<a href="${value}" target="_blank">${value}</a>`;
+    } else {
+        td.innerHTML = value;
+    }
+
+    return td;
 }
 
 export {nestedHeaders, columns};

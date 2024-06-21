@@ -1,38 +1,3 @@
-.header-group-style1 .htNestedHeaders {
-    background-color: hsl(331, 36%, 74%);
-    color: #000;
-    font-weight: bold;
-    text-align: right;
-}
-
-.header-group-style2 .htNestedHeaders {
-    background-color: #ea4335;
-    color: #000;
-    font-weight: bold;
-    text-align: center;
-}
-
-.header-group-style3 .htNestedHeaders {
-    background-color: #ffff00;
-    color: #000;
-    font-weight: bold;
-    text-align: center;
-}
-
-.header-group-style4 .htNestedHeaders {
-    background-color: #00ff00;
-    color: #000;
-    font-weight: bold;
-    text-align: center;
-}
-
-.header-group-style5 .htNestedHeaders {
-    background-color: #ff0000;
-    color: #000;
-    font-weight: bold;
-    text-align: center;
-}
-
 .htNestedHeaders .htHead {
     align-items: center;
     justify-content: center;
@@ -40,66 +5,101 @@
     width: 100%;
 }
 
-  td.centered-checkbox {
-    text-align: center;
-    vertical-align: middle;
-    line-height: normal;
-  }
-  
-  td.custom-cell-green {
-    color: #fff;
-    background-color: #11734b;
-    border-radius: 10px;
-  }
-  
-  td.custom-cell-red {
-    color: #fff;
-    background-color: #b10202;
-    border-radius: 10px;
-  }
-  
-  td.custom-cell-cream {
-    color: #000;
-    background-color: #ffe5a0;
-    border-radius: 10px;
-  }
+td.centered-checkbox {
+  text-align: center;
+  vertical-align: middle;
+  line-height: normal;
+}
 
-  td.custom-cell-br {
-    color: #000;
-    background-color: #ff0000;
-  }
+td.custom-cell-green {
+  color: #fff;
+  background-color: #11734b;
+  border-radius: 10px;
+}
 
-  td.custom-cell-bg {
-    color: #000;
-    background-color: #00ff00;
-  }
-  
-  td.custom-cell-bo {
-    color: #000;
-    background-color: #ff9900;
-  }
+td.custom-cell-red {
+  color: #fff;
+  background-color: #b10202;
+  border-radius: 10px;
+}
 
-  td.custom-cell-dr {
-    color: #000;
-    background-color: #e06666;
-  }
+td.custom-cell-cream {
+  color: #000;
+  background-color: #ffe5a0;
+  border-radius: 10px;
+}
 
-  td.custom-cell-dg {
-    color: #000;
-    background-color: #6aa84f;
-  }
+td.custom-cell-br {
+  color: #000;
+  background-color: #ff0000;
+}
 
-  td.custom-cell-true {
-    background-color: #00ff00;
-    text-align: center;
-    vertical-align: middle;
-    line-height: normal;
-  }
-  
-  td.custom-cell-false {
-    background-color: #ff0000;
-    text-align: center;
-    vertical-align: middle;
-    line-height: normal;
-  }
-  
+td.custom-cell-bg {
+  color: #000;
+  background-color: #00ff00;
+}
+
+td.custom-cell-bo {
+  color: #000;
+  background-color: #ff9900;
+}
+
+td.custom-cell-dr {
+  color: #000;
+  background-color: #e06666;
+}
+
+td.custom-cell-dg {
+  color: #000;
+  background-color: #6aa84f;
+}
+
+td.custom-cell-true {
+  background-color: #00ff00;
+  text-align: center;
+  vertical-align: middle;
+  line-height: normal;
+}
+
+td.custom-cell-false {
+  background-color: #ff0000;
+  text-align: center;
+  vertical-align: middle;
+  line-height: normal;
+}
+
+.custom-table thead th {
+  font-weight: bold;
+}
+
+.custom-table thead > tr:nth-child(1) th:nth-child(2) {
+  background-color: #ff0000;
+}
+
+.custom-table thead > tr:nth-child(1) th:nth-child(1) {
+  background-color: #f8f4f4;
+}
+
+.custom-table thead > tr:nth-child(1) th {
+  background-color: #00ff00;
+}
+
+.custom-table thead > tr:nth-child(2) th:nth-child(1) {
+  background-color: #f8f4f4;
+}
+
+.custom-table thead > tr:nth-child(2) th:nth-child(2) {
+  background-color: #ead1dc;
+}
+
+.custom-table thead > tr:nth-child(2) th:nth-child(4) {
+  background-color: #ea4335;
+}
+
+.custom-table thead > tr:nth-child(2) th:nth-child(6) {
+  background-color: #ffff00;
+} 
+
+.custom-table thead > tr:nth-child(2) th {
+  background-color: #00ff00;
+} 
