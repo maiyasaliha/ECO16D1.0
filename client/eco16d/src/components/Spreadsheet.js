@@ -121,7 +121,6 @@ function Spreadsheet() {
                 manualRowResize: true,
                 manualColumnResize: true,
                 colWidths: 120,
-
                 afterChange: (changes, source) => {
                     if (source !== 'loadData' && changes) {
                         const updateRequests = changes.map(change => {
