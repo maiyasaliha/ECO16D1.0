@@ -21,7 +21,7 @@ function Spreadsheet() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/cellRows');
+                const response = await axios.get('http://localhost:3001/principale');
                 const extractedDataBeforeMap = response.data;
                 const extractedData = extractedDataBeforeMap.map(({ _id, ...rest }) => rest);
                 setData(extractedData);
@@ -131,7 +131,7 @@ function Spreadsheet() {
                                 newValue: change[3] == null ? "" : change[3]
                             };
                 
-                            return axios.post('http://localhost:3001/updateCell', updateData);
+                            return axios.post('http://localhost:3001/principaleCell', updateData);
                         });
                 
                         axios.all(updateRequests)
