@@ -8,7 +8,7 @@ import { nestedHeaders, columns } from './Principale/PrincipaleSheetStructure';
 import { getColorClassForCb, getColorClassForDd, getColorClassForBMID, getColorClassForIMEI } from './Principale/ConditionalColoring'
 import { validate, getCompliance, getLocked, getWaybill, getWaybill13 } from './Principale/ValidateFunctions';
 
-const socket = io('http://localhost:3001');
+// const socket = io('http://localhost:3001');
 
 
 function Spreadsheet() {
