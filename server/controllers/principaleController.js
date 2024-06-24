@@ -1,4 +1,3 @@
-const { ObjectId } = require('mongoose').Types;
 const Principale = require('../models/principaleModel');
 
 exports.getCellRows = async (req, res) => {
@@ -8,25 +7,6 @@ exports.getCellRows = async (req, res) => {
     } catch (error) {
         console.error('Error fetching cell rows:', error);
         res.status(500).json({ error: 'Could not fetch Cell Rows documents' });
-    }
-};
-
-exports.getCellRowById = async (req, res) => {
-    const { id } = req.params;
-    try {
-        if (ObjectId.isValid(id)) {
-            const row = await Principale.findById(id);
-            if (row) {
-                res.status(200).json(row);
-            } else {
-                res.status(404).json({ error: 'Cell Row not found' });
-            }
-        } else {
-            res.status(400).json({ error: 'Invalid Cell Row ID' });
-        }
-    } catch (error) {
-        console.error('Error fetching cell row by ID:', error);
-        res.status(500).json({ error: 'Could not fetch Cell Row document' });
     }
 };
 
@@ -41,48 +21,35 @@ exports.postCellRow = async (req, res) => {
     }
 };
 
-exports.updateCellRow = async (req, res) => {
-    const { _id, field, value } = req.body;
+exports.updateCell = async (req, res) => {
     try {
-        if (ObjectId.isValid(_id)) {
-            const result = await Principale.updateOne(
-                { _id },
-                { $set: { [field]: value } }
-            );
-            if (result.nModified > 0) {
-                res.status(200).json({ message: 'Document updated successfully' });
-            } else {
-                res.status(404).json({ error: 'Document not found' });
-            }
-        } else {
-            res.status(400).json({ error: 'Invalid document ID' });
-        }
-    } catch (error) {
-        console.error('Error updating cell row:', error);
-        res.status(500).json({ error: 'Could not update the Cell Row document' });
-    }
-};
+        const { rowIndex, colIndex, newValue } = req.body;
 
-exports.updateCellValue = async (req, res) => {
-    const { id } = req.params;
-    const { field, value } = req.body;
-    try {
-        if (ObjectId.isValid(id)) {
-            const result = await Principale.updateOne(
-                { _id: id },
-                { $set: { [field]: value } }
-            );
-            if (result.nModified > 0) {
-                res.status(200).json({ message: `Field ${field} updated successfully` });
-            } else {
-                res.status(404).json({ error: 'Document not found' });
-            }
-        } else {
-            res.status(400).json({ error: 'Invalid document ID' });
+        const skip = parseInt(rowIndex, 10) || 0;
+        const fieldIndex = parseInt(colIndex, 10);
+
+        const results = await Principale
+            .find({})
+            .skip(skip)
+            .limit(1);
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'No data found for the given rowIndex.' });
         }
+
+        const rowData = results[0];
+        const keys = Object.keys(rowData.toObject());
+        const keyToUpdate = keys[fieldIndex + 1];
+        
+        rowData[keyToUpdate] = newValue;
+
+        await rowData.save();
+
+        console.log(`Document with _id ${rowData._id} updated with ${keyToUpdate} successfully.`);
+        res.status(200).json({ message: 'Cell updated successfully.' });
     } catch (error) {
-        console.error('Error updating cell value:', error);
-        res.status(500).json({ error: 'Could not update the field' });
+        console.error('Error updating cell data:', error);
+        res.status(500).json({ error: 'An error occurred while updating cell data.' });
     }
 };
 
