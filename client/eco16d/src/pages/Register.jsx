@@ -1,17 +1,19 @@
 import React from 'react';
 import { Card, Flex, Form, Input, Typography, Button, Alert, Spin } from 'antd';
 import { Link } from 'react-router-dom';
+import useSignup from '../hooks/useSignup';
 
 export const Register = () => {
+  const { loading, error, registerUser } = useSignup();
 
     const handleRegister = (values) => {
-        console.log(values);
+        registerUser(values);
     }
 
   return (
     <Card>
-        <Flex align='center' style={{width: '50%', justifyContent: 'center', display: 'flex'}}>
-            <Flex vertical flex={1} style={{width: '100%'}}>
+        <Flex>
+            <Flex vertical align="center" flex={1} style={{width: '100%'}}>
                 <Typography.Title level={3} strong>Create an Account</Typography.Title>
                 <Form 
                 layout='vertical' 
@@ -69,21 +71,21 @@ export const Register = () => {
                     >
                         <Input.Password placeholder="Re-enter Password" />
                     </Form.Item>
-                    {/* {
+                    {
                         error && 
                             <Alert 
                                 description={error} 
                                 type='error' 
                                 showIcon closable 
                             />
-                    } */}
+                    }
                     <Form.Item>
                         <Button
-                        //   type={`${loading ? '' : "primary"}`}
+                          type={`${loading ? '' : "primary"}`}
                           htmlType='submit'
                         >
-                            {/* {loading ? <Spin /> : 'Create Account' } */}
-                            Create Account</Button>
+                            {loading ? <Spin /> : 'Create Account' }
+                            </Button>
                     </Form.Item>
                     <Form.Item>
                         <Link to="/login">

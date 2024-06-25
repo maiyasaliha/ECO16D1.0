@@ -7,6 +7,11 @@ import './styles.css';
 import { nestedHeaders, columns } from './Principale/PrincipaleSheetStructure';
 import { getColorClassForCb, getColorClassForDd, getColorClassForBMID, getColorClassForIMEI } from './Principale/ConditionalColoring'
 import { validate, getCompliance, getLocked, getWaybill, getWaybill13 } from './Principale/ValidateFunctions';
+import { Button } from 'antd';
+import { ArrowLeftOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
+
+
 
 // const socket = io('http://localhost:3001');
 
@@ -157,7 +162,27 @@ function Spreadsheet() {
     }, [data, hotInstance]);
 
     return (
-        <div ref={hotElementRef} style={{ width: '100%', height: '100vh' }}></div>
+        <>
+            <Button>
+                <Link to="/home">
+                Back to home
+                </Link>
+            </Button>
+            <Button>
+                Jan-Mar
+            </Button>
+            <Button>
+                Apr-Jun
+            </Button>
+            <Button>
+                Jul-Sep
+            </Button>
+            <Button>
+                Oct-Dec
+            </Button>
+            <div ref={hotElementRef} style={{ width: '100%', height: '100vh' }}></div>
+        </>
+
     );
 }
 
