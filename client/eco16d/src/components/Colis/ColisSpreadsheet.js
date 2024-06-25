@@ -23,7 +23,7 @@ function ColisSpreadsheet() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/principale');
+                const response = await axios.get('http://localhost:3001/colis');
                 const extractedDataBeforeMap = response.data;
                 const extractedData = extractedDataBeforeMap.map(({ _id, ...rest }) => rest);
                 setData(extractedData);
@@ -50,9 +50,10 @@ function ColisSpreadsheet() {
     useEffect(() => {
         if (hotElementRef.current && data.length > 0 && !hotInstance) {
             const mappedData = data.map(row => [
-                row.dateAjoutee,
+                row.dateCreee,
                 row.BMID,
-                row.nomDuClient
+                row.nomDuClient,
+                row.informations
             ]);
 
             const hot = new Handsontable(hotElementRef.current, {
@@ -89,7 +90,7 @@ function ColisSpreadsheet() {
                                 newValue: change[3] == null ? "" : change[3]
                             };
                 
-                            return axios.post('http://localhost:3001/principaleCell', updateData);
+                            return axios.post('http://localhost:3001/colisCell', updateData);
                         });
                 
                         axios.all(updateRequests)
