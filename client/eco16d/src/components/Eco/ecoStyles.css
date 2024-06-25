@@ -7,22 +7,18 @@
   background-color: #f8f4f4;
 }
 
-.ht_clone_top .ht_nestingLevel-0 span {
-  white-space: normal !important;
+.ht_clone_top .ht_nestingLevel-0 .colHeader {
+  white-space: normal;
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 12px;
   line-height: 1.2;
   word-wrap: break-word;
-  height: 40px;
+  max-width: 120px;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-}
-
-.ht_clone_top .handsontable .htCore .ht_nestingLevel-0 span {
-  display: inline-block;
-  white-space: normal;
-  word-wrap: break-word;
+  padding: 5px;
 }

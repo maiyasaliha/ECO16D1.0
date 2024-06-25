@@ -21,7 +21,7 @@ function EcoSpreadsheet() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/principale');
+                const response = await axios.get('http://localhost:3001/eco');
                 const extractedDataBeforeMap = response.data;
                 const extractedData = extractedDataBeforeMap.map(({ _id, ...rest }) => rest);
                 setData(extractedData);
@@ -62,31 +62,9 @@ function EcoSpreadsheet() {
                 dropdownMenu: true,
                 licenseKey: 'non-commercial-and-evaluation',
                 language: 'en-US',
-                manualRowResize: true,
-                manualColumnResize: true,
-                colWidths: 120,
-                allowHtml: true,
-                afterChange: (changes, source) => {
-                    if (source !== 'loadData' && changes) {
-                        const updateRequests = changes.map(change => {
-                            const updateData = {
-                                rowIndex: change[0],
-                                colIndex: change[1],
-                                newValue: change[3] == null ? "" : change[3]
-                            };
-                
-                            return axios.post('http://localhost:3001/principaleCell', updateData);
-                        });
-                
-                        axios.all(updateRequests)
-                            .then(axios.spread((...responses) => {
-                                console.log('All cells updated successfully.');
-                            }))
-                            .catch(err => {
-                                console.log('Error updating data:', err);
-                            });
-                    }
-                }                
+                colWidths: 100,
+                columnHeaderHeight: 80,
+                wordWrap: true,
             });
 
             setHotInstance(hot);
