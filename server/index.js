@@ -4,6 +4,7 @@ const cors = require('cors');
 const authRouter = require('./routes/authRoutes');
 const principaleRouter = require('./routes/principaleRoutes');
 const ecoRouter = require('./routes/ecoRoutes');
+const colisRouter = require('./routes/colisRoutes');
 const app = express();
 
 app.use(cors());
@@ -12,7 +13,7 @@ app.use(express.json());
 app.use('/', authRouter);
 app.use('/', principaleRouter);
 app.use('/', ecoRouter);
-
+app.use('/', colisRouter);
 
 mongoose.connect('mongodb://localhost:27017/ECO16D', {
     useNewUrlParser: true,
