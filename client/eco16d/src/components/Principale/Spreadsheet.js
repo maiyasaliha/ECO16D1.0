@@ -3,16 +3,13 @@ import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
 import axios from 'axios';
 import io from 'socket.io-client';
-import './styles.css';
+import './principaleStyles.css';
 import { nestedHeaders, columns } from './PrincipaleSheetStructure';
 import { getColorClassForCb, getColorClassForDd, getColorClassForBMID, getColorClassForIMEI } from './ConditionalColoring'
 import { validate, getCompliance, getLocked, getWaybill, getWaybill13 } from './ValidateFunctions';
 import ToolBar from '../ToolBar';
 
-
-
 // const socket = io('http://localhost:3001');
-
 
 function Spreadsheet() {
     const [hotInstance, setHotInstance] = useState(null);
@@ -161,7 +158,7 @@ function Spreadsheet() {
 
     return (
         <>
-            <ToolBar />
+            <ToolBar principale={true}/>
             <div ref={hotElementRef} style={{ width: '100%', height: '100vh' }}></div>
         </>
 

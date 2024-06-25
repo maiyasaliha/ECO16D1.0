@@ -3,7 +3,7 @@ import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
 import axios from 'axios';
 import io from 'socket.io-client';
-import './styles.css';
+import './colisStyles.css';
 import { nestedHeaders, columns } from './ColisSheetStructure';
 import { getColorClassForBMID } from './ConditionalColoring'
 import ToolBar from '../ToolBar';
@@ -62,7 +62,7 @@ function ColisSpreadsheet() {
                 nestedHeaders: nestedHeaders,
                 customBorders: customBorders,
                 columns: columns,
-                className: 'custom-table',
+                className: 'custom-tablec',
                 // afterGetCellMeta: function (row, col, cellProperties) {
                 //     const cellValue = this.getDataAtCell(row, col);
 
@@ -116,7 +116,7 @@ function ColisSpreadsheet() {
 
     return (
         <>
-            <ToolBar />
+            <ToolBar colis={true}/>
             <div ref={hotElementRef} style={{ width: '100%', height: '100vh' }}></div>
         </>
 

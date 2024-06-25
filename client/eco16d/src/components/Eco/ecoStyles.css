@@ -1,0 +1,8 @@
+.custom-tablee thead th {
+  font-weight: bold;
+  background-color: #ffff00;
+
+}
+.custom-tablee thead > tr:nth-child(1) th:nth-child(1) {
+  background-color: #f8f4f4;
+}
