@@ -1,13 +1,17 @@
 function validate(value, otherValue) {
-    if (value != "" && otherValue != "" && value == otherValue) {
-        return 'green';
-    }
-    if (value != "" && otherValue != "" && value != otherValue) {
-        return 'red';
-    }
-    if (value == "" || value == null) {
+    if (isEmptyorNull(value)) {
         return 'clear';
     }
+    if (!isEmptyorNull(value) && !isEmptyorNull(otherValue) && value == otherValue) {
+        return 'green';
+    }
+    if (!isEmptyorNull(value) && !isEmptyorNull(otherValue) && value != otherValue) {
+        return 'red';
+    }
+}
+
+function isEmptyorNull(value) {
+    return value === "" || value === null;
 }
 
 function getCompliance(cellValue, value) {
