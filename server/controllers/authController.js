@@ -31,6 +31,7 @@ exports.signup = async (req, res, next) => {
                 _id: newUser._id,
                 name: newUser.name,
                 email: newUser.email,
+                organisation: newUser.organisation,
                 role: newUser.role
             }
         });
@@ -72,6 +73,7 @@ exports.login = async (req, res, next) => {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
+                organisation: user.organisation,
                 role: user.role
             }
         });

@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 
 function HomePage() {
     const { userData, logout } = useAuth();
+    console.log(userData);
 
     const handleLogout = async () => {
         await logout();
@@ -22,7 +23,7 @@ function HomePage() {
                 Email: {userData?.email}
             </Typography.Text>
             <Typography.Text type="secondary">
-                Role: {userData?.role}
+                Organisation: {userData?.organisation}
             </Typography.Text>
             <Button>
                 <Link to="/principale">
