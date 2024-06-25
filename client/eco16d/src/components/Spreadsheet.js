@@ -103,10 +103,7 @@ function Spreadsheet() {
                         cellProperties.className = cellClass;
                     } else if (col === 10) {
                         const compareValue = this.getDataAtCell(row, 17);
-                        console.log(cellValue)
-                        console.log(compareValue)
                         const cellClass = getColorClassForCb(getCompliance(cellValue, compareValue));
-                        console.log(cellClass)
                         cellProperties.className = cellClass;
                     } else if (col === 11) {
                         const compareValue = this.getDataAtCell(row, 19);
