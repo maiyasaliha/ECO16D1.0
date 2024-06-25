@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Flex, Form, Input, Typography, Button, Alert, Spin } from 'antd';
+import { Card, Flex, Form, Input, Typography, Button, Alert, Spin, Select } from 'antd';
 import { Link } from 'react-router-dom';
 import useSignup from '../hooks/useSignup';
 
@@ -9,6 +9,8 @@ export const Register = () => {
     const handleRegister = (values) => {
         registerUser(values);
     }
+    
+    const { Option } = Select;
 
   return (
     <Card>
@@ -22,54 +24,72 @@ export const Register = () => {
                   label="Name"
                   name="name"
                   rules={[
-                    {
-                        required: true,
-                        message: 'Please enter your name'
-                    },
-                  ]}
-                >
-                    <Input placeholder="Full Name" />
-                </Form.Item>
-                <Form.Item
-                  label="Email"
-                  name="email"
-                  rules={[
-                    {
-                        required: true,
-                        message: 'Please enter your email'
-                    },
-                    {
-                        type: 'email',
-                        message: 'The input is not a valid Email'
-                    }
-                  ]}
-                >
-                    <Input placeholder="Email" />
-                </Form.Item>
-                <Form.Item
-                  label="Password"
-                  name="password"
-                  rules={[
-                    {
-                        required: true,
-                        message: 'Please enter your password'
-                    }
-                  ]}
-                >
-                    <Input.Password placeholder="Password" />
-                </Form.Item>
-                <Form.Item
-                  label="Confirmed Password"
-                  name="reenterPassword"
-                  rules={[
-                    {
-                        required: true,
-                        message: 'Please re-enter your password'
-                    }
-                  ]}
-                >
-                    <Input.Password placeholder="Re-enter Password" />
-                </Form.Item>
+                        {
+                            required: true,
+                            message: 'Please enter your name'
+                        },
+                      ]}
+                    >
+                        <Input placeholder="Full Name" />
+                    </Form.Item>
+                    <Form.Item
+                      label="Email"
+                      name="email"
+                      rules={[
+                        {
+                            required: true,
+                            message: 'Please enter your email'
+                        },
+                        {
+                            type: 'email',
+                            message: 'The input is not a valid Email'
+                        }
+                      ]}
+                    >
+                        <Input placeholder="Email" />
+                    </Form.Item>
+                    <Form.Item
+                      label="Organisation"
+                      name="organisation"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Please select your organisation'
+                        },
+                      ]}
+                    >
+                      <Select
+                        placeholder="Organisation"
+                        allowClear
+                      >
+                        <Option value="ECO">Eco</Option>
+                        <Option value="AXE">Axe</Option>
+                      </Select>
+                    </Form.Item>
+                    <Form.Item
+                      label="Password"
+                      name="password"
+                      rules={[
+                        {
+                            required: true,
+                            message: 'Please enter your password'
+                        }
+                      ]}
+                    >
+                        <Input.Password placeholder="Password" />
+                    </Form.Item>
+                    <Form.Item
+                      label="Confirmed Password"
+                      name="reenterPassword"
+                      rules={[
+                        {
+                            required: true,
+                            message: 'Please re-enter your password'
+                        }
+                      ]}
+                    >
+                        <Input.Password placeholder="Re-enter Password" />
+                    </Form.Item>
                 {
                     error && 
                         <Alert 

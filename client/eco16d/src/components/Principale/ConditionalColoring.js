@@ -47,9 +47,13 @@ function getColorClassForCb(value) {
     switch (value) {
         case 'TRUE':
             return 'custom-cell-true';
+        case 'true':
+            return 'custom-cell-true';
         case true:
             return 'custom-cell-true';
         case 'FALSE':
+            return 'custom-cell-false';
+        case 'false':
             return 'custom-cell-false';
         case false:
             return 'custom-cell-false';
