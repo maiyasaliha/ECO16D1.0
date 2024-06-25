@@ -4,12 +4,10 @@ import 'handsontable/dist/handsontable.full.css';
 import axios from 'axios';
 import io from 'socket.io-client';
 import './styles.css';
-import { nestedHeaders, columns } from './Principale/PrincipaleSheetStructure';
-import { getColorClassForCb, getColorClassForDd, getColorClassForBMID, getColorClassForIMEI } from './Principale/ConditionalColoring'
-import { validate, getCompliance, getLocked, getWaybill, getWaybill13 } from './Principale/ValidateFunctions';
-import { Button } from 'antd';
-import { ArrowLeftOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { nestedHeaders, columns } from './PrincipaleSheetStructure';
+import { getColorClassForCb, getColorClassForDd, getColorClassForBMID, getColorClassForIMEI } from './ConditionalColoring'
+import { validate, getCompliance, getLocked, getWaybill, getWaybill13 } from './ValidateFunctions';
+import ToolBar from '../ToolBar';
 
 
 
@@ -163,23 +161,7 @@ function Spreadsheet() {
 
     return (
         <>
-            <Button>
-                <Link to="/home">
-                Back to home
-                </Link>
-            </Button>
-            <Button>
-                Jan-Mar
-            </Button>
-            <Button>
-                Apr-Jun
-            </Button>
-            <Button>
-                Jul-Sep
-            </Button>
-            <Button>
-                Oct-Dec
-            </Button>
+            <ToolBar />
             <div ref={hotElementRef} style={{ width: '100%', height: '100vh' }}></div>
         </>
 
