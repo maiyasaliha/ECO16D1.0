@@ -15,10 +15,7 @@ app.use('/', principaleRouter);
 app.use('/', ecoRouter);
 app.use('/', colisRouter);
 
-mongoose.connect('mongodb://localhost:27017/ECO16D', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
+mongoose.connect('mongodb://localhost:27017/ECO16D')
 .then(() => console.log('Connected to MongoDB!'))
 .catch((error) => console.error('Failed to connect to MongoDB:', error));
 
