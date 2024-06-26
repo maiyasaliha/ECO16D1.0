@@ -17,14 +17,19 @@ function Spreadsheet() {
     const hotElementRef = useRef(null);
     const customBorders = [];
     const [rows, setRows] = useState([]);
+    const [colisBmids, setColisBmids] = useState([]);
+
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get('http://localhost:3001/principale');
+                const colisBmid = await axios.get('http://localhost:3001/colisBmids');
                 const extractedDataBeforeMap = response.data;
+                const extractedBMIDs = colisBmid.data;
                 const extractedData = extractedDataBeforeMap.map(({ _id, ...rest }) => rest);
                 setData(extractedData);
+                setColisBmids(extractedBMIDs);
                 setRows(extractedData.length);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -85,7 +90,7 @@ function Spreadsheet() {
 
                     if (col === 1) {
                         const bmidValues = this.getDataAtCol(col);
-                        const cellClass = getColorClassForBMID(cellValue, bmidValues);
+                        const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids);
                         cellProperties.className = cellClass;
                     } else if (col === 7 || col === 18) {
                         let other;
