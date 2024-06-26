@@ -1,11 +1,50 @@
-const Eco = require('../models/ecoModel');
+const Principale = require('../models/principaleModel');
 
-exports.getCellRows = async (req, res) => {
+exports.get1strow = async (req, res) => {
     try {
-        const rows = await Eco.find();
-        res.status(200).json(rows);
+        const records = await Principale.find({
+            customerInformedAboutNonCompliance: { $in: ["FALSE", "false", false] },
+            contenuConforme: { $in: ["No", "Standby"] }
+        }, 'BMID');
+        
+        const bmids = records.map(record => record.BMID);
+        
+        res.status(200).json(bmids);
     } catch (error) {
-        console.error('Error fetching cell rows:', error);
-        res.status(500).json({ error: 'Could not fetch Cell Rows documents' });
+        console.error('Error fetching non-compliant BMIDs:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+exports.get2ndrow = async (req, res) => {
+    try {
+        const records = await Principale.find({
+            customerInformedIfLocked: { $in: ["FALSE", "false", false] },
+            etatDeLAppareil: "LOCKED"
+        }, 'BMID');
+        
+        const bmids = records.map(record => record.BMID);
+        
+        res.status(200).json(bmids);
+    } catch (error) {
+        console.error('Error fetching non-compliant BMIDs:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+exports.get3rdrow = async (req, res) => {
+    try {
+        const records = await Principale.find({
+            refunded: { $in: ["FALSE", "false", false] },
+            contenuConforme: "Yes",
+            etatDeLAppareil: "Unlocked",
+        }, 'BMID');
+        
+        const bmids = records.map(record => record.BMID);
+        
+        res.status(200).json(bmids);
+    } catch (error) {
+        console.error('Error fetching non-compliant BMIDs:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
