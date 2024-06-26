@@ -5,7 +5,6 @@ const router = express.Router();
 
 router.get('/principale', principaleController.getCellRows);
 router.post('/principaleCell', principaleController.updateCell);
-router.get('/principaleBmid/:bmid', principaleController.getBMID);
 router.get('/principaleBmids', principaleController.getAllBMIDs);
 
 

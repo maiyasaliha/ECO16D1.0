@@ -79,23 +79,6 @@ exports.getCell = async (req, res) => {
     }
 };
 
-exports.getBMID = async (req, res) => {
-    try {
-        const bmid = req.params.bmid;        
-        const records = await Principale.find({ BMID: bmid });
-        const length = records.length;
-        
-        if (length > 0) {
-            res.status(200).json(length);
-        } else {
-            res.status(404).json({ message: 'No documents found with the given BMID' });
-        }
-    } catch (error) {
-        console.error('Error fetching documents by BMID:', error);
-        res.status(500).json({ message: 'Internal Server Error' });
-    }
-};
-
 exports.getAllBMIDs = async (req, res) => {
     try {
         const records = await Principale.find({ BMID: { $ne: "" } }, 'BMID');
