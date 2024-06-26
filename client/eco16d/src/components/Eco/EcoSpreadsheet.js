@@ -4,28 +4,39 @@ import 'handsontable/dist/handsontable.full.css';
 import axios from 'axios';
 import io from 'socket.io-client';
 import './ecoStyles.css';
-import { nestedHeaders, columns } from './EcoSheetStructure';
+import { nestedHeaders, colWidths, columns } from './EcoSheetStructure';
 import ToolBar from '../ToolBar';
 
-
-
 // const socket = io('http://localhost:3001');
-
 
 function EcoSpreadsheet() {
     const [hotInstance, setHotInstance] = useState(null);
     const [data, setData] = useState([]);
     const hotElementRef = useRef(null);
-    const [rows, setRows] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/eco');
-                const extractedDataBeforeMap = response.data;
-                const extractedData = extractedDataBeforeMap.map(({ _id, ...rest }) => rest);
-                setData(extractedData);
-                setRows(extractedData.length);
+                const endpoints = [
+                    '1stcol', '2ndcol', '3rdcol', '4thcol', '5thcol', 
+                    '6thcol', '7thcol', '9thcol', '10thcol', '11thcol', '12thcol'
+                ];
+                
+                const requests = endpoints.map(endpoint => axios.get(`http://localhost:3001/${endpoint}`));
+                const responses = await Promise.all(requests);
+                
+                const combinedData = responses.reduce((acc, response, index) => {
+                    const colData = response.data;
+                    colData.forEach((item, rowIndex) => {
+                        if (!acc[rowIndex]) {
+                            acc[rowIndex] = Array(endpoints.length).fill('');
+                        }
+                        acc[rowIndex][index] = item;
+                    });
+                    return acc;
+                }, []);
+
+                setData(combinedData);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -36,23 +47,8 @@ function EcoSpreadsheet() {
 
     useEffect(() => {
         if (hotElementRef.current && data.length > 0 && !hotInstance) {
-            const mappedData = data.map(row => [
-                row.dateAjoutee,
-                row.BMID,
-                row.nomDuClient,
-                row.dateAjoutee,
-                row.BMID,
-                row.nomDuClient,
-                row.dateAjoutee,
-                row.BMID,
-                row.nomDuClient,
-                row.dateAjoutee,
-                row.BMID,
-                row.nomDuClient
-            ]);
-
             const hot = new Handsontable(hotElementRef.current, {
-                data: mappedData,
+                data: data,
                 rowHeaders: true,
                 colHeaders: true,
                 nestedHeaders: nestedHeaders,
@@ -62,9 +58,10 @@ function EcoSpreadsheet() {
                 dropdownMenu: true,
                 licenseKey: 'non-commercial-and-evaluation',
                 language: 'en-US',
-                colWidths: 100,
-                columnHeaderHeight: 80,
+                autoWrapCol: true,
+                autoWrapRow: true,
                 wordWrap: true,
+                manualColumnResize: true,
             });
 
             setHotInstance(hot);

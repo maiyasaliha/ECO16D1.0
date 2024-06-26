@@ -14,6 +14,9 @@ const nestedHeaders = [
         'List of Any Order that contain OOW at Column D in PRINCIPALE without any data in Column O or Column P which could suggest it was returned or a case handled', 
     ],
 ];
+
+const colWidths = [200, 200, 250, 350, 300, 400, 300, 250, 350, 250, 300, 400];
+
 const columns = [
     { type: 'text' },
     { type: 'text' },
@@ -29,4 +32,4 @@ const columns = [
     { type: 'text' }
 ];
 
-export {nestedHeaders, columns};
+export {nestedHeaders, colWidths, columns};

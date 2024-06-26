@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 function ToolBar({principale, eco, colis}) {
  
   return (
-    <div>
+    <div style={{display: 'flex', justifyContent: 'space-between', paddingBottom: '10px'}}>
       <div>
         <Button>
             <Link to="/home">HOME</Link>
