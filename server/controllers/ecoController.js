@@ -92,13 +92,107 @@ exports.get6thCol = async (req, res) => {
             'dateReturnedToSG': { $in: [null, ""] },
             'SKU': { $regex: /SS/ },
             'raisonDuRetour': { $regex: /auto|turn|screen|lcd|dead/i },
-            'IMEI': { $eq: '$IMEIDeReception' },
+            $expr: { $eq: ['$IMEI', '$IMEIDeReception'] },
             'IMEI': { $ne: "" },
             'raisonDuRetour': { $not: { $regex: "(?i)OOW" } }
         }, 'BMID');
 
         const bmids = records.map(record => record.BMID);
         
+        res.status(200).json(bmids);
+    } catch (error) {
+        console.error('Error fetching filtered BMIDs:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+exports.get7thcol = async (req, res) => {
+    try {
+        const records = await Principale.find({
+            'dateDeReceptionAxe': { $ne: "" },
+            'dateReturnedToSG': { $in: [null, ""] },
+            'SKU': { $regex: /IP/ },
+            $expr: { $ne: ['$IMEI', '$IMEIDeReception'] }
+        }, 'BMID');
+
+        const bmids = records.map(record => record.BMID);
+        
+        res.status(200).json(bmids);
+    } catch (error) {
+        console.error('Error fetching filtered BMIDs:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+exports.get9thcol = async (req, res) => {
+    try {
+        const records = await Principale.find({
+            'dateDeReceptionAxe': { $ne: "" },
+            'dateReturnedToSG': { $in: [null, ""] },
+            'SKU': { $regex: /KS23/ }
+        }, 'BMID');
+
+        const bmids = records.map(record => record.BMID);
+
+        res.status(200).json(bmids);
+    } catch (error) {
+        console.error('Error fetching filtered BMIDs:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+exports.get10thcol = async (req, res) => {
+    try {
+        const records = await Principale.find({
+            'dateDeReceptionAxe': { $ne: "" },
+            'dateReturnedToSG': { $in: [null, ""] },
+            'SKU': { $regex: /KS23/ },
+            'IMEI': { $ne: "" },
+            'raisonDuRetour': { $not: { $regex: /OOW/i } },
+            $expr: { $eq: ["$IMEI", "$IMEIDeReception"] }
+        }, 'BMID');
+
+        const bmids = records.map(record => record.BMID);
+
+        res.status(200).json(bmids);
+    } catch (error) {
+        console.error('Error fetching filtered BMIDs:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+exports.get11thcol = async (req, res) => {
+    try {
+        const records = await Principale.find({
+            'dateDeReceptionAxe': { $ne: "" },
+            'dateReturnedToSG': { $in: [null, ""] },
+            'SKU': { $regex: /IP/ },
+            'raisonDuRetour': { $not: { $regex: /OOW/i } },
+            $expr: { $eq: ["$IMEI", "$IMEIDeReception"] }
+        }, 'BMID');
+
+        const bmids = records.map(record => record.BMID);
+
+        res.status(200).json(bmids);
+    } catch (error) {
+        console.error('Error fetching filtered BMIDs:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+exports.get12thcol = async (req, res) => {
+    try {
+        const records = await Principale.find({
+            $or: [
+                { 'raisonDuRetour': { $regex: /oow/i } },
+                { 'raisonDuRetour': { $regex: /OOW/ } }
+            ],
+            'dateReturnedToSG': { $in: [null, ""] },
+            'waybillNo': { $in: [null, ""] }
+        }, 'BMID');
+
+        const bmids = records.map(record => record.BMID);
+
         res.status(200).json(bmids);
     } catch (error) {
         console.error('Error fetching filtered BMIDs:', error);
