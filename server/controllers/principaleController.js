@@ -78,3 +78,15 @@ exports.getCell = async (req, res) => {
         res.status(500).json({ error: 'An error occurred while fetching cell data.' });
     }
 };
+
+exports.getAllBMIDs = async (req, res) => {
+    try {
+        const records = await Principale.find({ BMID: { $ne: "" } }, 'BMID');
+        const bmids = records.map(record => record.BMID);
+
+        res.status(200).json(bmids);
+    } catch (error) {
+        console.error('Error fetching all BMIDs:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
