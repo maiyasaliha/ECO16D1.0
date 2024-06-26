@@ -19,14 +19,18 @@ function ColisSpreadsheet() {
     const hotElementRef = useRef(null);
     const customBorders = [];
     const [rows, setRows] = useState([]);
+    const [principaleBmids, setPrincipaleBmids] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get('http://localhost:3001/colis');
+                const principaleBmid = await axios.get('http://localhost:3001/principaleBmids');
                 const extractedDataBeforeMap = response.data;
+                const extractedBMIDs = principaleBmid.data;
                 const extractedData = extractedDataBeforeMap.map(({ _id, ...rest }) => rest);
                 setData(extractedData);
+                setPrincipaleBmids(extractedBMIDs);
                 setRows(extractedData.length);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -64,15 +68,16 @@ function ColisSpreadsheet() {
                 customBorders: customBorders,
                 columns: columns,
                 className: 'custom-tablec',
-                // afterGetCellMeta: function (row, col, cellProperties) {
-                //     const cellValue = this.getDataAtCell(row, col);
+                afterGetCellMeta: function (row, col, cellProperties) {
+                    const cellValue = this.getDataAtCell(row, col);
 
-                //     if (col === 1) {
-                //         const bmidValues = this.getDataAtCol(col);
-                //         const cellClass = getColorClassForBMID(cellValue, bmidValues);
-                //         cellProperties.className = cellClass;
-                //     }
-                // },
+                    if (col === 1) {
+                        const bmidValues = this.getDataAtCol(col);
+                        const cellClass = getColorClassForBMID(cellValue, bmidValues, principaleBmids);
+                        cellProperties.className = cellClass;
+                        // cellProperties.className = 'custom-cell-bg';
+                    }
+                },
                 contextMenu: true,
                 dropdownMenu: true,
                 licenseKey: 'non-commercial-and-evaluation',
