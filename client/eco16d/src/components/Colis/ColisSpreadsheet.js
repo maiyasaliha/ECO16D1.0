@@ -75,7 +75,6 @@ function ColisSpreadsheet() {
                         const bmidValues = this.getDataAtCol(col);
                         const cellClass = getColorClassForBMID(cellValue, bmidValues, principaleBmids);
                         cellProperties.className = cellClass;
-                        // cellProperties.className = 'custom-cell-bg';
                     }
                 },
                 contextMenu: true,
