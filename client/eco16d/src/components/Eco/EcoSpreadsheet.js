@@ -41,7 +41,7 @@ function EcoSpreadsheet() {
                             acc[rowIndex][index] = item;
                         }
                     });
-                    console.log("acc is " + acc);
+                    console.log(acc);
                     return acc;
                 }, []);
 
@@ -64,9 +64,9 @@ function EcoSpreadsheet() {
                 columns: columns,
                 className: 'custom-tablee',
                 afterGetCellMeta: function (row, col, cellProperties) {
+                    const cellValue = this.getDataAtCell(row, col);
                     if (col === 2 || col === 7) {
-                        const valueAt7 = this.getDataAtCol(7);
-                        const cellClass = getColorClassForIMEI(valueAt7);
+                        const cellClass = getColorClassForIMEI(cellValue);
                         cellProperties.className = cellClass;
                     }
                 },

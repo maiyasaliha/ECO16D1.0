@@ -1,5 +1,5 @@
-function getColorClassForIMEI(value) {
-    if (value === '' || value === "" || value === null) {
+function getColorClassForIMEI(cellValue) {
+    if (cellValue == "") {
         return '';
     } else {
         return 'custom-cell-jade';
