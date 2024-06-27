@@ -16,3 +16,8 @@
   /* max-width: 200px; */
   overflow-wrap: normal;
 }
+
+td.custom-cell-jade {
+  color: #000;
+  background-color: #58bc8c;
+}

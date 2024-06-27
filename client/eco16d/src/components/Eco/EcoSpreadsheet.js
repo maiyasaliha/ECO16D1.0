@@ -6,6 +6,7 @@ import io from 'socket.io-client';
 import './ecoStyles.css';
 import { nestedHeaders, columns } from './EcoSheetStructure';
 import ToolBar from '../ToolBar';
+import { getColorClassForIMEI } from './ConditionalColoring';
 
 // const socket = io('http://localhost:3001');
 
@@ -62,6 +63,13 @@ function EcoSpreadsheet() {
                 nestedHeaders: nestedHeaders,
                 columns: columns,
                 className: 'custom-tablee',
+                afterGetCellMeta: function (row, col, cellProperties) {
+                    if (col === 2 || col === 7) {
+                        const valueAt7 = this.getDataAtCol(7);
+                        const cellClass = getColorClassForIMEI(valueAt7);
+                        cellProperties.className = cellClass;
+                    }
+                },
                 contextMenu: true,
                 dropdownMenu: true,
                 licenseKey: 'non-commercial-and-evaluation',
