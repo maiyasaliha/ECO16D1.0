@@ -10,12 +10,12 @@
   background-color: #f8f4f4;
 }
 
-.custom-tablee th span.colHeader {
+/* .custom-tablee th span.colHeader {
   white-space: normal;
-  word-wrap: break-word;
+  word-wrap: break-word; */
   /* max-width: 200px; */
-  overflow-wrap: normal;
-}
+  /* overflow-wrap: normal;
+} */
 
 td.custom-cell-jade {
   color: #000;
