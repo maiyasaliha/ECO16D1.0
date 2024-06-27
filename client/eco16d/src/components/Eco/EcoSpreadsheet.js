@@ -36,7 +36,7 @@ function EcoSpreadsheet() {
                             acc[rowIndex] = Array(endpoints.length).fill('');
                         }
                         if (index === 7 && !extractedBMIDs.includes(item)) {
-                            acc[rowIndex][index] = '';
+                            acc[rowIndex][index] = "";
                         } else {
                             acc[rowIndex][index] = item;
                         }
