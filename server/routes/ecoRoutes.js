@@ -10,6 +10,7 @@ router.get('/4thcol', ecoController.get4thcol);
 router.get('/5thcol', ecoController.get5thcol);
 router.get('/6thcol', ecoController.get6thCol);
 router.get('/7thcol', ecoController.get7thcol);
+router.get('/8thcol', ecoController.get8thcol);
 router.get('/9thcol', ecoController.get9thcol);
 router.get('/10thcol', ecoController.get10thcol);
 router.get('/11thcol', ecoController.get11thcol);

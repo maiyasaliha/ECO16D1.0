@@ -13,9 +13,21 @@ const nestedHeaders = [
         'List of iPhones that are received by Axe but not returned to SG with IMEI matching in column H and Column S in PRINCIPALE and does not contain the term "OOW" in PRINCIPALE', 
         'List of Any Order that contain OOW at Column D in PRINCIPALE without any data in Column O or Column P which could suggest it was returned or a case handled', 
     ],
+    // [
+    //     'A',
+    //     'B',
+    //     'C',
+    //     'D',
+    //     'E',
+    //     'F',
+    //     'G',
+    //     'H',
+    //     'I',
+    //     'J',
+    //     'K',
+    //     'L'
+    // ]
 ];
-
-const colWidths = [200, 200, 250, 350, 300, 400, 300, 250, 350, 250, 300, 400];
 
 const columns = [
     { type: 'text' },
@@ -32,4 +44,4 @@ const columns = [
     { type: 'text' }
 ];
 
-export {nestedHeaders, colWidths, columns};
+export {nestedHeaders, columns};

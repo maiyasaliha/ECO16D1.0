@@ -4,7 +4,7 @@ import 'handsontable/dist/handsontable.full.css';
 import axios from 'axios';
 import io from 'socket.io-client';
 import './ecoStyles.css';
-import { nestedHeaders, colWidths, columns } from './EcoSheetStructure';
+import { nestedHeaders, columns } from './EcoSheetStructure';
 import ToolBar from '../ToolBar';
 
 // const socket = io('http://localhost:3001');
@@ -18,21 +18,29 @@ function EcoSpreadsheet() {
         const fetchData = async () => {
             try {
                 const endpoints = [
-                    '1stcol', '2ndcol', '3rdcol', '4thcol', '5thcol', 
-                    '6thcol', '7thcol', '9thcol', '10thcol', '11thcol', '12thcol'
+                    '1stcol', '2ndcol', '3rdcol', '4thcol', '5thcol', '6thcol', 
+                    '7thcol', '3rdcol', '9thcol', '10thcol', '11thcol', '12thcol'
                 ];
                 
                 const requests = endpoints.map(endpoint => axios.get(`http://localhost:3001/${endpoint}`));
                 const responses = await Promise.all(requests);
+                const returnsBmid = await axios.get('http://localhost:3001/8thcol');
+                const extractedBMIDs = returnsBmid.data;
                 
                 const combinedData = responses.reduce((acc, response, index) => {
                     const colData = response.data;
+                    console.log("columns " + index + " data is " + colData);
                     colData.forEach((item, rowIndex) => {
                         if (!acc[rowIndex]) {
                             acc[rowIndex] = Array(endpoints.length).fill('');
                         }
-                        acc[rowIndex][index] = item;
+                        if (index === 7 && !extractedBMIDs.includes(item)) {
+                            acc[rowIndex][index] = '';
+                        } else {
+                            acc[rowIndex][index] = item;
+                        }
                     });
+                    console.log("acc is " + acc);
                     return acc;
                 }, []);
 

@@ -1,4 +1,5 @@
 const Principale = require('../models/principaleModel');
+const { accessSpreadsheet } = require('../googleConfig/gsheetsapi')
 
 exports.get1stcol = async (req, res) => {
     try {
@@ -123,6 +124,16 @@ exports.get7thcol = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+  
+exports.get8thcol = async (req, res) => {
+    try {
+      const data = await accessSpreadsheet();
+      res.status(200).json(data);
+    } catch (error) {
+      console.error('Error fetching data from Google Sheets:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
 
 exports.get9thcol = async (req, res) => {
     try {
