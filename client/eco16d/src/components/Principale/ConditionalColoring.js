@@ -61,6 +61,8 @@ function getColorClassForCb(value) {
             return 'custom-cell-false';
         case false:
             return 'custom-cell-false';
+        case 'black':
+            return 'custom-cell-oow';
         default:
             return 'centered-checkbox';
     }

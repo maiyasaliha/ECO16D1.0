@@ -111,7 +111,9 @@ function Spreadsheet() {
                         cellProperties.className = cellClass;
                     } else if (col === 12) {
                         const compareValue = this.getDataAtCell(row, 15);
-                        const cellClass = getColorClassForCb(getWaybill(cellValue, compareValue));
+                        const oow = this.getDataAtCell(row, 3);
+                        const inter = getWaybill(cellValue, compareValue, oow);
+                        const cellClass = getColorClassForCb(inter);
                         cellProperties.className = cellClass;
                     } else if (col === 13) {
                         const compareValue = this.getDataAtCell(row, 15);
