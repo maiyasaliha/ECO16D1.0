@@ -4,7 +4,7 @@ import 'handsontable/dist/handsontable.full.css';
 import axios from 'axios';
 import io from 'socket.io-client';
 import './ecoStyles.css';
-import { nestedHeaders, columns } from './EcoSheetStructure';
+import { columnHeaders, columns } from './EcoSheetStructure';
 import ToolBar from '../ToolBar';
 import { getColorClassForIMEI } from './ConditionalColoring';
 
@@ -58,13 +58,12 @@ function EcoSpreadsheet() {
                 data: data,
                 rowHeaders: true,
                 colHeaders: true,
-                nestedHeaders: nestedHeaders,
+                colHeaders: columnHeaders,
                 columns: columns,
                 className: 'custom-tablee',
                 afterGetCellMeta: function (row, col, cellProperties) {
                     if (col === 2 || col === 7) {
                         const valueAt7 = this.getDataAtCell(row, 7);
-                        console.log("other value " + valueAt7);
                         const cellClass = getColorClassForIMEI(valueAt7);
                         cellProperties.className = cellClass;
                     }
