@@ -3,8 +3,9 @@ import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
 import axios from 'axios';
 import io from 'socket.io-client';
+import { useSearchParams } from 'react-router-dom';
 import './principaleStyles.css';
-import { nestedHeaders, columns } from './PrincipaleSheetStructure';
+import { nestedHeaders, columns, getColumns } from './PrincipaleSheetStructure';
 import { getColorClassForCb, getColorClassForDd, getColorClassForBMID, getColorClassForIMEI } from './ConditionalColoring'
 import { validate, getCompliance, getLocked, getWaybill, getWaybill13 } from './ValidateFunctions';
 import ToolBar from '../ToolBar';
@@ -18,7 +19,9 @@ function Spreadsheet() {
     const customBorders = [];
     const [rows, setRows] = useState([]);
     const [colisBmids, setColisBmids] = useState([]);
+    const [searchParams] = useSearchParams();
 
+    const organisation = searchParams.get('organisation');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -83,7 +86,7 @@ function Spreadsheet() {
                 colHeaders: true,
                 nestedHeaders: nestedHeaders,
                 customBorders: customBorders,
-                columns: columns,
+                columns: getColumns(organisation),
                 className: 'custom-table',
                 afterGetCellMeta: function (row, col, cellProperties) {
                     const cellValue = this.getDataAtCell(row, col);
@@ -164,10 +167,10 @@ function Spreadsheet() {
     }, [data, hotInstance]);
 
     return (
-        <>
+        <div>
             <ToolBar principale={true}/>
             <div ref={hotElementRef} style={{ width: '100%', height: '100vh' }}></div>
-        </>
+        </div>
 
     );
 }

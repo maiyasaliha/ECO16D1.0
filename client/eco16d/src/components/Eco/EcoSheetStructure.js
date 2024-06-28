@@ -15,18 +15,18 @@ const columnHeaders =
     ]
 
 const columns = [
-    { type: 'text' },
-    { type: 'text' },
-    { type: 'text' },
-    { type: 'text' },
-    { type: 'text' },
-    { type: 'text' },
-    { type: 'text' },
-    { type: 'text' },
-    { type: 'text' },
-    { type: 'text' },
-    { type: 'text' },
-    { type: 'text' }
+    { type: 'text', readOnly: true },
+    { type: 'text', readOnly: true },
+    { type: 'text', readOnly: true },
+    { type: 'text', readOnly: true },
+    { type: 'text', readOnly: true },
+    { type: 'text', readOnly: true },
+    { type: 'text', readOnly: true },
+    { type: 'text', readOnly: true },
+    { type: 'text', readOnly: true },
+    { type: 'text', readOnly: true },
+    { type: 'text', readOnly: true },
+    { type: 'text', readOnly: true }
 ];
 
 export {columnHeaders, columns};

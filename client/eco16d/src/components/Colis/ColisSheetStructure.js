@@ -17,11 +17,24 @@ const nestedHeaders = [
         'date créée', 'BMID', 'Nom du client', 'INFORMATIONS CRÉÉES SUR LA PAGE PRINCIPALE'
     ],
 ];
-const columns = [
-    { type: 'date', dateFormat: 'DD/MM/YYYY' }, // date ajoutée
-    { type: 'text' }, // BMID
-    { type: 'text' }, // Nom du client
-    { type: 'checkbox', className: 'htCenter htMiddle' }, // INFORMATIONS CRÉÉES SUR LA PAGE PRINCIPALE
-];
 
-export {nestedHeaders, columns};
+function getColumns(organisation) {
+    if (organisation === 'ECO') {
+        return [
+            { type: 'date', dateFormat: 'DD/MM/YYYY', readOnly: true }, // date ajoutée
+            { type: 'text', readOnly: true }, // BMID
+            { type: 'text', readOnly: true }, // Nom du client
+            { type: 'checkbox', className: 'htCenter htMiddle' }, // INFORMATIONS CRÉÉES SUR LA PAGE PRINCIPALE
+        ];
+    }
+    if (organisation === 'AXE') {
+        return [
+            { type: 'date', dateFormat: 'DD/MM/YYYY' }, // date ajoutée
+            { type: 'text' }, // BMID
+            { type: 'text' }, // Nom du client
+            { type: 'checkbox', className: 'htCenter htMiddle', readOnly: true }, // INFORMATIONS CRÉÉES SUR LA PAGE PRINCIPALE
+        ];
+    }
+}
+
+export {nestedHeaders, getColumns};

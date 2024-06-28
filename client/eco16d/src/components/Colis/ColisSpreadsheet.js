@@ -3,8 +3,9 @@ import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
 import axios from 'axios';
 import io from 'socket.io-client';
+import { useSearchParams } from 'react-router-dom';
 import './colisStyles.css';
-import { nestedHeaders, columns } from './ColisSheetStructure';
+import { nestedHeaders, getColumns } from './ColisSheetStructure';
 import { getColorClassForBMID } from './ConditionalColoring'
 import ToolBar from '../ToolBar';
 
@@ -20,6 +21,9 @@ function ColisSpreadsheet() {
     const customBorders = [];
     const [rows, setRows] = useState([]);
     const [principaleBmids, setPrincipaleBmids] = useState([]);
+    const [searchParams] = useSearchParams();
+
+    const organisation = searchParams.get('organisation');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -66,7 +70,7 @@ function ColisSpreadsheet() {
                 colHeaders: true,
                 nestedHeaders: nestedHeaders,
                 customBorders: customBorders,
-                columns: columns,
+                columns: getColumns(organisation),
                 className: 'custom-tablec',
                 afterGetCellMeta: function (row, col, cellProperties) {
                     const cellValue = this.getDataAtCell(row, col);

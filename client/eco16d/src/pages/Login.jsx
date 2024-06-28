@@ -72,7 +72,7 @@ export const Login = () => {
                             </Form.Item>
                             <Form.Item>
                                 <Link to="/">
-                                    <Button>Sign Up</Button>
+                                    <Button type="link">New Here?</Button>
                                 </Link>
                             </Form.Item>
                         </div>

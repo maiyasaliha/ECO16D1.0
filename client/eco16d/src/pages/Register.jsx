@@ -117,7 +117,7 @@ export const Register = () => {
                     </Form.Item>
                     <Form.Item>
                         <Link to="/login">
-                            <Button>Login</Button>
+                            <Button type="link">Already have an account?</Button>
                         </Link>
                     </Form.Item>
                   </div>
