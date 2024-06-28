@@ -1,0 +1,22 @@
+.custom-tablee thead th {
+  font-weight: bold;
+  background-color: #ffff00;
+  padding-top: 15px;
+  padding-left: 10px;
+}
+
+.custom-tablee thead > tr:nth-child(1) th:nth-child(1) {
+  background-color: #f8f4f4;
+}
+
+.custom-tablee th span.colHeader {
+  white-space: normal;
+  word-wrap: break-word;
+  max-width: 200px;
+  overflow-wrap: normal;
+}
+
+td.custom-cell-jade {
+  color: #000;
+  background-color: #58bc8c;
+}

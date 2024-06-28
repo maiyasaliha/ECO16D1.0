@@ -1,4 +1,4 @@
-function getColorClassForBMID(value, bmidValues) {
+function getColorClassForBMID(value, bmidValues, colisBmids) {
     if (value == null || value == '') {
         return '';
     }
@@ -6,11 +6,15 @@ function getColorClassForBMID(value, bmidValues) {
         return 'custom-cell-br';
     }
     const occurrences = bmidValues.filter(v => v === value).length;
+    const colisOccurrences = colisBmids.filter(v => v === value).length;
     
     if (occurrences > 1) {
         return 'custom-cell-bo';
-    } else {
+    } 
+    if (colisOccurrences > 0) {
         return 'custom-cell-bg';
+    } else {
+        return '';
     }
 }
 
@@ -57,6 +61,8 @@ function getColorClassForCb(value) {
             return 'custom-cell-false';
         case false:
             return 'custom-cell-false';
+        case 'black':
+            return 'custom-cell-oow';
         default:
             return 'centered-checkbox';
     }

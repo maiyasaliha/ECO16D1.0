@@ -1,8 +1,8 @@
-const Principale = require('../models/principaleModel');
+const Colis = require('../models/colisModel');
 
 exports.getCellRows = async (req, res) => {
     try {
-        const rows = await Principale.find();
+        const rows = await Colis.find();
         res.status(200).json(rows);
     } catch (error) {
         console.error('Error fetching cell rows:', error);
@@ -13,7 +13,7 @@ exports.getCellRows = async (req, res) => {
 exports.postCellRow = async (req, res) => {
     const cr = req.body;
     try {
-        const result = await Principale.create(cr);
+        const result = await Colis.create(cr);
         res.status(201).json(result);
     } catch (error) {
         console.error('Error creating new cell row:', error);
@@ -28,7 +28,7 @@ exports.updateCell = async (req, res) => {
         const skip = parseInt(rowIndex, 10) || 0;
         const fieldIndex = parseInt(colIndex, 10);
 
-        const results = await Principale
+        const results = await Colis
             .find({})
             .skip(skip)
             .limit(1);
@@ -53,35 +53,9 @@ exports.updateCell = async (req, res) => {
     }
 };
 
-exports.getCell = async (req, res) => {
-    const { rowIndex, colIndex } = req.params;
-    try {
-        const skip = parseInt(rowIndex, 10) || 0;
-        const fieldIndex = parseInt(colIndex, 10);
-
-        const rowData = await Principale
-            .findOne()
-            .skip(skip)
-            .select(`field${fieldIndex + 1}`)
-            .exec();
-
-        if (!rowData) {
-            return res.status(404).json({ error: 'No data found for the given rowIndex.' });
-        }
-
-        const fieldValue = rowData[`field${fieldIndex + 1}`];
-
-        console.log('Field value:', fieldValue);
-        res.status(200).json({ value: fieldValue });
-    } catch (error) {
-        console.error('Error fetching cell data:', error);
-        res.status(500).json({ error: 'An error occurred while fetching cell data.' });
-    }
-};
-
 exports.getAllBMIDs = async (req, res) => {
     try {
-        const records = await Principale.find({ BMID: { $ne: "" } }, 'BMID');
+        const records = await Colis.find({ BMID: { $ne: "" } }, 'BMID');
         const bmids = records.map(record => record.BMID);
 
         res.status(200).json(bmids);

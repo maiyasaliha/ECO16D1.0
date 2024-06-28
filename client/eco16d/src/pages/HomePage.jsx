@@ -27,10 +27,20 @@ function HomePage() {
             </Typography.Text>
             <Button>
                 <Link to="/principale">
-                    Principale Sheet
+                    PRINCIPALE
                 </Link>
             </Button>
-            <Button onClick={handleLogout}>
+            <Button>
+                <Link to="/eco">
+                    ECO
+                </Link>
+            </Button>
+            <Button>
+                <Link to="/colis">
+                    COLIS MANQUANTS
+                </Link>
+            </Button>
+            <Button type="primary" onClick={handleLogout}>
                 <Link to="/login">
                     Logout
                 </Link>

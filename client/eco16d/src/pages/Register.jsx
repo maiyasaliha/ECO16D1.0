@@ -14,17 +14,16 @@ export const Register = () => {
 
   return (
     <Card>
-        <Flex>
-            <Flex vertical align="center" flex={1} style={{width: '100%'}}>
-                <Typography.Title level={3} strong>Create an Account</Typography.Title>
-                <Form 
-                layout='vertical' 
-                onFinish={handleRegister}
-                >
-                    <Form.Item
-                      label="Name"
-                      name="name"
-                      rules={[
+        <Flex vertical align="center" flex={1} style={{width: '100%'}}>
+            <Typography.Title level={3} strong>Create an Account</Typography.Title>
+            <Form 
+            layout='vertical' 
+            onFinish={handleRegister}
+            >
+                <Form.Item
+                  label="Name"
+                  name="name"
+                  rules={[
                         {
                             required: true,
                             message: 'Please enter your name'
@@ -91,29 +90,28 @@ export const Register = () => {
                     >
                         <Input.Password placeholder="Re-enter Password" />
                     </Form.Item>
-                    {
-                        error && 
-                            <Alert 
-                                description={error} 
-                                type='error' 
-                                showIcon closable 
-                            />
-                    }
-                    <Form.Item>
-                        <Button
-                          type={`${loading ? '' : "primary"}`}
-                          htmlType='submit'
-                        >
-                            {loading ? <Spin /> : 'Create Account' }
-                            </Button>
-                    </Form.Item>
-                    <Form.Item>
-                        <Link to="/login">
-                            <Button>Login</Button>
-                        </Link>
-                    </Form.Item>
-                </Form>
-            </Flex>
+                {
+                    error && 
+                        <Alert 
+                            description={error} 
+                            type='error' 
+                            showIcon closable 
+                        />
+                }
+                <Form.Item>
+                    <Button
+                      type={`${loading ? '' : "primary"}`}
+                      htmlType='submit'
+                    >
+                        {loading ? <Spin /> : 'Create Account' }
+                        </Button>
+                </Form.Item>
+                <Form.Item>
+                    <Link to="/login">
+                        <Button>Login</Button>
+                    </Link>
+                </Form.Item>
+            </Form>
         </Flex>
     </Card>
   )
