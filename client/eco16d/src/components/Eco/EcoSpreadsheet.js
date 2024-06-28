@@ -30,7 +30,6 @@ function EcoSpreadsheet() {
                 
                 const combinedData = responses.reduce((acc, response, index) => {
                     const colData = response.data;
-                    console.log("columns " + index + " data is " + colData);
                     colData.forEach((item, rowIndex) => {
                         if (!acc[rowIndex]) {
                             acc[rowIndex] = Array(endpoints.length).fill('');
@@ -41,7 +40,6 @@ function EcoSpreadsheet() {
                             acc[rowIndex][index] = item;
                         }
                     });
-                    console.log(acc);
                     return acc;
                 }, []);
 
@@ -64,9 +62,10 @@ function EcoSpreadsheet() {
                 columns: columns,
                 className: 'custom-tablee',
                 afterGetCellMeta: function (row, col, cellProperties) {
-                    const cellValue = this.getDataAtCell(row, col);
                     if (col === 2 || col === 7) {
-                        const cellClass = getColorClassForIMEI(cellValue);
+                        const valueAt7 = this.getDataAtCell(row, 7);
+                        console.log("other value " + valueAt7);
+                        const cellClass = getColorClassForIMEI(valueAt7);
                         cellProperties.className = cellClass;
                     }
                 },
