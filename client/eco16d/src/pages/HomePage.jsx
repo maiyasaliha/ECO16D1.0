@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Avatar, Button, Card, Flex, Typography } from 'antd';
+import { Button, Card, Flex, Typography } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 
@@ -13,40 +13,43 @@ function HomePage() {
     };
 
   return (
-    <Card>
-        <Flex vertical gap="small" align="center">
-            <Avatar size={150} icon={<UserOutlined />} />
-            <Typography.Title level={2} strong>
-                {userData?.name}
-            </Typography.Title>
-            <Typography.Text type="secondary" strong>
-                Email: {userData?.email}
-            </Typography.Text>
-            <Typography.Text type="secondary">
-                Organisation: {userData?.organisation}
-            </Typography.Text>
-            <Button>
-                <Link to="/principale">
-                    PRINCIPALE
-                </Link>
-            </Button>
-            <Button>
-                <Link to="/eco">
-                    ECO
-                </Link>
-            </Button>
-            <Button>
-                <Link to="/colis">
-                    COLIS MANQUANTS
-                </Link>
-            </Button>
-            <Button type="primary" onClick={handleLogout}>
-                <Link to="/login">
-                    Logout
-                </Link>
-            </Button>
-        </Flex>
-    </Card>
+    <div className='register'>
+        <Card className='form-container'>
+            <Flex vertical gap="small" align="center">
+                <Typography.Title level={2} strong>
+                    Hello {userData?.name},
+                </Typography.Title>
+                <Typography.Text type="secondary" strong>
+                    Email: {userData?.email}
+                </Typography.Text>
+                <Typography.Text type="secondary">
+                    Organisation: {userData?.organisation}
+                </Typography.Text>
+                <Button type="primary" onClick={handleLogout}>
+                    <Link to="/login">
+                        Logout
+                    </Link>
+                </Button>
+                <Button>
+                    <Link to="/principale">
+                        PRINCIPALE
+                    </Link>
+                </Button>
+                { userData?.organisation == 'ECO' ?
+                <Button>
+                    <Link to="/eco">
+                        ECO
+                    </Link>
+                </Button> : ''
+                }
+                <Button>
+                    <Link to="/colis">
+                        COLIS MANQUANTS
+                    </Link>
+                </Button>
+            </Flex>
+        </Card>
+    </div>
   )
 }
 

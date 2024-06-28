@@ -10,66 +10,76 @@ export const Login = () => {
     }
 
   return (
-    <Card>
-        <Flex>
-            <Flex vertical align="center" flex={1} style={{width: '100%'}}>
-                <Typography.Title level={3} strong>Log in</Typography.Title>
-                <Form 
-                layout='vertical' 
-                onFinish={handleLogin}
-                >
-                    <Form.Item
-                      label="Email"
-                      name="email"
-                      rules={[
-                        {
-                            required: true,
-                            message: 'Please enter your email'
-                        },
-                        {
-                            type: 'email',
-                            message: 'The input is not a valid Email'
-                        }
-                      ]}
+    <div className='register'>
+        <Card className='form-container'>
+            <Flex>
+                <Flex vertical flex={1}>
+                    <Typography.Title 
+                    level={3}
+                    strong
+                    className='title'
                     >
-                        <Input placeholder="Email" />
-                    </Form.Item>
-                    <Form.Item
-                      label="Password"
-                      name="password"
-                      rules={[
-                        {
-                            required: true,
-                            message: 'Please enter your password'
-                        }
-                      ]}
+                      Log in to ECO 16D
+                    </Typography.Title>
+                    <Form 
+                    layout='vertical' 
+                    onFinish={handleLogin}
                     >
-                        <Input.Password placeholder="Password" />
-                    </Form.Item>
-                    {
-                        error && 
-                            <Alert 
-                                description={error} 
-                                type='error' 
-                                showIcon closable 
-                            />
-                    }
-                    <Form.Item>
-                        <Button
-                          type={`${loading ? '' : "primary"}`}
-                          htmlType='submit'
+                        <Form.Item
+                        label="Email"
+                        name="email"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please enter your email'
+                            },
+                            {
+                                type: 'email',
+                                message: 'The input is not a valid Email'
+                            }
+                        ]}
                         >
-                            {loading ? <Spin /> : 'Login' }
-                        </Button>
-                    </Form.Item>
-                    <Form.Item>
-                        <Link to="/">
-                            <Button>Sign Up</Button>
-                        </Link>
-                    </Form.Item>
-                </Form>
+                            <Input placeholder="Email" />
+                        </Form.Item>
+                        <Form.Item
+                        label="Password"
+                        name="password"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please enter your password'
+                            }
+                        ]}
+                        >
+                            <Input.Password placeholder="Password" />
+                        </Form.Item>
+                        {
+                            error && 
+                                <Alert 
+                                    description={error} 
+                                    type='error' 
+                                    showIcon closable 
+                                />
+                        }
+                        <div className='buttons'>
+                            <Form.Item>
+                                <Button
+                                type={`${loading ? '' : "primary"}`}
+                                htmlType='submit'
+                                >
+                                    {loading ? <Spin /> : 'Login' }
+                                </Button>
+                            </Form.Item>
+                            <Form.Item>
+                                <Link to="/">
+                                    <Button>Sign Up</Button>
+                                </Link>
+                            </Form.Item>
+                        </div>
+                    </Form>
+                </Flex>
             </Flex>
-        </Flex>
-    </Card>
+        </Card>
+    </div>
   )
 }
