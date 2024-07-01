@@ -61,6 +61,7 @@ function EcoSpreadsheet() {
                 colHeaders: columnHeaders,
                 columns: columns,
                 className: 'custom-tablee',
+                readOnly: true,
                 afterGetCellMeta: function (row, col, cellProperties) {
                     if (col === 2 || col === 7) {
                         const valueAt7 = this.getDataAtCell(row, 7);
