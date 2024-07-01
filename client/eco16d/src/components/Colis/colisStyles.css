@@ -78,3 +78,7 @@ td.custom-cell-bo {
 .custom-tablec thead > tr:nth-child(3) th:nth-child(1) {
   background-color: #f8f4f4;
 }
+
+.htDimmed {
+  color: #333 !important;
+}

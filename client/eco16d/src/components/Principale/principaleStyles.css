@@ -110,3 +110,7 @@ td.custom-cell-oow {
 .custom-table thead > tr:nth-child(2) th {
   background-color: #00ff00;
 } 
+
+.htDimmed {
+  color: #333 !important;
+}
