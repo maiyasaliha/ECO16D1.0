@@ -1,29 +1,44 @@
 function validate(value, otherValue) {
-    if (value != "" && otherValue != "" && value == otherValue) {
+    if (isEmptyorNull(value)) {
+        return 'clear';
+    }
+    if (!isEmptyorNull(value) && !isEmptyorNull(otherValue) && value == otherValue) {
         return 'green';
     }
-    if (value != "" && otherValue != "" && value != otherValue) {
+    if (!isEmptyorNull(value) && !isEmptyorNull(otherValue) && value != otherValue) {
         return 'red';
-    }
-    if (value == "" || value == null) {
-        return 'clear';
     }
 }
 
+function isEmptyorNull(value) {
+    return value === "" || value === null;
+}
+
+function isTrue(value) {
+    return value === true || value === "TRUE";
+}
+
 function getCompliance(cellValue, value) {
-    if (value == "No" || value == "Standby" || cellValue == "TRUE" || cellValue == true) {
+    if (value == "No" || value == "Standby" || isTrue(cellValue)) {
         return cellValue;
     }
 }
 
 function getLocked(cellValue, value) {
-    if (value == "LOCKED" || cellValue == "TRUE" || cellValue == true) {
+    if (value == "LOCKED" || isTrue(cellValue)) {
         return cellValue;
     }
 }
 
-function getWaybill(cellValue, value) {
-    if (value != ""  || cellValue == "TRUE" || cellValue == true) {
+function getWaybill(cellValue, value, oow) {
+    if (oow.includes("oow") || oow.includes("OOW")) {
+        if (isTrue(cellValue)) {
+            return cellValue;
+        } else {
+            return 'black';
+        }
+    }
+    if (value != ""  || isTrue(cellValue)) {
         return cellValue;
     }
 }
