@@ -111,8 +111,6 @@ td.custom-cell-oow {
   background-color: #00ff00;
 } 
 
-.spreadsheet-container {
-  margin-top: 70px;
-  width: 100%;
-  height: calc(100vh - 70px);
+.htDimmed {
+  color: #333 !important;
 }

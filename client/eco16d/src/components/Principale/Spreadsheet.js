@@ -169,7 +169,7 @@ function Spreadsheet() {
     return (
         <div>
             <ToolBar principale={true}/>
-            <div ref={hotElementRef} style={{ width: '100%', height: '100vh' }}></div>
+            <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
         </div>
 
     );

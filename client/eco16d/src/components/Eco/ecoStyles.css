@@ -20,3 +20,7 @@ td.custom-cell-jade {
   color: #000;
   background-color: #58bc8c;
 }
+
+.htDimmed {
+  color: #333 !important;
+}

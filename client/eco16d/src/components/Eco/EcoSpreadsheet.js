@@ -61,6 +61,7 @@ function EcoSpreadsheet() {
                 colHeaders: columnHeaders,
                 columns: columns,
                 className: 'custom-tablee',
+                readOnly: true,
                 afterGetCellMeta: function (row, col, cellProperties) {
                     if (col === 2 || col === 7) {
                         const valueAt7 = this.getDataAtCell(row, 7);
@@ -92,7 +93,7 @@ function EcoSpreadsheet() {
     return (
         <>
             <ToolBar eco={true}/>
-            <div ref={hotElementRef} style={{ width: '100%', height: '100vh' }}></div>
+            <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
         </>
 
     );
