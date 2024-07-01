@@ -1,40 +1,81 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
+import { getQuarter, getYear, setQuarter, setYear } from '../EcoSetup';
 import './ToolBar.css';
 
-function ToolBar({principale, eco, colis}) {
+function ToolBar({ principale, eco, colis }) {
   const { userData } = useAuth();
   const organisation = userData?.organisation;
- 
+
+  const [quarter, setLocalQuarter] = useState(getQuarter());
+  const [year, setLocalYear] = useState(getYear());
+
+  useEffect(() => {
+    setLocalQuarter(getQuarter());
+    setLocalYear(getYear());
+  }, []);
+
+  const onQuarterClick = (selectedQuarter) => () => {
+    setQuarter(selectedQuarter);
+    setLocalQuarter(selectedQuarter);
+  };
+
+  const onYearClick = (selectedYear) => () => {
+    setYear(selectedYear);
+    setLocalYear(selectedYear);
+  };
+
   return (
     <div className='toolbar'>
       <div>
         <Button>
-            <Link to="/home">HOME</Link>
+          <Link to="/home">HOME</Link>
         </Button>
         <Button type={principale ? 'primary' : 'default'}>
-            <Link to={`/principale?organisation=${organisation}`}>PRINCIPALE</Link>
+          <Link to={`/principale?organisation=${organisation}`}>PRINCIPALE</Link>
         </Button>
         {
-          organisation == 'ECO' ?
+          organisation === 'ECO' &&
           <Button type={eco ? 'primary' : 'default'}>
             <Link to="/eco">ECO</Link>
-          </Button> : ''
+          </Button>
         }
         <Button type={colis ? 'primary' : 'default'}>
-            <Link to={`/colis?organisation=${organisation}`}>COLIS MANQUANTS</Link>
+          <Link to={`/colis?organisation=${organisation}`}>COLIS MANQUANTS</Link>
         </Button>
       </div>
       <div>
-        <Button>Jan-Mar</Button>
-        <Button>Apr-Jun</Button>
-        <Button>Jul-Sep</Button>
-        <Button>Oct-Dec</Button>
+        <Button onClick={onYearClick(year - 1)}>{year - 1}</Button>
+        <Button
+          type={quarter === 1 ? 'primary' : 'default'}
+          onClick={onQuarterClick(1)}
+        >
+          Jan-Mar
+        </Button>
+        <Button
+          type={quarter === 2 ? 'primary' : 'default'}
+          onClick={onQuarterClick(2)}
+        >
+          Apr-Jun
+        </Button>
+        <Button
+          type={quarter === 3 ? 'primary' : 'default'}
+          onClick={onQuarterClick(3)}
+        >
+          Jul-Sep
+        </Button>
+        <Button
+          type={quarter === 4 ? 'primary' : 'default'}
+          onClick={onQuarterClick(4)}
+        >
+          Oct-Dec
+        </Button>
+        <Button onClick={onYearClick(year + 1)}>{year + 1}</Button>
       </div>
     </div>
-  )
+  );
 }
 
-export default ToolBar
+export default ToolBar;

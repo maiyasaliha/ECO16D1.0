@@ -9,24 +9,35 @@ import { nestedHeaders, columns, getColumns } from './PrincipaleSheetStructure';
 import { getColorClassForCb, getColorClassForDd, getColorClassForBMID, getColorClassForIMEI } from './ConditionalColoring'
 import { validate, getCompliance, getLocked, getWaybill, getWaybill13 } from './ValidateFunctions';
 import ToolBar from '../ToolBar';
+import { getYear, getQuarter } from '../../EcoSetup';
 
 // const socket = io('http://localhost:3001');
 
 function Spreadsheet() {
     const [hotInstance, setHotInstance] = useState(null);
     const [data, setData] = useState([]);
+    const [haveData, setHaveData] = useState(false);
     const hotElementRef = useRef(null);
     const customBorders = [];
     const [rows, setRows] = useState([]);
     const [colisBmids, setColisBmids] = useState([]);
     const [searchParams] = useSearchParams();
+    const [year, setYear] = useState(getYear());
+    const [quarter, setQuarter] = useState(getQuarter());
 
     const organisation = searchParams.get('organisation');
 
     useEffect(() => {
+        setYear(getYear());
+        setQuarter(getQuarter());
+    }, [getYear(), getQuarter()]);
+
+    useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/principale');
+                setHaveData(false);
+                const response = await axios.get(`http://localhost:3001/principaleQuarter?year=${getYear()}&quarter=${getQuarter()}`);
+                response ? setHaveData(true) : setHaveData(false);
                 const colisBmid = await axios.get('http://localhost:3001/colisBmids');
                 const extractedDataBeforeMap = response.data;
                 const extractedBMIDs = colisBmid.data;
@@ -40,7 +51,7 @@ function Spreadsheet() {
         };
 
         fetchData();
-    }, []);
+    }, [getYear(), getQuarter()]);
 
     for (let row = 0; row < rows; row++) {
         customBorders.push({
@@ -168,8 +179,12 @@ function Spreadsheet() {
 
     return (
         <div>
-            <ToolBar principale={true}/>
-            <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
+            <ToolBar principale={true} />
+            {
+                haveData 
+                ? <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
+                : <div>No data in specified range to show</div>
+            }
         </div>
 
     );

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { Register } from './pages/Register';
 import { Login } from './pages/Login';
@@ -9,8 +9,9 @@ import ColisSpreadsheet from './components/Colis/ColisSpreadsheet';
 import EcoSpreadsheet from './components/Eco/EcoSpreadsheet';
 
 function App() {
-  const [organisation, setOrganisation] = useState(null)
   const { isAuthenticated } = useAuth();
+  const [range, setRange] = useState(0);
+
   return (
     <Router>
         <Routes>
