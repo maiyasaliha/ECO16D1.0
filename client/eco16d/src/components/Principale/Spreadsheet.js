@@ -5,11 +5,11 @@ import axios from 'axios';
 import io from 'socket.io-client';
 import { useSearchParams } from 'react-router-dom';
 import './principaleStyles.css';
-import { nestedHeaders, columns, getColumns } from './PrincipaleSheetStructure';
+import { nestedHeaders, getColumns } from './PrincipaleSheetStructure';
 import { getColorClassForCb, getColorClassForDd, getColorClassForBMID, getColorClassForIMEI } from './ConditionalColoring'
 import { validate, getCompliance, getLocked, getWaybill, getWaybill13 } from './ValidateFunctions';
 import ToolBar from '../ToolBar';
-import { getYear, getQuarter } from '../../EcoSetup';
+import { useDate } from '../../contexts/DateContext';
 
 // const socket = io('http://localhost:3001');
 
@@ -22,36 +22,35 @@ function Spreadsheet() {
     const [rows, setRows] = useState([]);
     const [colisBmids, setColisBmids] = useState([]);
     const [searchParams] = useSearchParams();
-    const [year, setYear] = useState(getYear());
-    const [quarter, setQuarter] = useState(getQuarter());
 
     const organisation = searchParams.get('organisation');
-
-    useEffect(() => {
-        setYear(getYear());
-        setQuarter(getQuarter());
-    }, [getYear(), getQuarter()]);
+    const { year, quarter } = useDate();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setHaveData(false);
-                const response = await axios.get(`http://localhost:3001/principaleQuarter?year=${getYear()}&quarter=${getQuarter()}`);
-                response ? setHaveData(true) : setHaveData(false);
+                const response = await axios.get(`http://localhost:3001/principaleQuarter?year=${year}&quarter=${quarter}`);
                 const colisBmid = await axios.get('http://localhost:3001/colisBmids');
-                const extractedDataBeforeMap = response.data;
-                const extractedBMIDs = colisBmid.data;
-                const extractedData = extractedDataBeforeMap.map(({ _id, ...rest }) => rest);
-                setData(extractedData);
-                setColisBmids(extractedBMIDs);
-                setRows(extractedData.length);
+                
+                if (response.data.length === 0) {
+                    setHaveData(false);
+                } else {
+                    const extractedDataBeforeMap = response.data;
+                    const extractedBMIDs = colisBmid.data;
+                    const extractedData = extractedDataBeforeMap.map(({ _id, ...rest }) => rest);
+                    setData(extractedData);
+                    setColisBmids(extractedBMIDs);
+                    setRows(extractedData.length);
+                    setHaveData(true);
+                }
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         };
 
         fetchData();
-    }, [getYear(), getQuarter()]);
+    }, [year, quarter]);
 
     for (let row = 0; row < rows; row++) {
         customBorders.push({
@@ -170,21 +169,25 @@ function Spreadsheet() {
         }
 
         return () => {
-            if (hotInstance && data.length === 0) {
-                hotInstance.destroy();
+            if (hotInstance) {
+                try {
+                  hotInstance.destroy();
+                } catch (err) {
+                  console.error('Error destroying Handsontable instance:', err);
+                }
                 setHotInstance(null);
             }
         };
-    }, [data, hotInstance]);
+    }, [data, hotInstance, organisation, colisBmids, rows]);
 
     return (
         <div>
             <ToolBar principale={true} />
-            {
-                haveData 
-                ? <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
-                : <div>No data in specified range to show</div>
-            }
+            {!haveData ? (
+                <div style={{ textAlign: 'center', marginTop: '120px' }}>No data for specified range</div>
+            ) : (
+                <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
+            )}
         </div>
 
     );

@@ -4,16 +4,17 @@ import { Register } from './pages/Register';
 import { Login } from './pages/Login';
 import Spreadsheet from './components/Principale/Spreadsheet';
 import { useAuth } from './contexts/AuthContext';
+import { DateProvider } from './contexts/DateContext';
 import HomePage from './pages/HomePage';
 import ColisSpreadsheet from './components/Colis/ColisSpreadsheet';
 import EcoSpreadsheet from './components/Eco/EcoSpreadsheet';
 
 function App() {
   const { isAuthenticated } = useAuth();
-  const [range, setRange] = useState(0);
 
   return (
-    <Router>
+    <DateProvider>
+      <Router>
         <Routes>
             <Route 
               path= '/' 
@@ -52,7 +53,8 @@ function App() {
               }  
             />
         </Routes>
-    </Router>
+      </Router>
+    </DateProvider>
   )
 }
 

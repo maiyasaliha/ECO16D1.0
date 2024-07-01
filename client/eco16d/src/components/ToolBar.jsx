@@ -2,29 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
-import { getQuarter, getYear, setQuarter, setYear } from '../EcoSetup';
+import { useDate } from '../contexts/DateContext';
 import './ToolBar.css';
 
 function ToolBar({ principale, eco, colis }) {
   const { userData } = useAuth();
   const organisation = userData?.organisation;
 
-  const [quarter, setLocalQuarter] = useState(getQuarter());
-  const [year, setLocalYear] = useState(getYear());
-
-  useEffect(() => {
-    setLocalQuarter(getQuarter());
-    setLocalYear(getYear());
-  }, []);
+  const { year, setYear, quarter, setQuarter } = useDate();
 
   const onQuarterClick = (selectedQuarter) => () => {
+    console.log(selectedQuarter);
     setQuarter(selectedQuarter);
-    setLocalQuarter(selectedQuarter);
   };
 
   const onYearClick = (selectedYear) => () => {
+    console.log(selectedYear);
     setYear(selectedYear);
-    setLocalYear(selectedYear);
   };
 
   return (
