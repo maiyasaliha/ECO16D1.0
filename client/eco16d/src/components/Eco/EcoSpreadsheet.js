@@ -92,7 +92,7 @@ function EcoSpreadsheet() {
     return (
         <>
             <ToolBar eco={true}/>
-            <div ref={hotElementRef} style={{ width: '100%', height: '100vh' }}></div>
+            <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
         </>
 
     );

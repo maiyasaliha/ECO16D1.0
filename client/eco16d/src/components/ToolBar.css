@@ -1,8 +1,10 @@
 .toolbar {
     position: fixed;
     width: 100%;
+    top: 0;
     background-color: white;
     z-index: 1000;
+    padding-top: 10px;
     padding-bottom: 10px;
     display: flex;
     justify-content: space-between;
