@@ -14,8 +14,6 @@ import { useDate } from '../../contexts/DateContext';
 function EcoSpreadsheet() {
     const [hotInstance, setHotInstance] = useState(null);
     const [data, setData] = useState([]);
-    const [haveData, setHaveData] = useState(false);
-    const [haveTable, setHaveTable] = useState(false);
     const hotElementRef = useRef(null);
     const { year, quarter } = useDate();
 
@@ -23,7 +21,6 @@ function EcoSpreadsheet() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                setHaveData(false);
                 const endpoints = [
                     '1', '2', '3', '4', '5', '6', 
                     '7', '3', '9', '10', '11', '12'
@@ -49,19 +46,17 @@ function EcoSpreadsheet() {
                 }, []);
 
                 setData(combinedData);
-                setHaveData(combinedData.length > 0);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         };
 
         fetchData();
-        console.log(data);
+
     }, [year, quarter]);
 
     useEffect(() => {
-        if (hotElementRef.current && haveData && data.length > 0 && !hotInstance) {
-            setHaveTable(true);
+        if (hotElementRef.current && data.length > 0 && !hotInstance) {
             const hot = new Handsontable(hotElementRef.current, {
                 data: data,
                 rowHeaders: true,
@@ -100,16 +95,12 @@ function EcoSpreadsheet() {
                 setHotInstance(null);
             }
         };
-    }, [data, hotInstance, haveData]);
+    }, [data, hotInstance]);
 
     return (
         <div>
             <ToolBar eco={true}/>
-            {!haveData ? (
-                <div style={{ textAlign: 'center', marginTop: '120px' }}>No data for specified range</div>
-            ) : (
-                <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
-            )}
+            <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
         </div>
 
     );
