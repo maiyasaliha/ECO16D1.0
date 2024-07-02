@@ -8,6 +8,7 @@ import './colisStyles.css';
 import { nestedHeaders, getColumns } from './ColisSheetStructure';
 import { getColorClassForBMID } from './ConditionalColoring'
 import ToolBar from '../ToolBar';
+import { useDate } from '../../contexts/DateContext';
 
 
 
@@ -17,6 +18,7 @@ import ToolBar from '../ToolBar';
 function ColisSpreadsheet() {
     const [hotInstance, setHotInstance] = useState(null);
     const [data, setData] = useState([]);
+    const [haveData, setHaveData] = useState(false);
     const hotElementRef = useRef(null);
     const customBorders = [];
     const [rows, setRows] = useState([]);
@@ -24,25 +26,36 @@ function ColisSpreadsheet() {
     const [searchParams] = useSearchParams();
 
     const organisation = searchParams.get('organisation');
-
+    const { year, quarter } = useDate();
+    console.log(year);
+    console.log(quarter);
+    
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/colis');
+                setHaveData(false);
+                const response = await axios.get(`http://localhost:3001/colisQuarter?year=${year}&quarter=${quarter}`);
                 const principaleBmid = await axios.get('http://localhost:3001/principaleBmids');
-                const extractedDataBeforeMap = response.data;
-                const extractedBMIDs = principaleBmid.data;
-                const extractedData = extractedDataBeforeMap.map(({ _id, ...rest }) => rest);
-                setData(extractedData);
-                setPrincipaleBmids(extractedBMIDs);
-                setRows(extractedData.length);
+
+                if (response.data.length === 0) {
+                    setHaveData(false);
+                } else {
+                    const extractedDataBeforeMap = response.data;
+                    console.log(extractedDataBeforeMap);
+                    const extractedBMIDs = principaleBmid.data;
+                    const extractedData = extractedDataBeforeMap.map(({ _id, ...rest }) => rest);
+                    setData(extractedData);
+                    setPrincipaleBmids(extractedBMIDs);
+                    setRows(extractedData.length);
+                    setHaveData(true);
+                }
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         };
 
         fetchData();
-    }, []);
+    }, [year, quarter]);
 
     for (let row = 0; row < rows; row++) {
         customBorders.push({
@@ -116,18 +129,27 @@ function ColisSpreadsheet() {
         }
 
         return () => {
-            if (hotInstance && data.length === 0) {
-                hotInstance.destroy();
+            if (hotInstance) {
+                try {
+                  hotInstance.destroy();
+                } catch (err) {
+                  console.error('Error destroying Handsontable instance:', err);
+                }
                 setHotInstance(null);
             }
         };
-    }, [data, hotInstance]);
+    }, [data, hotInstance, organisation, principaleBmids, rows]);
 
     return (
-        <>
+        <div>
             <ToolBar colis={true}/>
-            <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
-        </>
+            {!haveData ? (
+                <div style={{ textAlign: 'center', marginTop: '120px' }}>No data for specified range</div>
+            ) : (
+                <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
+
+            )}
+        </div>
 
     );
 }
