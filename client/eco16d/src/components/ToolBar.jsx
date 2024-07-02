@@ -12,12 +12,12 @@ function ToolBar({ principale, eco, colis }) {
   const { year, setYear, quarter, setQuarter } = useDate();
 
   const onQuarterClick = (selectedQuarter) => () => {
-    console.log(selectedQuarter);
+    console.log(selectedQuarter + ", " + year);
     setQuarter(selectedQuarter);
   };
 
   const onYearClick = (selectedYear) => () => {
-    console.log(selectedYear);
+    console.log(quarter + ", " + selectedYear);
     setYear(selectedYear);
   };
 

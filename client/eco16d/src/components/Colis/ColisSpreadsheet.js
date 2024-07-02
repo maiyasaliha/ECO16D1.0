@@ -142,12 +142,6 @@ function ColisSpreadsheet() {
         };
     }, [data, hotInstance, organisation, principaleBmids, colisBmids, rows]);
 
-    useEffect(() => {
-        if (hotInstance) {
-            hotInstance.render();
-        }
-    }, [colisBmids, principaleBmids]);
-
     return (
         <div>
             <ToolBar colis={true}/>

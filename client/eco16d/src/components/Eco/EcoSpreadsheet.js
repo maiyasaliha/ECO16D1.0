@@ -7,27 +7,31 @@ import './ecoStyles.css';
 import { columnHeaders, columns } from './EcoSheetStructure';
 import ToolBar from '../ToolBar';
 import { getColorClassForIMEI } from './ConditionalColoring';
+import { useDate } from '../../contexts/DateContext';
 
 // const socket = io('http://localhost:3001');
 
 function EcoSpreadsheet() {
     const [hotInstance, setHotInstance] = useState(null);
     const [data, setData] = useState([]);
+    const [haveData, setHaveData] = useState(false);
     const hotElementRef = useRef(null);
+    const { year, quarter } = useDate();
+
 
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setHaveData(false);
                 const endpoints = [
-                    '1stcol', '2ndcol', '3rdcol', '4thcol', '5thcol', '6thcol', 
-                    '7thcol', '3rdcol', '9thcol', '10thcol', '11thcol', '12thcol'
+                    '1', '2', '3', '4', '5', '6', 
+                    '7', '3', '9', '10', '11', '12'
                 ];
                 
-                const requests = endpoints.map(endpoint => axios.get(`http://localhost:3001/${endpoint}`));
+                const requests = endpoints.map(endpoint => axios.get(`http://localhost:3001/eco?year=${year}&quarter=${quarter}&column=${endpoint}`));
                 const responses = await Promise.all(requests);
-                const returnsBmid = await axios.get('http://localhost:3001/8thcol');
+                const returnsBmid = await axios.get(`http://localhost:3001/eco?year=${year}&quarter=${quarter}&column=8`);
                 const extractedBMIDs = returnsBmid.data;
-                
                 const combinedData = responses.reduce((acc, response, index) => {
                     const colData = response.data;
                     colData.forEach((item, rowIndex) => {
@@ -44,16 +48,18 @@ function EcoSpreadsheet() {
                 }, []);
 
                 setData(combinedData);
+                setHaveData(combinedData.length > 0);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         };
 
         fetchData();
-    }, []);
+        console.log(data);
+    }, [year, quarter]);
 
     useEffect(() => {
-        if (hotElementRef.current && data.length > 0 && !hotInstance) {
+        if (hotElementRef.current && haveData && data.length > 0 && !hotInstance) {
             const hot = new Handsontable(hotElementRef.current, {
                 data: data,
                 rowHeaders: true,
@@ -83,17 +89,25 @@ function EcoSpreadsheet() {
         }
 
         return () => {
-            if (hotInstance && data.length === 0) {
-                hotInstance.destroy();
+            if (hotInstance) {
+                try {
+                  hotInstance.destroy();
+                } catch (err) {
+                  console.error('Error destroying Handsontable instance:', err);
+                }
                 setHotInstance(null);
             }
         };
-    }, [data, hotInstance]);
+    }, [data, hotInstance, haveData]);
 
     return (
         <>
             <ToolBar eco={true}/>
-            <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
+            {!haveData ? (
+                <div style={{ textAlign: 'center', marginTop: '120px' }}>No data for specified range</div>
+            ) : (
+                <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
+            )}
         </>
 
     );

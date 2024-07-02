@@ -16,7 +16,7 @@ function App() {
     <DateProvider>
       <Router>
         <Routes>
-            <Route 
+            {/* <Route 
               path= '/' 
               element={
                 !isAuthenticated ? <Register /> : <Navigate to='/home' />
@@ -45,12 +45,12 @@ function App() {
               element={
                 isAuthenticated ? <ColisSpreadsheet /> : <Navigate to='/login' />
               }  
-            />
+            /> */}
             <Route 
               path= '/eco' 
-              element={
-                isAuthenticated ? <EcoSpreadsheet /> : <Navigate to='/login' />
-              }  
+              element={ <EcoSpreadsheet />}
+              //   isAuthenticated ? <EcoSpreadsheet /> : <Navigate to='/login' />
+              // }  
             />
         </Routes>
       </Router>
