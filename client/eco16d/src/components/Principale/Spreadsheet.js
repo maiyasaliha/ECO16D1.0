@@ -181,7 +181,7 @@ function Spreadsheet() {
                 setHotInstance(null);
             }
         };
-    }, [data, hotInstance, organisation, colisBmids, rows]);
+    }, [data, hotInstance, organisation, colisBmids, principaleBmids, rows]);
 
     return (
         <div>

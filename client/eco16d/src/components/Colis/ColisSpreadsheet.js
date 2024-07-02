@@ -140,7 +140,13 @@ function ColisSpreadsheet() {
                 setHotInstance(null);
             }
         };
-    }, [data, hotInstance, organisation, principaleBmids, rows]);
+    }, [data, hotInstance, organisation, principaleBmids, colisBmids, rows]);
+
+    useEffect(() => {
+        if (hotInstance) {
+            hotInstance.render();
+        }
+    }, [colisBmids, principaleBmids]);
 
     return (
         <div>
