@@ -1,14 +1,14 @@
-function getColorClassForBMID(value, bmidValues, colisBmids) {
+function getColorClassForBMID(value, colisBmids, principaleBmids) {
     if (value == null || value == '') {
         return '';
     }
     if (value.toString().length !== 8) {
         return 'custom-cell-br';
     }
-    const occurrences = bmidValues.filter(v => v === value).length;
     const colisOccurrences = colisBmids.filter(v => v === value).length;
+    const principaleOccurrences = principaleBmids.filter(v => v === value).length;
     
-    if (occurrences > 1) {
+    if (principaleOccurrences > 1) {
         return 'custom-cell-bo';
     } 
     if (colisOccurrences > 0) {
@@ -17,7 +17,6 @@ function getColorClassForBMID(value, bmidValues, colisBmids) {
         return '';
     }
 }
-
 
 function getColorClassForIMEI(value) {
     if (value === 'green') {

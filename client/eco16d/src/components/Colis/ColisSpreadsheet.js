@@ -22,6 +22,7 @@ function ColisSpreadsheet() {
     const hotElementRef = useRef(null);
     const customBorders = [];
     const [rows, setRows] = useState([]);
+    const [colisBmids, setColisBmids] = useState([]);
     const [principaleBmids, setPrincipaleBmids] = useState([]);
     const [searchParams] = useSearchParams();
 
@@ -36,16 +37,18 @@ function ColisSpreadsheet() {
                 setHaveData(false);
                 const response = await axios.get(`http://localhost:3001/colisQuarter?year=${year}&quarter=${quarter}`);
                 const principaleBmid = await axios.get('http://localhost:3001/principaleBmids');
+                const colisBmid = await axios.get('http://localhost:3001/colisBmids');
 
                 if (response.data.length === 0) {
                     setHaveData(false);
                 } else {
                     const extractedDataBeforeMap = response.data;
-                    console.log(extractedDataBeforeMap);
-                    const extractedBMIDs = principaleBmid.data;
+                    const extractedPBMIDs = principaleBmid.data;
+                    const extractedCBMIDs = colisBmid.data;
                     const extractedData = extractedDataBeforeMap.map(({ _id, ...rest }) => rest);
                     setData(extractedData);
-                    setPrincipaleBmids(extractedBMIDs);
+                    setPrincipaleBmids(extractedPBMIDs);
+                    setColisBmids(extractedCBMIDs);
                     setRows(extractedData.length);
                     setHaveData(true);
                 }
@@ -89,8 +92,7 @@ function ColisSpreadsheet() {
                     const cellValue = this.getDataAtCell(row, col);
 
                     if (col === 1) {
-                        const bmidValues = this.getDataAtCol(col);
-                        const cellClass = getColorClassForBMID(cellValue, bmidValues, principaleBmids);
+                        const cellClass = getColorClassForBMID(cellValue, colisBmids, principaleBmids);
                         cellProperties.className = cellClass;
                     }
                 },

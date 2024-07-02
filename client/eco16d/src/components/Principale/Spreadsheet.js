@@ -20,6 +20,7 @@ function Spreadsheet() {
     const hotElementRef = useRef(null);
     const customBorders = [];
     const [rows, setRows] = useState([]);
+    const [principaleBmids, setPrincipaleBmids] = useState([]);
     const [colisBmids, setColisBmids] = useState([]);
     const [searchParams] = useSearchParams();
 
@@ -31,16 +32,19 @@ function Spreadsheet() {
             try {
                 setHaveData(false);
                 const response = await axios.get(`http://localhost:3001/principaleQuarter?year=${year}&quarter=${quarter}`);
+                const principaleBmid = await axios.get('http://localhost:3001/principaleBmids');
                 const colisBmid = await axios.get('http://localhost:3001/colisBmids');
                 
                 if (response.data.length === 0) {
                     setHaveData(false);
                 } else {
                     const extractedDataBeforeMap = response.data;
-                    const extractedBMIDs = colisBmid.data;
+                    const extractedPBMIDs = principaleBmid.data;
+                    const extractedCBMIDs = colisBmid.data;
                     const extractedData = extractedDataBeforeMap.map(({ _id, ...rest }) => rest);
                     setData(extractedData);
-                    setColisBmids(extractedBMIDs);
+                    setPrincipaleBmids(extractedPBMIDs);
+                    setColisBmids(extractedCBMIDs);
                     setRows(extractedData.length);
                     setHaveData(true);
                 }
@@ -102,8 +106,7 @@ function Spreadsheet() {
                     const cellValue = this.getDataAtCell(row, col);
 
                     if (col === 1) {
-                        const bmidValues = this.getDataAtCol(col);
-                        const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids);
+                        const cellClass = getColorClassForBMID(cellValue, colisBmids, principaleBmids);
                         cellProperties.className = cellClass;
                     } else if (col === 7 || col === 18) {
                         let other;
