@@ -15,6 +15,7 @@ function EcoSpreadsheet() {
     const [hotInstance, setHotInstance] = useState(null);
     const [data, setData] = useState([]);
     const [haveData, setHaveData] = useState(false);
+    const [haveTable, setHaveTable] = useState(false);
     const hotElementRef = useRef(null);
     const { year, quarter } = useDate();
 
@@ -60,6 +61,7 @@ function EcoSpreadsheet() {
 
     useEffect(() => {
         if (hotElementRef.current && haveData && data.length > 0 && !hotInstance) {
+            setHaveTable(true);
             const hot = new Handsontable(hotElementRef.current, {
                 data: data,
                 rowHeaders: true,
@@ -101,14 +103,14 @@ function EcoSpreadsheet() {
     }, [data, hotInstance, haveData]);
 
     return (
-        <>
+        <div>
             <ToolBar eco={true}/>
             {!haveData ? (
                 <div style={{ textAlign: 'center', marginTop: '120px' }}>No data for specified range</div>
             ) : (
                 <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
             )}
-        </>
+        </div>
 
     );
 }
