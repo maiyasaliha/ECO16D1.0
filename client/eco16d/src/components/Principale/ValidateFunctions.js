@@ -31,7 +31,7 @@ function getLocked(cellValue, value) {
 }
 
 function getWaybill(cellValue, value, oow) {
-    if (oow.includes("oow") || oow.includes("OOW")) {
+    if (oow?.includes("oow") || oow?.includes("OOW")) {
         if (isTrue(cellValue)) {
             return cellValue;
         } else {

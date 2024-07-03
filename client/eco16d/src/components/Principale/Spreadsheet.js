@@ -37,11 +37,25 @@ function Spreadsheet() {
         });
 
         socket.on('cellUpdate', (updateData) => {
-            // if (hotInstance) {
+            // if (hotInstance && !hotInstance.isDestroyed) {
             //     const { rowIndex, colIndex, newValue } = updateData;
-            //     hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
+            //     const newData = [...data];
+            //     newData[rowIndex][colIndex] = newValue;
+            //     hotInstance.updateData(newData);
+            //     setData(newData);
             // }
-            setUpdate(true);
+            if (hotInstance) {
+                const { rowIndex, colIndex, newValue } = updateData;
+                console.log(updateData);
+                console.log("rowIndex: " + rowIndex);
+                console.log("colIndex: " + colIndex);
+                console.log("newValue: " + newValue);
+                if (updateData) {
+                    setUpdate(true);
+                } else {
+                    hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
+                }
+            }
         });
 
         socket.on('connect_error', (error) => {
@@ -58,7 +72,7 @@ function Spreadsheet() {
             socket.off('connect_error');
             socket.off('disconnect');
         };
-    }, [hotInstance, userData]);
+    }, [hotInstance, userData, data]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -217,7 +231,7 @@ function Spreadsheet() {
                 setHotInstance(null);
             }
         };
-    }, [data, hotInstance, organisation, colisBmids, principaleBmids, rows, update]);
+    }, [data, hotInstance, organisation, colisBmids, principaleBmids, rows]);
 
     return (
         <div>
