@@ -18,6 +18,7 @@ function Spreadsheet() {
     const [hotInstance, setHotInstance] = useState(null);
     const [data, setData] = useState([]);
     const [haveData, setHaveData] = useState(false);
+    const [update, setUpdate] = useState(false);
     const hotElementRef = useRef(null);
     const customBorders = [];
     const [rows, setRows] = useState([]);
@@ -36,10 +37,11 @@ function Spreadsheet() {
         });
 
         socket.on('cellUpdate', (updateData) => {
-            if (hotInstance) {
-                const { rowIndex, colIndex, newValue } = updateData;
-                hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
-            }
+            // if (hotInstance) {
+            //     const { rowIndex, colIndex, newValue } = updateData;
+            //     hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
+            // }
+            setUpdate(true);
         });
 
         socket.on('connect_error', (error) => {
@@ -85,7 +87,7 @@ function Spreadsheet() {
         };
 
         fetchData();
-    }, [year, quarter]);
+    }, [year, quarter, update]);
 
     for (let row = 0; row < rows; row++) {
         customBorders.push({
@@ -202,6 +204,7 @@ function Spreadsheet() {
             });
 
             setHotInstance(hot);
+            setUpdate(false)
         }
 
         return () => {
@@ -214,7 +217,7 @@ function Spreadsheet() {
                 setHotInstance(null);
             }
         };
-    }, [data, hotInstance, organisation, colisBmids, principaleBmids, rows]);
+    }, [data, hotInstance, organisation, colisBmids, principaleBmids, rows, update]);
 
     return (
         <div>
