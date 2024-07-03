@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
 import axios from 'axios';
-import io from 'socket.io-client';
+// import io from 'socket.io-client';
 import { useSearchParams } from 'react-router-dom';
 import './principaleStyles.css';
 import { nestedHeaders, getColumns } from './PrincipaleSheetStructure';
@@ -155,22 +155,12 @@ function Spreadsheet() {
                                 colIndex: change[1],
                                 newValue: change[3] == null ? "" : change[3]
                             };
-                
                             return axios.post('http://localhost:3001/principaleCell', updateData);
                         });
-                        // socket.emit('updateCell', updateData);
                 
                         axios.all(updateRequests)
                             .then(axios.spread((...responses) => {
                                 console.log('All cells updated successfully.');
-
-                                // responses.forEach(response => {
-                                //     console.log("upadting many")
-                                //     const { rowIndex, colIndex, newValue } = response.data;
-                                //     //socket.emit('updateCell', updateData);
-                                //     console.log("socket emitting");
-
-                                // });
                             }))
                             .catch(err => {
                                 console.log('Error updating data:', err);
@@ -183,7 +173,7 @@ function Spreadsheet() {
         }
 
         return () => {
-            if (hotInstance) {
+            if (hotInstance && !hotInstance.isDestroyed) {
                 try {
                   hotInstance.destroy();
                 } catch (err) {
@@ -193,6 +183,29 @@ function Spreadsheet() {
             }
         };
     }, [data, hotInstance, organisation, colisBmids, principaleBmids, rows]);
+
+    // useEffect(() => {
+    //     socket.on('connect', () => {
+    //         console.log('Connected to Socket.IO server');
+    //     });
+
+    //     socket.on('cellUpdate', (updateData) => {
+    //         if (hotInstance) {
+    //             const { rowIndex, colIndex, newValue } = updateData;
+    //             hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
+    //         }
+    //     });
+
+    //     socket.on('connect_error', (error) => {
+    //         console.error('Socket.IO connection error:', error);
+    //     });
+
+    //     return () => {
+    //         socket.off('connect');
+    //         socket.off('cellUpdate');
+    //         socket.off('connect_error');
+    //     };
+    // }, [hotInstance]);
 
     return (
         <div>

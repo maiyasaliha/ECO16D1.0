@@ -2,18 +2,12 @@ import React, { useEffect, useState, useRef } from 'react';
 import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
 import axios from 'axios';
-import io from 'socket.io-client';
 import { useSearchParams } from 'react-router-dom';
 import './colisStyles.css';
 import { nestedHeaders, getColumns } from './ColisSheetStructure';
 import { getColorClassForBMID } from './ConditionalColoring'
 import ToolBar from '../ToolBar';
 import { useDate } from '../../contexts/DateContext';
-
-
-
-// const socket = io('http://localhost:3001');
-
 
 function ColisSpreadsheet() {
     const [hotInstance, setHotInstance] = useState(null);

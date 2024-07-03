@@ -2,14 +2,11 @@ import React, { useEffect, useState, useRef } from 'react';
 import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
 import axios from 'axios';
-import io from 'socket.io-client';
 import './ecoStyles.css';
 import { columnHeaders, columns } from './EcoSheetStructure';
 import ToolBar from '../ToolBar';
 import { getColorClassForIMEI } from './ConditionalColoring';
 import { useDate } from '../../contexts/DateContext';
-
-// const socket = io('http://localhost:3001');
 
 function EcoSpreadsheet() {
     const [hotInstance, setHotInstance] = useState(null);
