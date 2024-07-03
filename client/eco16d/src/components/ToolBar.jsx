@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
@@ -12,12 +12,10 @@ function ToolBar({ principale, eco, colis }) {
   const { year, setYear, quarter, setQuarter } = useDate();
 
   const onQuarterClick = (selectedQuarter) => () => {
-    console.log(selectedQuarter + ", " + year);
     setQuarter(selectedQuarter);
   };
 
   const onYearClick = (selectedYear) => () => {
-    console.log(quarter + ", " + selectedYear);
     setYear(selectedYear);
   };
 

@@ -1,5 +1,5 @@
 function getColorClassForBMID(value, colisBmids, principaleBmids) {
-    if (value == null || value == '') {
+    if (value === null || value === '') {
         return '';
     }
     if (value.toString().length !== 8) {

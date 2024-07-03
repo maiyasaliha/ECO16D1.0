@@ -3,8 +3,6 @@
     "axios": "^1.7.2",
     "handsontable": "^14.3.0",
     "react-font-picker": "^1.1.6",
-    "react-number-picker": "^1.0.5",
-    "socket.io": "^4.7.5",
-    "socket.io-client": "^4.7.5"
+    "react-number-picker": "^1.0.5"
   }
 }

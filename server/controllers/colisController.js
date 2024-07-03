@@ -29,17 +29,12 @@ exports.getCellRowsQuarter = async (req, res) => {
         const startDateString = constructDateString(startMonth, year, '01');
         const endDateString = constructDateString(endMonth, year, endDayOfMonth);
 
-        console.log('Start Date:', startDateString);
-        console.log('End Date:', endDateString);
-
         const allDocuments = await Colis.find();
 
         const filteredRows = allDocuments.filter(doc => {
             const dateCreee = parseDateString(doc.dateCreee);
             return dateCreee >= parseDateString(startDateString) && dateCreee <= parseDateString(endDateString);
         });
-
-        console.log('Filtered Rows:', filteredRows.length);
 
         res.status(200).json(filteredRows);
     } catch (error) {

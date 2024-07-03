@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
 import axios from 'axios';
-// import io from 'socket.io-client';
+import io from 'socket.io-client';
 import { useSearchParams } from 'react-router-dom';
 import './principaleStyles.css';
 import { nestedHeaders, getColumns } from './PrincipaleSheetStructure';
@@ -11,7 +11,7 @@ import { validate, getCompliance, getLocked, getWaybill, getWaybill13 } from './
 import ToolBar from '../ToolBar';
 import { useDate } from '../../contexts/DateContext';
 
-// const socket = io('http://localhost:3001');
+const socket = io('http://localhost:3001');
 
 function Spreadsheet() {
     const [hotInstance, setHotInstance] = useState(null);
@@ -27,6 +27,23 @@ function Spreadsheet() {
     const organisation = searchParams.get('organisation');
     const { year, quarter } = useDate();
 
+    useEffect(() => {
+        socket.on('connect', () => {
+          console.log('Connected to Socket.IO server');
+        });
+    
+        socket.on('disconnect', () => {
+          console.log('Disconnected from Socket.IO server');
+        });
+    
+        socket.on('error', (error) => {
+          console.error('Socket.IO connection error:', error);
+        });
+    
+        return () => {
+          socket.disconnect();
+        };
+      }, []);
 
     useEffect(() => {
         const fetchData = async () => {

@@ -57,7 +57,6 @@ function EcoSpreadsheet() {
             const hot = new Handsontable(hotElementRef.current, {
                 data: data,
                 rowHeaders: true,
-                colHeaders: true,
                 colHeaders: columnHeaders,
                 columns: columns,
                 className: 'custom-tablee',
