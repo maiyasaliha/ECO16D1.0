@@ -48,9 +48,9 @@ function App() {
             />
             <Route 
               path= '/eco' 
-              element={ <EcoSpreadsheet />}
-              //   isAuthenticated ? <EcoSpreadsheet /> : <Navigate to='/login' />
-              // }  
+              element={
+                isAuthenticated ? <EcoSpreadsheet /> : <Navigate to='/login' />
+              }  
             />
         </Routes>
       </Router>
