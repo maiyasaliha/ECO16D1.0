@@ -10,6 +10,7 @@ import { getColorClassForCb, getColorClassForDd, getColorClassForBMID, getColorC
 import { validate, getCompliance, getLocked, getWaybill, getWaybill13 } from './ValidateFunctions';
 import ToolBar from '../ToolBar';
 import { useDate } from '../../contexts/DateContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 const socket = io('http://localhost:3001');
 
@@ -26,24 +27,36 @@ function Spreadsheet() {
 
     const organisation = searchParams.get('organisation');
     const { year, quarter } = useDate();
+    const { userData } = useAuth();
 
-    useEffect(() => {
+
+      useEffect(() => {
         socket.on('connect', () => {
-          console.log('Connected to Socket.IO server');
+            console.log( userData?.name + ' Connected to Socket.IO server');
         });
-    
+
+        socket.on('cellUpdate', (updateData) => {
+            if (hotInstance) {
+                const { rowIndex, colIndex, newValue } = updateData;
+                hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
+            }
+        });
+
+        socket.on('connect_error', (error) => {
+            console.error('Socket.IO connection error:', error);
+        });
+
         socket.on('disconnect', () => {
-          console.log('Disconnected from Socket.IO server');
+            console.log(userData?.name + ' Disconnected from Socket.IO server');
         });
-    
-        socket.on('error', (error) => {
-          console.error('Socket.IO connection error:', error);
-        });
-    
+
         return () => {
-          socket.disconnect();
+            socket.off('connect');
+            socket.off('cellUpdate');
+            socket.off('connect_error');
+            socket.off('disconnect');
         };
-      }, []);
+    }, [hotInstance, userData]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -172,8 +185,10 @@ function Spreadsheet() {
                                 colIndex: change[1],
                                 newValue: change[3] == null ? "" : change[3]
                             };
+                            socket.emit('cellUpdate', updateData);
                             return axios.post('http://localhost:3001/principaleCell', updateData);
                         });
+                
                 
                         axios.all(updateRequests)
                             .then(axios.spread((...responses) => {
@@ -200,29 +215,6 @@ function Spreadsheet() {
             }
         };
     }, [data, hotInstance, organisation, colisBmids, principaleBmids, rows]);
-
-    // useEffect(() => {
-    //     socket.on('connect', () => {
-    //         console.log('Connected to Socket.IO server');
-    //     });
-
-    //     socket.on('cellUpdate', (updateData) => {
-    //         if (hotInstance) {
-    //             const { rowIndex, colIndex, newValue } = updateData;
-    //             hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
-    //         }
-    //     });
-
-    //     socket.on('connect_error', (error) => {
-    //         console.error('Socket.IO connection error:', error);
-    //     });
-
-    //     return () => {
-    //         socket.off('connect');
-    //         socket.off('cellUpdate');
-    //         socket.off('connect_error');
-    //     };
-    // }, [hotInstance]);
 
     return (
         <div>
