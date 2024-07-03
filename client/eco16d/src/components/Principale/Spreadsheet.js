@@ -37,23 +37,18 @@ function Spreadsheet() {
         });
 
         socket.on('cellUpdate', (updateData) => {
-            // if (hotInstance && !hotInstance.isDestroyed) {
-            //     const { rowIndex, colIndex, newValue } = updateData;
-            //     const newData = [...data];
-            //     newData[rowIndex][colIndex] = newValue;
-            //     hotInstance.updateData(newData);
-            //     setData(newData);
-            // }
+
             if (hotInstance) {
                 const { rowIndex, colIndex, newValue } = updateData;
                 console.log(updateData);
                 console.log("rowIndex: " + rowIndex);
                 console.log("colIndex: " + colIndex);
                 console.log("newValue: " + newValue);
-                if (updateData) {
-                    setUpdate(true);
-                } else {
+                if (!updateData) {
+                    console.log("setting");
                     hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
+                } else {
+                    setUpdate(true);
                 }
             }
         });
