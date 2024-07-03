@@ -18,29 +18,61 @@ const nestedHeaders = [
         'Lien Google pour les images (https://drive.google.com/drive/folders/1SNzn0LkNwHqi_IO4i-FcuWr7ytwRjS3D?usp=sharing)'
     ],
 ];
-const columns = [
-    { type: 'date', dateFormat: 'DD/MM/YYYY' }, // date ajoutée
-    { type: 'text' }, // BMID
-    { type: 'text' }, // Nom du client
-    { type: 'text' }, // Raison du retour
-    { type: 'text' }, // BM Raison du retour
-    { type: 'text' }, // SKU
-    { type: 'text' }, // Nom du produit
-    { type: 'text' }, // IMEI
-    { type: 'text' }, // Transporteur
-    { type: 'text' }, // Numéro de suivi
-    { type: 'checkbox', className: 'htCenter htMiddle' }, // Customer Informed about non-compliance
-    { type: 'checkbox', className: 'htCenter htMiddle' }, // Customer informed if locked?
-    { type: 'checkbox', className: 'htCenter htMiddle' }, // Refunded
-    { type: 'checkbox', className: 'htCenter htMiddle' }, // Returned to SG
-    { type: 'date', dateFormat: 'MM/DD/YYYY' }, // Date returned to SG
-    { type: 'numeric' }, // Waybill No.
-    { type: 'date', dateFormat: 'DD/MM/YYYY' }, // Date de réception Axe
-    { type: 'dropdown', source: ['', 'Yes', 'No', 'Standby'] }, // Contenu conforme?
-    { type: 'text' }, // IMEI de réception
-    { type: 'dropdown', source: ['', 'Unlocked', 'LOCKED', 'Standby'] }, // État de l`appareil
-    { type: 'text' }, // Commentaires (Rayures ? Bosses ?)
-    { type: 'text', renderer: linkRenderer }, // Lien Google pour les images
-];
 
-export {nestedHeaders, columns};
+function getColumns(organisation) {
+    if (organisation === 'ECO') {
+        return [
+            { type: 'date', dateFormat: 'DD/MM/YYYY' }, // date ajoutée
+            { type: 'text' }, // BMID
+            { type: 'text' }, // Nom du client
+            { type: 'text' }, // Raison du retour
+            { type: 'text' }, // BM Raison du retour
+            { type: 'text' }, // SKU
+            { type: 'text' }, // Nom du produit
+            { type: 'text' }, // IMEI
+            { type: 'text' }, // Transporteur
+            { type: 'text' }, // Numéro de suivi
+            { type: 'checkbox', className: 'htCenter htMiddle' }, // Customer Informed about non-compliance
+            { type: 'checkbox', className: 'htCenter htMiddle' }, // Customer informed if locked?
+            { type: 'checkbox', className: 'htCenter htMiddle' }, // Refunded
+            { type: 'checkbox', className: 'htCenter htMiddle' }, // Returned to SG
+            { type: 'date', dateFormat: 'MM/DD/YYYY' }, // Date returned to SG
+            { type: 'numeric' }, // Waybill No.
+            { type: 'date', dateFormat: 'DD/MM/YYYY', readOnly: true }, // Date de réception Axe
+            { type: 'dropdown', source: ['', 'Yes', 'No', 'Standby'], readOnly: true }, // Contenu conforme?
+            { type: 'text', readOnly: true }, // IMEI de réception
+            { type: 'dropdown', source: ['', 'Unlocked', 'LOCKED', 'Standby'], readOnly: true }, // État de l`appareil
+            { type: 'text', readOnly: true }, // Commentaires (Rayures ? Bosses ?)
+            { type: 'text', renderer: linkRenderer, readOnly: true }, // Lien Google pour les images
+        ];
+    }
+    if (organisation === 'AXE') {
+        return [
+            { type: 'date', dateFormat: 'DD/MM/YYYY', readOnly: true }, // date ajoutée
+            { type: 'text', readOnly: true }, // BMID
+            { type: 'text', readOnly: true }, // Nom du client
+            { type: 'text', readOnly: true }, // Raison du retour
+            { type: 'text', readOnly: true }, // BM Raison du retour
+            { type: 'text', readOnly: true }, // SKU
+            { type: 'text', readOnly: true }, // Nom du produit
+            { type: 'text', readOnly: true }, // IMEI
+            { type: 'text', readOnly: true }, // Transporteur
+            { type: 'text', readOnly: true }, // Numéro de suivi
+            { type: 'checkbox', className: 'htCenter htMiddle', readOnly: true }, // Customer Informed about non-compliance
+            { type: 'checkbox', className: 'htCenter htMiddle', readOnly: true }, // Customer informed if locked?
+            { type: 'checkbox', className: 'htCenter htMiddle', readOnly: true }, // Refunded
+            { type: 'checkbox', className: 'htCenter htMiddle', readOnly: true }, // Returned to SG
+            { type: 'date', dateFormat: 'MM/DD/YYYY', readOnly: true }, // Date returned to SG
+            { type: 'numeric', readOnly: true }, // Waybill No.
+            { type: 'date', dateFormat: 'DD/MM/YYYY' }, // Date de réception Axe
+            { type: 'dropdown', source: ['', 'Yes', 'No', 'Standby'] }, // Contenu conforme?
+            { type: 'text' }, // IMEI de réception
+            { type: 'dropdown', source: ['', 'Unlocked', 'LOCKED', 'Standby'] }, // État de l`appareil
+            { type: 'text' }, // Commentaires (Rayures ? Bosses ?)
+            { type: 'text', renderer: linkRenderer }, // Lien Google pour les images
+        ];
+    }
+
+}
+
+export {nestedHeaders, getColumns};
