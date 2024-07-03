@@ -39,17 +39,17 @@ function Spreadsheet() {
         socket.on('cellUpdate', (updateData) => {
 
             if (hotInstance) {
-                const { rowIndex, colIndex, newValue } = updateData;
-                console.log(updateData);
-                console.log("rowIndex: " + rowIndex);
-                console.log("colIndex: " + colIndex);
-                console.log("newValue: " + newValue);
-                if (!updateData) {
-                    console.log("setting");
-                    hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
-                } else {
+                // const { rowIndex, colIndex, newValue } = updateData;
+                // console.log(updateData);
+                // console.log("rowIndex: " + rowIndex);
+                // console.log("colIndex: " + colIndex);
+                // console.log("newValue: " + newValue);
+                // if (!updateData) {
+                //     console.log("setting");
+                //     hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
+                // } else {
                     setUpdate(true);
-                }
+                // }
             }
         });
 
