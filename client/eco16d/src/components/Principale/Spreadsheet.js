@@ -36,20 +36,15 @@ function Spreadsheet() {
             console.log( userData?.name + ' Connected to Socket.IO server');
         });
 
-        socket.on('cellUpdate', (updateData) => {
+        socket.on('cellUpdate', (data) => {
 
             if (hotInstance) {
-                // const { rowIndex, colIndex, newValue } = updateData;
-                // console.log(updateData);
-                // console.log("rowIndex: " + rowIndex);
-                // console.log("colIndex: " + colIndex);
-                // console.log("newValue: " + newValue);
-                // if (!updateData) {
-                //     console.log("setting");
-                //     hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
-                // } else {
-                    setUpdate(true);
-                // }
+                const { rowIndex, colIndex, newValue } = data.updateData;
+
+                if (newValue !== data.previousData.value) {
+                    console.log("setting");
+                    hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
+                }
             }
         });
 
@@ -189,6 +184,7 @@ function Spreadsheet() {
                 allowHtml: true,
                 afterChange: (changes, source) => {
                     let updateData;
+                    let previousData;
                     if (source !== 'loadData' && changes) {
                         const updateRequests = changes.map(change => {
                             updateData = {
@@ -196,7 +192,10 @@ function Spreadsheet() {
                                 colIndex: change[1],
                                 newValue: change[3] == null ? "" : change[3]
                             };
-                            socket.emit('cellUpdate', updateData);
+                            previousData = {
+                                value: change[2]
+                            }
+                            socket.emit('cellUpdate', {updateData, previousData});
                             return axios.post('http://localhost:3001/principaleCell', updateData);
                         });
                 
