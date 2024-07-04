@@ -38,7 +38,9 @@ function ColisSpreadsheet() {
             if (hotInstance) {
                 const { rowIndex, colIndex, newValue } = data.updateData;
 
-                if (newValue !== data.previousData.value) {
+                if (newValue !== data.previousData.value 
+                    && year === data.updateData.year 
+                    && quarter === data.updateData.quarter) {
                     console.log("setting");
                     hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
                 }
@@ -122,7 +124,9 @@ function ColisSpreadsheet() {
                     const cellValue = this.getDataAtCell(row, col);
 
                     if (col === 1) {
-                        const cellClass = getColorClassForBMID(cellValue, colisBmids, principaleBmids);
+                        const bmidValues = this.getDataAtCol(col);
+                        const cellClass = getColorClassForBMID(cellValue, bmidValues, principaleBmids);
+                        // const cellClass = getColorClassForBMID(cellValue, colisBmids, principaleBmids);
                         cellProperties.className = cellClass;
                     }
                 },
@@ -142,13 +146,15 @@ function ColisSpreadsheet() {
                             updateData = {
                                 rowIndex: change[0],
                                 colIndex: change[1],
-                                newValue: change[3] == null ? "" : change[3]
+                                newValue: change[3] == null ? "" : change[3],
+                                year: year,
+                                quarter: quarter
                             };
                             previousData = {
                                 value: change[2]
                             }
                             socket.emit('cellUpdate', {updateData, previousData});
-                            return axios.post('http://localhost:3001/colisCell', updateData);
+                            return axios.post('http://localhost:3001/colisCellQuarter', updateData);
                         });
                 
                         axios.all(updateRequests)
@@ -166,7 +172,7 @@ function ColisSpreadsheet() {
         }
 
         return () => {
-            if (hotInstance) {
+            if (hotInstance && !hotInstance.isDestroyed) {
                 try {
                   hotInstance.destroy();
                 } catch (err) {

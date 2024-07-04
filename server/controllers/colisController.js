@@ -100,6 +100,58 @@ exports.updateCell = async (req, res) => {
     }
 };
 
+exports.updateCellQuarterly = async (req, res) => {
+    try {
+        const { rowIndex, colIndex, newValue, year, quarter } = req.body;
+
+        if (!year || !quarter) {
+            return res.status(400).json({ error: 'Year and quarter are required' });
+        }
+
+        if (![1, 2, 3, 4].includes(Number(quarter))) {
+            return res.status(400).json({ error: 'Invalid quarter. Quarter must be between 1 and 4.' });
+        }
+
+        const startMonth = (quarter - 1) * 3 + 1;
+        const endMonth = quarter * 3;
+        const endDayOfMonth = getLastDayOfMonth(endMonth, year);
+
+        const startDateString = constructDateString(startMonth, year, '01');
+        const endDateString = constructDateString(endMonth, year, endDayOfMonth);
+
+        const allDocuments = await Colis.find();
+
+        const filteredRows = allDocuments.filter(doc => {
+            const dateCreee = parseDateString(doc.dateCreee);
+            return dateCreee >= parseDateString(startDateString) && dateCreee <= parseDateString(endDateString);
+        });
+
+        if (filteredRows.length === 0) {
+            return res.status(404).json({ error: 'No data found for the given year and quarter.' });
+        }
+
+        const rowIndexInt = parseInt(rowIndex, 10) || 0;
+
+        if (rowIndexInt >= filteredRows.length) {
+            return res.status(404).json({ error: 'No data found for the given rowIndex.' });
+        }
+
+        const rowData = filteredRows[rowIndexInt];
+        const keys = Object.keys(rowData.toObject());
+        const keyToUpdate = keys[colIndex + 1];
+        
+        rowData[keyToUpdate] = newValue;
+
+        await rowData.save();
+
+        console.log(`Document with _id ${rowData._id} updated with ${keyToUpdate} successfully.`);
+        res.status(200).json({ message: 'Cell updated successfully.' });
+    } catch (error) {
+        console.error('Error updating cell data:', error);
+        res.status(500).json({ error: 'An error occurred while updating cell data.' });
+    }
+};
+
 exports.getAllBMIDs = async (req, res) => {
     try {
         const records = await Colis.find({ BMID: { $ne: "" } }, 'BMID');
