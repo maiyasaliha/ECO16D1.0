@@ -39,7 +39,9 @@ function Spreadsheet() {
             if (hotInstance) {
                 const { rowIndex, colIndex, newValue } = data.updateData;
 
-                if (newValue !== data.previousData.value) {
+                if (newValue !== data.previousData.value 
+                    && year === data.updateData.year 
+                    && quarter === data.updateData.quarter) {
                     console.log("setting");
                     hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
                 }
@@ -190,13 +192,15 @@ function Spreadsheet() {
                             updateData = {
                                 rowIndex: change[0],
                                 colIndex: change[1],
-                                newValue: change[3] == null ? "" : change[3]
+                                newValue: change[3] == null ? "" : change[3],
+                                year: year,
+                                quarter: quarter
                             };
                             previousData = {
                                 value: change[2]
                             }
                             socket.emit('cellUpdate', {updateData, previousData});
-                            return axios.post('http://localhost:3001/principaleCell', updateData);
+                            return axios.post('http://localhost:3001/principaleCellQuarter', updateData);
                         });
                 
                 
