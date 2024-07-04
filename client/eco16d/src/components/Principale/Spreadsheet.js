@@ -18,7 +18,6 @@ function Spreadsheet() {
     const [hotInstance, setHotInstance] = useState(null);
     const [data, setData] = useState([]);
     const [haveData, setHaveData] = useState(false);
-    const [update, setUpdate] = useState(false);
     const hotElementRef = useRef(null);
     const customBorders = [];
     const [rows, setRows] = useState([]);
@@ -91,7 +90,7 @@ function Spreadsheet() {
         };
 
         fetchData();
-    }, [year, quarter, update]);
+    }, [year, quarter]);
 
     for (let row = 0; row < rows; row++) {
         customBorders.push({
@@ -212,7 +211,6 @@ function Spreadsheet() {
             });
 
             setHotInstance(hot);
-            setUpdate(false)
         }
 
         return () => {
