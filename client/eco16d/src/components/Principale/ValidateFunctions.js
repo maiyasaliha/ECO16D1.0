@@ -15,7 +15,7 @@ function isEmptyorNull(value) {
 }
 
 function isTrue(value) {
-    return value === true || value === "TRUE";
+    return value === true || value === "TRUE" || value === "true";
 }
 
 function getCompliance(cellValue, value) {
@@ -44,7 +44,7 @@ function getWaybill(cellValue, value, oow) {
 }
 
 function getWaybill13(cellValue, value) {
-    if (value !== "" || cellValue === "TRUE" || cellValue === true) {
+    if (value !== "" || isTrue(cellValue)) {
         return cellValue;
     } else {
         return "FALSE";
