@@ -29,7 +29,6 @@ function Spreadsheet() {
     const { year, quarter } = useDate();
     const { userData } = useAuth();
 
-
       useEffect(() => {
         socket.on('connect', () => {
             console.log( userData?.name + ' Connected to Socket.IO server');
@@ -142,7 +141,9 @@ function Spreadsheet() {
                     const cellValue = this.getDataAtCell(row, col);
 
                     if (col === 1) {
-                        const cellClass = getColorClassForBMID(cellValue, colisBmids, principaleBmids);
+                        const bmidValues = this.getDataAtCol(col);
+                        const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids);
+                        // const cellClass = getColorClassForBMID(cellValue, colisBmids, principaleBmids);
                         cellProperties.className = cellClass;
                     } else if (col === 7 || col === 18) {
                         let other;
