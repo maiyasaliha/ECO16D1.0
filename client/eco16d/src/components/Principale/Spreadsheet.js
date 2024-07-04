@@ -144,8 +144,8 @@ function Spreadsheet() {
 
                     if (col === 1) {
                         const bmidValues = this.getDataAtCol(col);
-                        const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids);
-                        // const cellClass = getColorClassForBMID(cellValue, colisBmids, principaleBmids);
+                        // const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids);
+                        const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids, principaleBmids);
                         cellProperties.className = cellClass;
                     } else if (col === 7 || col === 18) {
                         let other;
