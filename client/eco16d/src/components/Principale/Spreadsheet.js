@@ -76,19 +76,15 @@ function Spreadsheet() {
                 if (response.data.length === 0) {
                     setHaveData(false);
                 } else {
-                    const extractedDataBeforeMap = response.data;
+                    const extractedData = response.data;
                     const extractedPBMIDsId = principaleBmid.data;
                     const extractedPBMIDs = extractedPBMIDsId.map(set => set.BMID);
-                    console.log(extractedPBMIDsId);
-                    console.log(extractedPBMIDs);
                     const extractedCBMIDs = colisBmid.data;
-                    // const extractedData = extractedDataBeforeMap.map(({ _id, ...rest }) => rest);
-                    // setData(extractedData);
-                    setData(extractedDataBeforeMap);
+                    setData(extractedData);
                     setPrincipaleBmidsId(extractedPBMIDsId);
                     setPrincipaleBmids(extractedPBMIDs);
                     setColisBmids(extractedCBMIDs);
-                    setRows(extractedDataBeforeMap.length);
+                    setRows(extractedData.length);
                     setHaveData(true);
                 }
             } catch (error) {
@@ -153,8 +149,6 @@ function Spreadsheet() {
                         console.log("bmid formatting ")
                         const bmidValues = this.getDataAtCol(col);
                         const id = this.getDataAtCell(row, 22);
-                        console.log(id);
-                        // const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids, principaleBmids);
                         const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids, principaleBmidsId, id);
                         cellProperties.className = cellClass;
                     } else if (col === 7 || col === 18) {

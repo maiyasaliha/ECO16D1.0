@@ -10,8 +10,6 @@ function getColorClassForBMID(value, bmidValues, colisBmids, principaleBmidsId, 
     const colisOccurrences = colisBmids.filter(v => v === value).length;
     const principaleOccurrences = principaleBmidsId.filter(v => v.BMID === value);
     const principaleOccurrencesId = principaleOccurrences.filter(v => v._id !== id);
-    console.log('Principale occurrences:', principaleOccurrences.length);
-    console.log('Principale occurrences with Id:', principaleOccurrencesId.length);
     let colour = false;
     
     if (principaleOccurrencesId.length > 0) {
@@ -27,26 +25,6 @@ function getColorClassForBMID(value, bmidValues, colisBmids, principaleBmidsId, 
         return '';
     }
 }
-
-// function getColorClassForBMID(value, bmidValues, colisBmids) {
-//     if (value == null || value == '') {
-//         return '';
-//     }
-//     if (value.toString().length !== 8) {
-//         return 'custom-cell-br';
-//     }
-//     const occurrences = bmidValues.filter(v => v === value).length;
-//     const colisOccurrences = colisBmids.filter(v => v === value).length;
-    
-//     if (occurrences > 1) {
-//         return 'custom-cell-bo';
-//     } 
-//     if (colisOccurrences > 0) {
-//         return 'custom-cell-bg';
-//     } else {
-//         return '';
-//     }
-// }
 
 function getColorClassForIMEI(value) {
     if (value === 'green') {
