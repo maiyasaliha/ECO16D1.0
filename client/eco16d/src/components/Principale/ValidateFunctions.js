@@ -51,4 +51,14 @@ function getWaybill13(cellValue, value) {
     }
 }
 
-export { validate, getCompliance, getLocked, getWaybill, getWaybill13 };
+let update = false;
+
+function setUpdate() {
+    update = !update;
+}
+
+function getUpdate() {
+    return update;
+}
+
+export { validate, getCompliance, getLocked, getWaybill, getWaybill13, setUpdate, getUpdate };

@@ -1,4 +1,7 @@
+import { setUpdate } from "./ValidateFunctions";
+
 function getColorClassForBMID(value, bmidValues, colisBmids, principaleBmids) {
+    setUpdate(false);
     if (value === null || value === '') {
         return '';
     }
