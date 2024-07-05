@@ -9,6 +9,7 @@ function getColorClassForBMID(value, bmidValues, colisBmids, principaleBmids) {
     const occurrences = bmidValues.filter(v => v === value).length;
     const colisOccurrences = colisBmids.filter(v => v === value).length;
     const principaleOccurrences = principaleBmids.filter(v => v === value).length;
+    // const principaleOccurrences = principaleBmids.includes(value);
     
     if (occurrences > 1 || principaleOccurrences > 1) {
         return 'custom-cell-bo';
