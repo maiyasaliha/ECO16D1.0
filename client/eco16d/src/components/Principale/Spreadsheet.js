@@ -18,6 +18,7 @@ function Spreadsheet() {
     const [hotInstance, setHotInstance] = useState(null);
     const [data, setData] = useState([]);
     const [haveData, setHaveData] = useState(false);
+    const [update, setUpdate] = useState(false);
     const hotElementRef = useRef(null);
     const customBorders = [];
     const [rows, setRows] = useState([]);
@@ -38,7 +39,12 @@ function Spreadsheet() {
 
             if (hotInstance) {
                 const { rowIndex, colIndex, newValue } = data.updateData;
+                console.log(data);
 
+                if (colIndex === 1) {
+                    setUpdate(true);
+                }
+                console.log("socket update is: " + update);
                 if (newValue !== data.previousData.value 
                     && year === data.updateData.year 
                     && quarter === data.updateData.quarter) {
@@ -67,6 +73,11 @@ function Spreadsheet() {
     useEffect(() => {
         const fetchData = async () => {
             try {
+
+                console.log("update is: " + update);
+                if (update) {
+                    console.log("so updating...");
+                }
                 setHaveData(false);
                 const response = await axios.get(`http://localhost:3001/principaleQuarter?year=${year}&quarter=${quarter}`);
                 const principaleBmid = await axios.get('http://localhost:3001/principaleBmids');
@@ -91,7 +102,7 @@ function Spreadsheet() {
         };
 
         fetchData();
-    }, [year, quarter]);
+    }, [year, quarter, update]);
 
     for (let row = 0; row < rows; row++) {
         customBorders.push({
@@ -144,15 +155,8 @@ function Spreadsheet() {
 
                     if (col === 1) {
                         const bmidValues = this.getDataAtCol(col);
-                        // const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids);
-                        getColorClassForBMID(cellValue, bmidValues, colisBmids)
-                            .then(cellClass => {
-                                cellProperties.className = cellClass;
-                                this.render();
-                                console.log(cellClass);
-                            })
-                            .catch(err => console.error('Error getting BMID color class:', err));
-                        // cellProperties.className = cellClass;
+                        const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids, principaleBmids);
+                        cellProperties.className = cellClass;
                     } else if (col === 7 || col === 18) {
                         let other;
                         col === 7 ? (other = 18) : (other = 7);
@@ -222,6 +226,7 @@ function Spreadsheet() {
             });
 
             setHotInstance(hot);
+            setUpdate(false);
         }
 
         return () => {
