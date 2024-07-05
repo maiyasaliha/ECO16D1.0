@@ -7,7 +7,7 @@ import { useSearchParams } from 'react-router-dom';
 import './principaleStyles.css';
 import { nestedHeaders, getColumns } from './PrincipaleSheetStructure';
 import { getColorClassForCb, getColorClassForDd, getColorClassForBMID, getColorClassForIMEI } from './ConditionalColoring'
-import { validate, getCompliance, getLocked, getWaybill, getWaybill13, setUpdate, getUpdate } from './ValidateFunctions';
+import { validate, getCompliance, getLocked, getWaybill, getWaybill13 } from './ValidateFunctions';
 import ToolBar from '../ToolBar';
 import { useDate } from '../../contexts/DateContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -18,11 +18,11 @@ function Spreadsheet() {
     const [hotInstance, setHotInstance] = useState(null);
     const [data, setData] = useState([]);
     const [haveData, setHaveData] = useState(false);
-    // const [update, setUpdate] = useState(false);
     const hotElementRef = useRef(null);
     const customBorders = [];
     const [rows, setRows] = useState([]);
     const [principaleBmids, setPrincipaleBmids] = useState([]);
+    const [principaleBmidsId, setPrincipaleBmidsId] = useState([]);
     const [colisBmids, setColisBmids] = useState([]);
     const [searchParams] = useSearchParams();
 
@@ -40,11 +40,6 @@ function Spreadsheet() {
             if (hotInstance) {
                 const { rowIndex, colIndex, newValue } = data.updateData;
                 console.log(data);
-
-                if (colIndex === 1) {
-                    setUpdate(true);
-                }
-                console.log("socket update is: " + getUpdate());
                 if (newValue !== data.previousData.value 
                     && year === data.updateData.year 
                     && quarter === data.updateData.quarter) {
@@ -71,42 +66,29 @@ function Spreadsheet() {
     }, [hotInstance, userData, data]);
 
     useEffect(() => {
-        const fetchBMID = async () => {
-            try {
-                const principaleBmid = await axios.get('http://localhost:3001/principaleBmids');
-                const extractedPBMIDs = principaleBmid.data;
-                setPrincipaleBmids(extractedPBMIDs);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        }
-        fetchBMID();
-    }, [getUpdate()])
-
-    useEffect(() => {
         const fetchData = async () => {
             try {
-
-                console.log("update is: " + getUpdate());
-                if (getUpdate()) {
-                    console.log("so updating...");
-                }
                 setHaveData(false);
                 const response = await axios.get(`http://localhost:3001/principaleQuarter?year=${year}&quarter=${quarter}`);
-                // const principaleBmid = await axios.get('http://localhost:3001/principaleBmids');
+                const principaleBmid = await axios.get('http://localhost:3001/principaleBmids');
                 const colisBmid = await axios.get('http://localhost:3001/colisBmids');
                 
                 if (response.data.length === 0) {
                     setHaveData(false);
                 } else {
                     const extractedDataBeforeMap = response.data;
-                    // const extractedPBMIDs = principaleBmid.data;
+                    const extractedPBMIDsId = principaleBmid.data;
+                    const extractedPBMIDs = extractedPBMIDsId.map(set => set.BMID);
+                    console.log(extractedPBMIDsId);
+                    console.log(extractedPBMIDs);
                     const extractedCBMIDs = colisBmid.data;
-                    const extractedData = extractedDataBeforeMap.map(({ _id, ...rest }) => rest);
-                    setData(extractedData);
-                    // setPrincipaleBmids(extractedPBMIDs);
+                    // const extractedData = extractedDataBeforeMap.map(({ _id, ...rest }) => rest);
+                    // setData(extractedData);
+                    setData(extractedDataBeforeMap);
+                    setPrincipaleBmidsId(extractedPBMIDsId);
+                    setPrincipaleBmids(extractedPBMIDs);
                     setColisBmids(extractedCBMIDs);
-                    setRows(extractedData.length);
+                    setRows(extractedDataBeforeMap.length);
                     setHaveData(true);
                 }
             } catch (error) {
@@ -152,7 +134,8 @@ function Spreadsheet() {
                 row.IMEIDeReception,
                 row.etatDeLAppareil,
                 row.commentaires,
-                row.lienGooglePourLesImages
+                row.lienGooglePourLesImages,
+                row._id
             ]);
 
             const hot = new Handsontable(hotElementRef.current, {
@@ -168,9 +151,11 @@ function Spreadsheet() {
 
                     if (col === 1) {
                         console.log("bmid formatting ")
-                        setUpdate(true);
                         const bmidValues = this.getDataAtCol(col);
-                        const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids, principaleBmids);
+                        const id = this.getDataAtCell(row, 22);
+                        console.log(id);
+                        // const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids, principaleBmids);
+                        const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids, principaleBmidsId, id);
                         cellProperties.className = cellClass;
                     } else if (col === 7 || col === 18) {
                         let other;

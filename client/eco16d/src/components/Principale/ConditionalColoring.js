@@ -1,7 +1,4 @@
-import { setUpdate } from "./ValidateFunctions";
-
-function getColorClassForBMID(value, bmidValues, colisBmids, principaleBmids) {
-    setUpdate(false);
+function getColorClassForBMID(value, bmidValues, colisBmids, principaleBmidsId, id) {
     if (value === null || value === '') {
         return '';
     }
@@ -11,9 +8,17 @@ function getColorClassForBMID(value, bmidValues, colisBmids, principaleBmids) {
 
     const occurrences = bmidValues.filter(v => v === value).length;
     const colisOccurrences = colisBmids.filter(v => v === value).length;
-    const principaleOccurrences = principaleBmids.filter(v => v === value).length;
+    const principaleOccurrences = principaleBmidsId.filter(v => v.BMID === value);
+    const principaleOccurrencesId = principaleOccurrences.filter(v => v._id !== id);
+    console.log('Principale occurrences:', principaleOccurrences.length);
+    console.log('Principale occurrences with Id:', principaleOccurrencesId.length);
+    let colour = false;
     
-    if (occurrences > 1 || principaleOccurrences > 1) {
+    if (principaleOccurrencesId.length > 0) {
+        console.log("not the same: duplicate")
+        colour = true;
+    }
+    if (occurrences > 1 || principaleOccurrences > 1 || colour) {
         return 'custom-cell-bo';
     } 
     if (colisOccurrences > 0) {
