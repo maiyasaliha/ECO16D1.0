@@ -139,15 +139,20 @@ function Spreadsheet() {
                 customBorders: customBorders,
                 columns: getColumns(organisation),
                 className: 'custom-table',
-                afterGetCellMeta: async function (row, col, cellProperties) {
+                afterGetCellMeta: function (row, col, cellProperties) {
                     const cellValue = this.getDataAtCell(row, col);
 
                     if (col === 1) {
                         const bmidValues = this.getDataAtCol(col);
                         // const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids);
-                        const cellClass = await getColorClassForBMID(cellValue, bmidValues, colisBmids);
-                        cellProperties.className = cellClass;
-                        this.render();
+                        getColorClassForBMID(cellValue, bmidValues, colisBmids)
+                            .then(cellClass => {
+                                cellProperties.className = cellClass;
+                                this.render();
+                                console.log(cellClass);
+                            })
+                            .catch(err => console.error('Error getting BMID color class:', err));
+                        // cellProperties.className = cellClass;
                     } else if (col === 7 || col === 18) {
                         let other;
                         col === 7 ? (other = 18) : (other = 7);
