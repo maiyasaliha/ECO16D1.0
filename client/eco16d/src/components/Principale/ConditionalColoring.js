@@ -1,4 +1,6 @@
-function getColorClassForBMID(value, bmidValues, colisBmids, principaleBmids) {
+import axios from 'axios';
+
+async function getColorClassForBMID(value, bmidValues, colisBmids) {
     if (value === null || value === '') {
         return '';
     }
@@ -6,6 +8,8 @@ function getColorClassForBMID(value, bmidValues, colisBmids, principaleBmids) {
         return 'custom-cell-br';
     }
 
+    const principaleBmid = await axios.get('http://localhost:3001/principaleBmids');
+    const principaleBmids = principaleBmid.data;
     const occurrences = bmidValues.filter(v => v === value).length;
     const colisOccurrences = colisBmids.filter(v => v === value).length;
     const principaleOccurrences = principaleBmids.filter(v => v === value).length;
