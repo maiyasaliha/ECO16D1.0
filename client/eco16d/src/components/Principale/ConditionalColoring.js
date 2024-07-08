@@ -1,4 +1,4 @@
-function getColorClassForBMID(value, bmidValues, colisBmids, principaleBmids) {
+function getColorClassForBMID(value, bmidValues, colisBmids, principaleBmidsId, id) {
     if (value === null || value === '') {
         return '';
     }
@@ -8,10 +8,15 @@ function getColorClassForBMID(value, bmidValues, colisBmids, principaleBmids) {
 
     const occurrences = bmidValues.filter(v => v === value).length;
     const colisOccurrences = colisBmids.filter(v => v === value).length;
-    const principaleOccurrences = principaleBmids.filter(v => v === value).length;
-    // const principaleOccurrences = principaleBmids.includes(value);
+    const principaleOccurrences = principaleBmidsId.filter(v => v.BMID === value);
+    const principaleOccurrencesId = principaleOccurrences.filter(v => v._id !== id);
+    let colour = false;
     
-    if (occurrences > 1 || principaleOccurrences > 1) {
+    if (principaleOccurrencesId.length > 0) {
+        console.log("not the same: duplicate")
+        colour = true;
+    }
+    if (occurrences > 1 || principaleOccurrences > 1 || colour) {
         return 'custom-cell-bo';
     } 
     if (colisOccurrences > 0) {
@@ -20,26 +25,6 @@ function getColorClassForBMID(value, bmidValues, colisBmids, principaleBmids) {
         return '';
     }
 }
-
-// function getColorClassForBMID(value, bmidValues, colisBmids) {
-//     if (value == null || value == '') {
-//         return '';
-//     }
-//     if (value.toString().length !== 8) {
-//         return 'custom-cell-br';
-//     }
-//     const occurrences = bmidValues.filter(v => v === value).length;
-//     const colisOccurrences = colisBmids.filter(v => v === value).length;
-    
-//     if (occurrences > 1) {
-//         return 'custom-cell-bo';
-//     } 
-//     if (colisOccurrences > 0) {
-//         return 'custom-cell-bg';
-//     } else {
-//         return '';
-//     }
-// }
 
 function getColorClassForIMEI(value) {
     if (value === 'green') {

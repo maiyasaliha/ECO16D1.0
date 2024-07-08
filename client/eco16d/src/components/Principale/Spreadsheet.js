@@ -22,6 +22,7 @@ function Spreadsheet() {
     const customBorders = [];
     const [rows, setRows] = useState([]);
     const [principaleBmids, setPrincipaleBmids] = useState([]);
+    const [principaleBmidsId, setPrincipaleBmidsId] = useState([]);
     const [colisBmids, setColisBmids] = useState([]);
     const [searchParams] = useSearchParams();
 
@@ -38,7 +39,7 @@ function Spreadsheet() {
 
             if (hotInstance) {
                 const { rowIndex, colIndex, newValue } = data.updateData;
-
+                console.log(data);
                 if (newValue !== data.previousData.value 
                     && year === data.updateData.year 
                     && quarter === data.updateData.quarter) {
@@ -75,11 +76,12 @@ function Spreadsheet() {
                 if (response.data.length === 0) {
                     setHaveData(false);
                 } else {
-                    const extractedDataBeforeMap = response.data;
-                    const extractedPBMIDs = principaleBmid.data;
+                    const extractedData = response.data;
+                    const extractedPBMIDsId = principaleBmid.data;
+                    const extractedPBMIDs = extractedPBMIDsId.map(set => set.BMID);
                     const extractedCBMIDs = colisBmid.data;
-                    const extractedData = extractedDataBeforeMap.map(({ _id, ...rest }) => rest);
                     setData(extractedData);
+                    setPrincipaleBmidsId(extractedPBMIDsId);
                     setPrincipaleBmids(extractedPBMIDs);
                     setColisBmids(extractedCBMIDs);
                     setRows(extractedData.length);
@@ -128,7 +130,8 @@ function Spreadsheet() {
                 row.IMEIDeReception,
                 row.etatDeLAppareil,
                 row.commentaires,
-                row.lienGooglePourLesImages
+                row.lienGooglePourLesImages,
+                row._id
             ]);
 
             const hot = new Handsontable(hotElementRef.current, {
@@ -143,9 +146,10 @@ function Spreadsheet() {
                     const cellValue = this.getDataAtCell(row, col);
 
                     if (col === 1) {
+                        console.log("bmid formatting ")
                         const bmidValues = this.getDataAtCol(col);
-                        // const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids);
-                        const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids, principaleBmids);
+                        const id = this.getDataAtCell(row, 22);
+                        const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids, principaleBmidsId, id);
                         cellProperties.className = cellClass;
                     } else if (col === 7 || col === 18) {
                         let other;
