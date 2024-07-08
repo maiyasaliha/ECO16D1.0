@@ -1,4 +1,6 @@
 const Principale = require('../models/principaleModel');
+const EditHistory = require('../models/editHistoryModel');
+
 exports.getCellRows = async (req, res) => {
     try {
         const rows = await Principale.find();
@@ -90,7 +92,7 @@ exports.updateCell = async (req, res) => {
 
 exports.updateCellQuarterly = async (req, res) => {
     try {
-        const { rowIndex, colIndex, newValue, year, quarter } = req.body;
+        const { rowIndex, colIndex, newValue, year, quarter, userName } = req.body;
 
         if (!year || !quarter) {
             return res.status(400).json({ error: 'Year and quarter are required' });
@@ -127,10 +129,24 @@ exports.updateCellQuarterly = async (req, res) => {
         const rowData = filteredRows[rowIndexInt];
         const keys = Object.keys(rowData.toObject());
         const keyToUpdate = keys[colIndex + 1];
+        const previousValue = rowData[keyToUpdate];
 
         rowData[keyToUpdate] = newValue;
 
         await rowData.save();
+
+        const editHistory = new EditHistory({
+            rowIndex: rowIndexInt,
+            colIndex: colIndex,
+            previousValue: previousValue,
+            newValue: newValue,
+            editedBy: userName,
+            year: year,
+            quarter: quarter,
+          });
+      
+          await editHistory.save();
+      
 
         console.log(`Document with _id ${rowData._id} updated with ${keyToUpdate} successfully.`);
         res.status(200).json({ message: 'Cell updated successfully.' });

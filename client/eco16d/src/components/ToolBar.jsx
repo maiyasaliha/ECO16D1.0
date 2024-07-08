@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { useDate } from '../contexts/DateContext';
 import './ToolBar.css';
+import EditHistoryOverlay from './EditHistory/EditHistoryOverlay';
 
 function ToolBar({ principale, eco, colis }) {
   const { userData } = useAuth();
   const organisation = userData?.organisation;
-
+  const [showEdit, setShowEdit] = useState(false);
   const { year, setYear, quarter, setQuarter } = useDate();
 
   const onQuarterClick = (selectedQuarter) => () => {
@@ -18,6 +19,10 @@ function ToolBar({ principale, eco, colis }) {
   const onYearClick = (selectedYear) => () => {
     setYear(selectedYear);
   };
+
+  const toggleEditHistory = () => {
+    setShowEdit(!showEdit);
+  }
 
   return (
     <div className='toolbar'>
@@ -38,6 +43,7 @@ function ToolBar({ principale, eco, colis }) {
           <Link to={`/colis?organisation=${organisation}`}>COLIS MANQUANTS</Link>
         </Button>
       </div>
+      <EditHistoryOverlay />
       <div>
         <Button onClick={onYearClick(year - 1)}>{year - 1}</Button>
         <Button

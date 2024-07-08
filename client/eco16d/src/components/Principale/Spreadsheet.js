@@ -7,7 +7,7 @@ import { useSearchParams } from 'react-router-dom';
 import './principaleStyles.css';
 import { nestedHeaders, getColumns } from './PrincipaleSheetStructure';
 import { getColorClassForCb, getColorClassForDd, getColorClassForBMID, getColorClassForIMEI } from './ConditionalColoring'
-import { validate, getCompliance, getLocked, getWaybill, getWaybill13 } from './ValidateFunctions';
+import { validate, getCompliance, getLocked, getWaybill, getWaybill13, getColHeader } from './ValidateFunctions';
 import ToolBar from '../ToolBar';
 import { useDate } from '../../contexts/DateContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -43,7 +43,6 @@ function Spreadsheet() {
                 if (newValue !== data.previousData.value 
                     && year === data.updateData.year 
                     && quarter === data.updateData.quarter) {
-                    console.log("setting");
                     hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
                 }
             }
@@ -146,7 +145,6 @@ function Spreadsheet() {
                     const cellValue = this.getDataAtCell(row, col);
 
                     if (col === 1) {
-                        console.log("bmid formatting ")
                         const bmidValues = this.getDataAtCol(col);
                         const id = this.getDataAtCell(row, 22);
                         const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids, principaleBmidsId, id);
@@ -198,12 +196,18 @@ function Spreadsheet() {
                                 colIndex: change[1],
                                 newValue: change[3] == null ? "" : change[3],
                                 year: year,
-                                quarter: quarter
+                                quarter: quarter,
+                                userName: userData.name
                             };
                             previousData = {
                                 value: change[2]
                             }
+                            console.log(userData?.name + ' made the following edits:');
+                            console.log(previousData.value + " changed to " 
+                                + updateData.newValue + " at row " + (updateData.rowIndex + 1) + ", column " 
+                                + getColHeader(updateData.colIndex));
                             socket.emit('cellUpdate', {updateData, previousData});
+                            console.log(updateData);
                             return axios.post('http://localhost:3001/principaleCellQuarter', updateData);
                         });
                 

@@ -7,6 +7,7 @@ const authRouter = require('./routes/authRoutes');
 const principaleRouter = require('./routes/principaleRoutes');
 const ecoRouter = require('./routes/ecoRoutes');
 const colisRouter = require('./routes/colisRoutes');
+const editHistoryRouter = require('./routes/editHistoryRoutes');
 
 const app = express();
 const server = http.createServer(app);
@@ -29,6 +30,7 @@ app.use('/', authRouter);
 app.use('/', principaleRouter);
 app.use('/', ecoRouter);
 app.use('/', colisRouter);
+app.use('/', editHistoryRouter);
 
 mongoose.connect('mongodb://localhost:27017/ECO16D')
 .then(() => console.log('Connected to MongoDB!'))
@@ -50,7 +52,6 @@ io.on('connection', (socket) => {
     socket.on('cellUpdate', (update) => {
         console.log('Cell update received:', update);
         socket.broadcast.emit('cellUpdate', update);
-        // io.emit('cellUpdate', update);
     });
 
     socket.on('disconnect', () => {
