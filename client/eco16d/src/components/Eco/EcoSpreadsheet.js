@@ -11,8 +11,11 @@ import { useDate } from '../../contexts/DateContext';
 function EcoSpreadsheet() {
     const [hotInstance, setHotInstance] = useState(null);
     const [data, setData] = useState([]);
+    const [haveData, sethaveData] = useState(false);
+    const [length, setlength] = useState(0);
     const hotElementRef = useRef(null);
     const { year, quarter } = useDate();
+    // let haveData = false;
 
 
     useEffect(() => {
@@ -22,7 +25,9 @@ function EcoSpreadsheet() {
                     '1', '2', '3', '4', '5', '6', 
                     '7', '3', '9', '10', '11', '12'
                 ];
-                
+                // haveData = false;
+                sethaveData(false);
+                console.log("Setting to false before getting data " + haveData);
                 const requests = endpoints.map(endpoint => axios.get(`http://localhost:3001/eco?year=${year}&quarter=${quarter}&column=${endpoint}`));
                 const responses = await Promise.all(requests);
                 const returnsBmid = await axios.get(`http://localhost:3001/eco?year=${year}&quarter=${quarter}&column=8`);
@@ -41,7 +46,13 @@ function EcoSpreadsheet() {
                     });
                     return acc;
                 }, []);
-
+                console.log(combinedData.length);
+                if(combinedData.length > 0) {
+                    // haveData = true;
+                    sethaveData(true);
+                    setlength(combinedData.length);
+                }
+                console.log("Setting haveData after getting data " + haveData);
                 setData(combinedData);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -77,14 +88,14 @@ function EcoSpreadsheet() {
                 wordWrap: true,
                 manualColumnResize: true,
             });
-
             setHotInstance(hot);
         }
 
         return () => {
-            if (hotInstance) {
+            if (hotInstance && !hotInstance.isDestroyed) {
                 try {
                   hotInstance.destroy();
+                  console.log("Setting haveData to false afer destroying hot instance " + haveData);
                 } catch (err) {
                   console.error('Error destroying Handsontable instance:', err);
                 }
@@ -96,7 +107,11 @@ function EcoSpreadsheet() {
     return (
         <div>
             <ToolBar eco={true}/>
-            <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
+            {!haveData ? (
+                <div style={{ textAlign: 'center', marginTop: '120px' }}>No data for specified range</div>
+            ) : (
+                <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
+            )}
         </div>
 
     );
