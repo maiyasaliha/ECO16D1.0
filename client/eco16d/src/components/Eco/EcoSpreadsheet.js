@@ -12,7 +12,6 @@ function EcoSpreadsheet() {
     const [hotInstance, setHotInstance] = useState(null);
     const [data, setData] = useState([]);
     const [haveData, sethaveData] = useState(false);
-    const [length, setlength] = useState(0);
     const hotElementRef = useRef(null);
     const { year, quarter } = useDate();
 
@@ -25,7 +24,6 @@ function EcoSpreadsheet() {
                     '7', '3', '9', '10', '11', '12'
                 ];
                 sethaveData(false);
-                console.log("Setting to false before getting data " + haveData);
                 const requests = endpoints.map(endpoint => axios.get(`http://localhost:3001/eco?year=${year}&quarter=${quarter}&column=${endpoint}`));
                 const responses = await Promise.all(requests);
                 const returnsBmid = await axios.get(`http://localhost:3001/eco?year=${year}&quarter=${quarter}&column=8`);
@@ -47,9 +45,7 @@ function EcoSpreadsheet() {
                 console.log(combinedData.length);
                 if(combinedData.length > 0) {
                     sethaveData(true);
-                    setlength(combinedData.length);
                 }
-                console.log("Setting haveData after getting data " + haveData);
                 setData(combinedData);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -99,10 +95,6 @@ function EcoSpreadsheet() {
             }
         };
     }, [data, hotInstance]);
-
-    useEffect(() => {
-        console.log("haveData state changed:", haveData);
-    }, [haveData]);
 
     return (
         <div style={{ position: 'relative', width: '100%', height: '100vh' }}>

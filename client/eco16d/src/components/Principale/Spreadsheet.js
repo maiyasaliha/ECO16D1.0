@@ -146,7 +146,6 @@ function Spreadsheet() {
                     const cellValue = this.getDataAtCell(row, col);
 
                     if (col === 1) {
-                        console.log("bmid formatting ")
                         const bmidValues = this.getDataAtCol(col);
                         const id = this.getDataAtCell(row, 22);
                         const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids, principaleBmidsId, id);
