@@ -184,16 +184,34 @@ function ColisSpreadsheet() {
     }, [data, hotInstance, organisation, principaleBmids, colisBmids, rows]);
 
     return (
-        <div>
-            <ToolBar colis={true}/>
-            {!haveData ? (
-                <div style={{ textAlign: 'center', marginTop: '120px' }}>No data for specified range</div>
-            ) : (
-                <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
-
-            )}
+        <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
+        <ToolBar eco={true}/>
+        <div
+            style={{
+                display: haveData ? 'none' : 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+                height: '100%',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                background: '#ffffff',
+                zIndex: 1,
+            }}
+        >
+            No data for specified range
         </div>
-
+        <div
+            ref={hotElementRef}
+            style={{
+                display: haveData ? 'block' : 'none',
+                width: '100%',
+                height: 'calc(100vh - 70px)',
+                marginTop: '70px',
+            }}
+        ></div>
+    </div>
     );
 }
 

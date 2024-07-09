@@ -15,7 +15,6 @@ function EcoSpreadsheet() {
     const [length, setlength] = useState(0);
     const hotElementRef = useRef(null);
     const { year, quarter } = useDate();
-    // let haveData = false;
 
 
     useEffect(() => {
@@ -25,7 +24,6 @@ function EcoSpreadsheet() {
                     '1', '2', '3', '4', '5', '6', 
                     '7', '3', '9', '10', '11', '12'
                 ];
-                // haveData = false;
                 sethaveData(false);
                 console.log("Setting to false before getting data " + haveData);
                 const requests = endpoints.map(endpoint => axios.get(`http://localhost:3001/eco?year=${year}&quarter=${quarter}&column=${endpoint}`));
@@ -48,7 +46,6 @@ function EcoSpreadsheet() {
                 }, []);
                 console.log(combinedData.length);
                 if(combinedData.length > 0) {
-                    // haveData = true;
                     sethaveData(true);
                     setlength(combinedData.length);
                 }
@@ -95,7 +92,6 @@ function EcoSpreadsheet() {
             if (hotInstance && !hotInstance.isDestroyed) {
                 try {
                   hotInstance.destroy();
-                  console.log("Setting haveData to false afer destroying hot instance " + haveData);
                 } catch (err) {
                   console.error('Error destroying Handsontable instance:', err);
                 }
@@ -104,17 +100,40 @@ function EcoSpreadsheet() {
         };
     }, [data, hotInstance]);
 
-    return (
-        <div>
-            <ToolBar eco={true}/>
-            {!haveData ? (
-                <div style={{ textAlign: 'center', marginTop: '120px' }}>No data for specified range</div>
-            ) : (
-                <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
-            )}
-        </div>
+    useEffect(() => {
+        console.log("haveData state changed:", haveData);
+    }, [haveData]);
 
-    );
+    return (
+        <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
+        <ToolBar eco={true}/>
+        <div
+            style={{
+                display: haveData ? 'none' : 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+                height: '100%',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                background: '#ffffff',
+                zIndex: 1,
+            }}
+        >
+            No data for specified range
+        </div>
+        <div
+            ref={hotElementRef}
+            style={{
+                display: haveData ? 'block' : 'none',
+                width: '100%',
+                height: 'calc(100vh - 70px)',
+                marginTop: '70px',
+            }}
+        ></div>
+    </div>
+);
 }
 
 export default EcoSpreadsheet;
