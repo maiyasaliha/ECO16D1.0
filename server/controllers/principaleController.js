@@ -161,16 +161,6 @@ exports.getCell = async (req, res) => {
         res.status(500).json({ error: 'An error occurred while fetching cell data.' });
     }
 };
-// exports.getAllBMIDs = async (req, res) => {
-//     try {
-//         const records = await Principale.find({ BMID: { $ne: "" } }, 'BMID');
-//         const bmids = records.map(record => record.BMID);
-//         res.status(200).json(bmids);
-//     } catch (error) {
-//         console.error('Error fetching all BMIDs:', error);
-//         res.status(500).json({ message: 'Internal Server Error' });
-//     }
-// };
 
 exports.getAllBMIDs = async (req, res) => {
     try {
@@ -181,5 +171,41 @@ exports.getAllBMIDs = async (req, res) => {
     } catch (error) {
         console.error('Error fetching all BMIDs:', error);
         res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
+function getYearAndQuarter(dateString) {
+    const date = parseDateString(dateString);
+    const year = date.getFullYear();
+    const quarter = Math.floor((date.getMonth() + 3) / 3);
+    return { year, quarter };
+}
+
+exports.getBMIDEntries = async (req, res) => {
+    try {
+        const { bmid, year, quarter } = req.query;
+        if (!bmid || !year || !quarter) {
+            return res.status(400).json({ error: 'BMID, year, and quarter are required' });
+        }
+        if (![1, 2, 3, 4].includes(Number(quarter))) {
+            return res.status(400).json({ error: 'Invalid quarter. Quarter must be between 1 and 4.' });
+        }
+
+        const allDocuments = await Principale.find({ BMID: bmid });
+
+        const filteredDocuments = allDocuments.filter(doc => {
+            const { year: docYear, quarter: docQuarter } = getYearAndQuarter(doc.dateAjoutee);
+            return !(docYear === parseInt(year) && docQuarter === parseInt(quarter));
+        });
+
+        const response = filteredDocuments.map(doc => {
+            const { year: docYear, quarter: docQuarter } = getYearAndQuarter(doc.dateAjoutee);
+            return { _id: doc._id, year: docYear, quarter: docQuarter };
+        });
+
+        res.status(200).json(response);
+    } catch (error) {
+        console.error('Error fetching BMID entries:', error);
+        res.status(500).json({ error: 'Could not fetch BMID entries' });
     }
 };

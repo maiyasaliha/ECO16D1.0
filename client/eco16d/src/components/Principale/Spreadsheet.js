@@ -23,8 +23,14 @@ function Spreadsheet() {
     const [rows, setRows] = useState([]);
     const [principaleBmids, setPrincipaleBmids] = useState([]);
     const [principaleBmidsId, setPrincipaleBmidsId] = useState([]);
+    const [sheetBmid, setsheetBmid] = useState([]);
     const [colisBmids, setColisBmids] = useState([]);
     const [searchParams] = useSearchParams();
+    const [update, setupdate] = useState(0);
+    const [duplicateBmids, setduplicateBmids] = useState([]);
+    const [bmid, setbmid] = useState(null);
+    const [years, setyears] = useState(null);
+    const [quarters, setquarters] = useState(null);
 
     const organisation = searchParams.get('organisation');
     const { year, quarter } = useDate();
@@ -43,8 +49,25 @@ function Spreadsheet() {
                 if (newValue !== data.previousData.value 
                     && year === data.updateData.year 
                     && quarter === data.updateData.quarter) {
-                    console.log("setting");
                     hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
+                }
+                if (colIndex === 1) {
+                    // if (data.updateData.bmid.includes(newValue) || data.updateData.bmid.includes(data.previousData.value)) {
+                        // const yearsAndQuarters = getYearandQuarter(bmid, year, data.updateData.quarter);
+                        setbmid(data.updateData.newValue);
+                        setyears(data.updateData.year);
+                        setquarters(data.updateData.quarter);
+                        console.log("yearsAndQuarters");
+                        console.log(duplicateBmids);
+                        console.log(duplicateBmids.length);
+                        for (let i = 0; i < duplicateBmids.length; i++) {
+                            if (year === duplicateBmids[i].year && quarter === duplicateBmids[i].quarter) {
+                               console.log(duplicateBmids[i].year);
+                               console.log(duplicateBmids[i].quarter);
+                                setupdate((previousData) => previousData + 1);
+                            }
+                        }
+                    // }
                 }
             }
         });
@@ -64,6 +87,23 @@ function Spreadsheet() {
             socket.off('disconnect');
         };
     }, [hotInstance, userData, data]);
+
+    useEffect(() => {
+        const getYearandQuarter = async () => {
+            try {
+                console.log(bmid + " " + years + " " + quarters);
+                if (bmid !== null & years !== null && quarters !== null) {
+                    const response = await axios.get(`http://localhost:3001/principaleBmidsQuarter?bmid=${bmid}&year=${years}&quarter=${quarters}`);
+                    setduplicateBmids(response.data);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        getYearandQuarter();
+    }, [bmid, years, quarters]);
+    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -93,7 +133,7 @@ function Spreadsheet() {
         };
 
         fetchData();
-    }, [year, quarter]);
+    }, [year, quarter, update]);
 
     for (let row = 0; row < rows; row++) {
         customBorders.push({
@@ -147,6 +187,7 @@ function Spreadsheet() {
 
                     if (col === 1) {
                         const bmidValues = this.getDataAtCol(col);
+                        setsheetBmid(bmidValues);
                         const id = this.getDataAtCell(row, 22);
                         const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids, principaleBmidsId, id);
                         cellProperties.className = cellClass;
@@ -197,7 +238,8 @@ function Spreadsheet() {
                                 colIndex: change[1],
                                 newValue: change[3] == null ? "" : change[3],
                                 year: year,
-                                quarter: quarter
+                                quarter: quarter,
+                                bmid: sheetBmid
                             };
                             previousData = {
                                 value: change[2]
@@ -235,32 +277,12 @@ function Spreadsheet() {
 
     return (
         <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
-        <ToolBar eco={true}/>
-        <div
-            style={{
-                display: haveData ? 'none' : 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '100%',
-                height: '100%',
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                background: '#ffffff',
-                zIndex: 1,
-            }}
-        >
-            No data for specified range
-        </div>
-        <div
-            ref={hotElementRef}
-            style={{
-                display: haveData ? 'block' : 'none',
-                width: '100%',
-                height: 'calc(100vh - 70px)',
-                marginTop: '70px',
-            }}
-        ></div>
+        <ToolBar principale={true}/>
+        {!haveData ? (
+            <div style={{ textAlign: 'center', marginTop: '120px' }}>No data for specified range</div>
+        ) : (
+            <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
+        )}
     </div>
     );
 }

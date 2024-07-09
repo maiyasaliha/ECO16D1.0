@@ -13,7 +13,6 @@ function getColorClassForBMID(value, bmidValues, colisBmids, principaleBmidsId, 
     let colour = false;
     
     if (principaleOccurrencesId.length > 0) {
-        console.log("not the same: duplicate")
         colour = true;
     }
     if (occurrences > 1 || principaleOccurrences > 1 || colour) {
