@@ -203,6 +203,9 @@ exports.getBMIDEntries = async (req, res) => {
             return { _id: doc._id, year: docYear, quarter: docQuarter };
         });
 
+        console.log("response");
+        console.log(response);
+        console.log(bmid);
         res.status(200).json(response);
     } catch (error) {
         console.error('Error fetching BMID entries:', error);
