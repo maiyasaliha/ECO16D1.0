@@ -69,7 +69,7 @@ function Spreadsheet() {
             socket.off('connect_error');
             socket.off('disconnect');
         };
-    }, [hotInstance, userData, data]);    
+    }, [hotInstance, userData, data]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -243,13 +243,13 @@ function Spreadsheet() {
 
     return (
         <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
-        <ToolBar principale={true}/>
-        {!haveData ? (
-            <div style={{ textAlign: 'center', marginTop: '120px' }}>No data for specified range</div>
-        ) : (
-            <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
-        )}
-    </div>
+            <ToolBar principale={true}/>
+            {!haveData ? (
+                <div style={{ textAlign: 'center', marginTop: '120px' }}>No data for specified range</div>
+            ) : (
+                <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
+            )}
+        </div>
     );
 }
 

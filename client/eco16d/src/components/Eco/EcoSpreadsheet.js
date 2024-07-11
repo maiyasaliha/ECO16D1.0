@@ -98,31 +98,31 @@ function EcoSpreadsheet() {
 
     return (
         <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
-        <ToolBar eco={true}/>
-        <div
-            style={{
-                display: haveData ? 'none' : 'flex',
-                justifyContent: 'center',
-                width: '100%',
-                height: '100%',
-                position: 'absolute',
-                marginTop: '120px',
-                background: '#ffffff',
-                zIndex: 1,
-            }}
-        >
-            No data for specified range
+            <ToolBar eco={true}/>
+            <div
+                style={{
+                    display: haveData ? 'none' : 'flex',
+                    justifyContent: 'center',
+                    width: '100%',
+                    height: '100%',
+                    position: 'absolute',
+                    marginTop: '120px',
+                    background: '#ffffff',
+                    zIndex: 1,
+                }}
+            >
+                No data for specified range
+            </div>
+            <div
+                ref={hotElementRef}
+                style={{
+                    display: haveData ? 'block' : 'none',
+                    width: '100%',
+                    height: 'calc(100vh - 70px)',
+                    marginTop: '70px',
+                }}
+            ></div>
         </div>
-        <div
-            ref={hotElementRef}
-            style={{
-                display: haveData ? 'block' : 'none',
-                width: '100%',
-                height: 'calc(100vh - 70px)',
-                marginTop: '70px',
-            }}
-        ></div>
-    </div>
 );
 }
 
