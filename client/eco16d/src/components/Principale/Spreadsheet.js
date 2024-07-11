@@ -27,11 +27,6 @@ function Spreadsheet() {
     const [colisBmids, setColisBmids] = useState([]);
     const [searchParams] = useSearchParams();
     const [update, setupdate] = useState(0);
-    const [duplicateBmids, setduplicateBmids] = useState([]);
-    const duplicateBmidRef = useRef([]);
-    const [bmid, setbmid] = useState(null);
-    const [years, setyears] = useState(null);
-    const [quarters, setquarters] = useState(null);
 
     const organisation = searchParams.get('organisation');
     const { year, quarter } = useDate();
@@ -53,27 +48,6 @@ function Spreadsheet() {
                     hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
                 }
                 if (colIndex === 1) {
-                    // if (data.updateData.bmid.includes(newValue) || data.updateData.bmid.includes(data.previousData.value)) {
-                        // setbmid(data.updateData.newValue);
-                        // setyears(data.updateData.year);
-                        // setquarters(data.updateData.quarter);
-                    // if (data.duplicateBmidRef && data.duplicateBmidRef.current) {
-                    //     console.log("yearsAndQuarters");
-                    //     console.log(data.duplicateBmidRef.current);
-                    //     console.log(data.duplicateBmidRef.current.length);
-                    //     console.log("year " + year);
-                    //     console.log("quarter " + quarter);
-                    //     for (let i = 0; i < data.duplicateBmidRef.current.length; i++) {
-                    //         //for evry other copy of the instance
-                    //         if (year === data.duplicateBmidRef.current[i].year && quarter === data.duplicateBmidRef.current[i].quarter) {
-                    //             //if the open window has year and quarter the same as the ones of the copies
-                    //            console.log(data.duplicateBmidRef.current[i].year);
-                    //            console.log(data.duplicateBmidRef.current[i].quarter);
-                    //            //then update 'update' and then refetch data
-                    //            setupdate((previousData) => previousData + 1);
-                    //         }
-                    //     }
-                    // }
                     if (sheetBmid.includes(newValue) || sheetBmid.includes(data.previousData.value)) {
                         setupdate((previousData) => previousData + 1);
                     }
@@ -95,26 +69,7 @@ function Spreadsheet() {
             socket.off('connect_error');
             socket.off('disconnect');
         };
-    }, [hotInstance, userData, data]);
-
-    useEffect(() => {
-        const getYearandQuarter = async () => {
-            try {
-                console.log("yaq for ");
-                console.log(bmid + " " + years + " " + quarters);
-                if (bmid !== null & years !== null && quarters !== null) {
-                    const response = await axios.get(`http://localhost:3001/principaleBmidsQuarter?bmid=${bmid}&year=${years}&quarter=${quarters}`);
-                    setduplicateBmids(response.data);
-                    duplicateBmidRef.current = response.data;
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        }
-
-        getYearandQuarter();
-    }, [bmid, years, quarters]);
-    
+    }, [hotInstance, userData, data]);    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -245,11 +200,6 @@ function Spreadsheet() {
                     let previousData;
                     if (source !== 'loadData' && changes) {
                         const updateRequests = changes.map(change => {
-                            if (change[1] === 1) {
-                                setbmid(change[3] == null ? "" : change[3]);
-                                setyears(year);
-                                setquarters(quarter);
-                            }
                             updateData = {
                                 rowIndex: change[0],
                                 colIndex: change[1],
@@ -261,7 +211,6 @@ function Spreadsheet() {
                                 value: change[2]
                             }
                             socket.emit('cellUpdate', {updateData, previousData});
-                            socket.emit('cellUpdate', {updateData, previousData, duplicateBmidRef});
                             return axios.post('http://localhost:3001/principaleCellQuarter', updateData);
                         });
                 
