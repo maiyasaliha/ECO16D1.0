@@ -22,7 +22,10 @@ function ColisSpreadsheet() {
     const [rows, setRows] = useState([]);
     const [colisBmids, setColisBmids] = useState([]);
     const [principaleBmids, setPrincipaleBmids] = useState([]);
+    const [colisBmidsId, setColisBmidsId] = useState([]);
     const [searchParams] = useSearchParams();
+    const [sheetBmid, setsheetBmid] = useState([]);
+    const [update, setupdate] = useState(0);
 
     const organisation = searchParams.get('organisation');
     const { year, quarter } = useDate();
@@ -43,6 +46,11 @@ function ColisSpreadsheet() {
                     && quarter === data.updateData.quarter) {
                     console.log("setting");
                     hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
+                }
+                if (colIndex === 1) {
+                    if (sheetBmid.includes(newValue) || sheetBmid.includes(data.previousData.value)) {
+                        setupdate((previousData) => previousData + 1);
+                    }
                 }
             }
         });
@@ -69,18 +77,19 @@ function ColisSpreadsheet() {
                 setHaveData(false);
                 const response = await axios.get(`http://localhost:3001/colisQuarter?year=${year}&quarter=${quarter}`);
                 const principaleBmid = await axios.get('http://localhost:3001/principaleBmids');
-                const colisBmid = await axios.get('http://localhost:3001/colisBmids');
+                const colisBmid = await axios.get('http://localhost:3001/colisBmidsId');
 
                 if (response.data.length === 0) {
                     setHaveData(false);
                 } else {
-                    const extractedDataBeforeMap = response.data;
+                    const extractedData = response.data;
                     const extractedPBMIDs = principaleBmid.data;
-                    const extractedCBMIDs = colisBmid.data;
-                    const extractedData = extractedDataBeforeMap.map(({ _id, ...rest }) => rest);
+                    const extractedCBMIDsId = colisBmid.data;
+                    const extractedCBMIDs = extractedCBMIDsId.map(set => set.BMID);
                     setData(extractedData);
                     setPrincipaleBmids(extractedPBMIDs);
                     setColisBmids(extractedCBMIDs);
+                    setColisBmidsId(extractedCBMIDsId);
                     setRows(extractedData.length);
                     setHaveData(true);
                 }
@@ -90,7 +99,7 @@ function ColisSpreadsheet() {
         };
 
         fetchData();
-    }, [year, quarter]);
+    }, [year, quarter, update]);
 
     for (let row = 0; row < rows; row++) {
         customBorders.push({
@@ -109,7 +118,8 @@ function ColisSpreadsheet() {
                 row.dateCreee,
                 row.BMID,
                 row.nomDuClient,
-                row.informations
+                row.informations,
+                row._id
             ]);
 
             const hot = new Handsontable(hotElementRef.current, {
@@ -125,8 +135,9 @@ function ColisSpreadsheet() {
 
                     if (col === 1) {
                         const bmidValues = this.getDataAtCol(col);
-                        // const cellClass = getColorClassForBMID(cellValue, bmidValues, principaleBmids);
-                        const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids, principaleBmids);
+                        setsheetBmid(bmidValues);
+                        const id = this.getDataAtCell(row, 4);
+                        const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmidsId, principaleBmids, id);
                         cellProperties.className = cellClass;
                     }
                 },
