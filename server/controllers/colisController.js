@@ -163,3 +163,15 @@ exports.getAllBMIDs = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
+
+exports.getAllBMIDsId = async (req, res) => {
+    try {
+        const records = await Colis.find({ BMID: { $ne: "" } }, '_id BMID');
+        const bmids = records.map(record => ({ _id: record._id, BMID: record.BMID }));
+
+        res.status(200).json(bmids);
+    } catch (error) {
+        console.error('Error fetching all BMIDs:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
