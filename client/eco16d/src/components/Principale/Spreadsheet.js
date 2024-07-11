@@ -23,8 +23,10 @@ function Spreadsheet() {
     const [rows, setRows] = useState([]);
     const [principaleBmids, setPrincipaleBmids] = useState([]);
     const [principaleBmidsId, setPrincipaleBmidsId] = useState([]);
+    const [sheetBmid, setsheetBmid] = useState([]);
     const [colisBmids, setColisBmids] = useState([]);
     const [searchParams] = useSearchParams();
+    const [update, setupdate] = useState(0);
 
     const organisation = searchParams.get('organisation');
     const { year, quarter } = useDate();
@@ -39,11 +41,15 @@ function Spreadsheet() {
 
             if (hotInstance) {
                 const { rowIndex, colIndex, newValue } = data.updateData;
-                console.log(data);
                 if (newValue !== data.previousData.value 
                     && year === data.updateData.year 
                     && quarter === data.updateData.quarter) {
                     hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
+                }
+                if (colIndex === 1) {
+                    if (sheetBmid.includes(newValue) || sheetBmid.includes(data.previousData.value)) {
+                        setupdate((previousData) => previousData + 1);
+                    }
                 }
             }
         });
@@ -69,7 +75,7 @@ function Spreadsheet() {
             try {
                 setHaveData(false);
                 const response = await axios.get(`http://localhost:3001/principaleQuarter?year=${year}&quarter=${quarter}`);
-                const principaleBmid = await axios.get('http://localhost:3001/principaleBmids');
+                const principaleBmid = await axios.get('http://localhost:3001/principaleBmidsId');
                 const colisBmid = await axios.get('http://localhost:3001/colisBmids');
                 
                 if (response.data.length === 0) {
@@ -92,7 +98,7 @@ function Spreadsheet() {
         };
 
         fetchData();
-    }, [year, quarter]);
+    }, [year, quarter, update]);
 
     for (let row = 0; row < rows; row++) {
         customBorders.push({
@@ -143,9 +149,9 @@ function Spreadsheet() {
                 className: 'custom-table',
                 afterGetCellMeta: function (row, col, cellProperties) {
                     const cellValue = this.getDataAtCell(row, col);
-
                     if (col === 1) {
                         const bmidValues = this.getDataAtCol(col);
+                        setsheetBmid(bmidValues);
                         const id = this.getDataAtCell(row, 22);
                         const cellClass = getColorClassForBMID(cellValue, bmidValues, colisBmids, principaleBmidsId, id);
                         cellProperties.className = cellClass;
@@ -239,15 +245,14 @@ function Spreadsheet() {
     }, [data, hotInstance, organisation, colisBmids, principaleBmids, rows]);
 
     return (
-        <div>
-            <ToolBar principale={true} />
+        <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
+            <ToolBar principale={true}/>
             {!haveData ? (
                 <div style={{ textAlign: 'center', marginTop: '120px' }}>No data for specified range</div>
             ) : (
                 <div ref={hotElementRef} style={{ width: '100%', height: 'calc(100vh - 70px)', marginTop: '70px' }}></div>
             )}
         </div>
-
     );
 }
 
