@@ -41,7 +41,6 @@ function Spreadsheet() {
 
             if (hotInstance) {
                 const { rowIndex, colIndex, newValue } = data.updateData;
-                console.log(data);
                 if (newValue !== data.previousData.value 
                     && year === data.updateData.year 
                     && quarter === data.updateData.quarter) {
@@ -73,10 +72,8 @@ function Spreadsheet() {
 
     useEffect(() => {
         const fetchData = async () => {
-            console.log("fetching data");
             try {
                 setHaveData(false);
-                console.log("fetching data inside");
                 const response = await axios.get(`http://localhost:3001/principaleQuarter?year=${year}&quarter=${quarter}`);
                 const principaleBmid = await axios.get('http://localhost:3001/principaleBmidsId');
                 const colisBmid = await axios.get('http://localhost:3001/colisBmids');
