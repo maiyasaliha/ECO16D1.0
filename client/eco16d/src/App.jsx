@@ -1,18 +1,20 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { Register } from './pages/Register';
 import { Login } from './pages/Login';
 import Spreadsheet from './components/Principale/Spreadsheet';
 import { useAuth } from './contexts/AuthContext';
+import { DateProvider } from './contexts/DateContext';
 import HomePage from './pages/HomePage';
 import ColisSpreadsheet from './components/Colis/ColisSpreadsheet';
 import EcoSpreadsheet from './components/Eco/EcoSpreadsheet';
 
 function App() {
-  const [organisation, setOrganisation] = useState(null)
   const { isAuthenticated } = useAuth();
+
   return (
-    <Router>
+    <DateProvider>
+      <Router>
         <Routes>
             <Route 
               path= '/' 
@@ -51,7 +53,8 @@ function App() {
               }  
             />
         </Routes>
-    </Router>
+      </Router>
+    </DateProvider>
   )
 }
 
