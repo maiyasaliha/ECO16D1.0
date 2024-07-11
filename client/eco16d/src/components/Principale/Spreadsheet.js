@@ -78,7 +78,7 @@ function Spreadsheet() {
                 setHaveData(false);
                 console.log("fetching data inside");
                 const response = await axios.get(`http://localhost:3001/principaleQuarter?year=${year}&quarter=${quarter}`);
-                const principaleBmid = await axios.get('http://localhost:3001/principaleBmids');
+                const principaleBmid = await axios.get('http://localhost:3001/principaleBmidsId');
                 const colisBmid = await axios.get('http://localhost:3001/colisBmids');
                 
                 if (response.data.length === 0) {
