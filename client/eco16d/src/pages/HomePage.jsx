@@ -36,7 +36,7 @@ function HomePage() {
                             PRINCIPALE
                         </Link>
                     </Button>
-                    { organisation == 'ECO' ?
+                    { organisation === 'ECO' ?
                     <Button style={{ marginRight: '10px'}}>
                         <Link to="/eco">
                             ECO

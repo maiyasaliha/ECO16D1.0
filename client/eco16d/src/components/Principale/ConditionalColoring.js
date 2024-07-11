@@ -1,14 +1,21 @@
-function getColorClassForBMID(value, colisBmids, principaleBmids) {
-    if (value == null || value == '') {
+function getColorClassForBMID(value, bmidValues, colisBmids, principaleBmidsId, id) {
+    if (value === null || value === '') {
         return '';
     }
     if (value.toString().length !== 8) {
         return 'custom-cell-br';
     }
+
+    const occurrences = bmidValues.filter(v => v === value).length;
     const colisOccurrences = colisBmids.filter(v => v === value).length;
-    const principaleOccurrences = principaleBmids.filter(v => v === value).length;
+    const principaleOccurrences = principaleBmidsId.filter(v => v.BMID === value);
+    const principaleOccurrencesId = principaleOccurrences.filter(v => v._id !== id);
+    let colour = false;
     
-    if (principaleOccurrences > 1) {
+    if (principaleOccurrencesId.length > 0) {
+        colour = true;
+    }
+    if (occurrences > 1 || principaleOccurrences > 1 || colour) {
         return 'custom-cell-bo';
     } 
     if (colisOccurrences > 0) {

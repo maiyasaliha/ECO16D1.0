@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { Register } from './pages/Register';
 import { Login } from './pages/Login';
@@ -48,9 +48,9 @@ function App() {
             />
             <Route 
               path= '/eco' 
-              element={ <EcoSpreadsheet />}
-              //   isAuthenticated ? <EcoSpreadsheet /> : <Navigate to='/login' />
-              // }  
+              element={
+                isAuthenticated ? <EcoSpreadsheet /> : <Navigate to='/login' />
+              }  
             />
         </Routes>
       </Router>

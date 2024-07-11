@@ -1,14 +1,29 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const http = require('http');
+const socketIo = require('socket.io');
 const authRouter = require('./routes/authRoutes');
 const principaleRouter = require('./routes/principaleRoutes');
 const ecoRouter = require('./routes/ecoRoutes');
 const colisRouter = require('./routes/colisRoutes');
+
 const app = express();
+const server = http.createServer(app);
 
 app.use(cors());
 app.use(express.json());
+
+const io = socketIo(server, {
+    cors: {
+        origin: 'http://localhost:3000',
+        methods: ['GET', 'POST']
+    }
+});
+
+app.get('/', (req, res) => {
+    res.send('Socket.IO server is running.');
+});
 
 app.use('/', authRouter);
 app.use('/', principaleRouter);
@@ -29,7 +44,20 @@ app.use((err, req, res, next) => {
     });
 });
 
+io.on('connection', (socket) => {
+    console.log('A user connected');
+    
+    socket.on('cellUpdate', (update) => {
+        console.log('Cell update received:', update);
+        socket.broadcast.emit('cellUpdate', update);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('A user disconnected');
+    });
+});
+
 const PORT = 3001;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
