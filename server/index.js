@@ -50,7 +50,6 @@ io.on('connection', (socket) => {
     socket.on('cellUpdate', (update) => {
         console.log('Cell update received:', update);
         socket.broadcast.emit('cellUpdate', update);
-        // io.emit('cellUpdate', update);
     });
 
     socket.on('disconnect', () => {
