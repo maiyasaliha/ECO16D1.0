@@ -52,28 +52,32 @@ function Spreadsheet() {
                     && quarter === data.updateData.quarter) {
                     hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
                 }
-                // if (colIndex === 1) {
-                //     // if (data.updateData.bmid.includes(newValue) || data.updateData.bmid.includes(data.previousData.value)) {
-                //         // setbmid(data.updateData.newValue);
-                //         // setyears(data.updateData.year);
-                //         // setquarters(data.updateData.quarter);
-                //         console.log("yearsAndQuarters");
-                //         console.log(data.duplicateBmidRef.current);
-                //         console.log(data.duplicateBmidRef.current.length);
-                //         console.log("year " + year);
-                //         console.log("quarter " + quarter);
-                //         for (let i = 0; i < data.duplicateBmidRef.current.length; i++) {
-                //             //for evry other copy of the instance
-                //             if (year === data.duplicateBmidRef.current[i].year && quarter === data.duplicateBmidRef.current[i].quarter) {
-                //                 //if the open window has year and quarter the same as the ones of the copies
-                //                console.log(data.duplicateBmidRef.current[i].year);
-                //                console.log(data.duplicateBmidRef.current[i].quarter);
-                //                //then update 'update' and then refetch data
-                //                setupdate((previousData) => previousData + 1);
-                //             }
-                //         }
-                //     // }
-                // }
+                if (colIndex === 1) {
+                    // if (data.updateData.bmid.includes(newValue) || data.updateData.bmid.includes(data.previousData.value)) {
+                        // setbmid(data.updateData.newValue);
+                        // setyears(data.updateData.year);
+                        // setquarters(data.updateData.quarter);
+                    // if (data.duplicateBmidRef && data.duplicateBmidRef.current) {
+                    //     console.log("yearsAndQuarters");
+                    //     console.log(data.duplicateBmidRef.current);
+                    //     console.log(data.duplicateBmidRef.current.length);
+                    //     console.log("year " + year);
+                    //     console.log("quarter " + quarter);
+                    //     for (let i = 0; i < data.duplicateBmidRef.current.length; i++) {
+                    //         //for evry other copy of the instance
+                    //         if (year === data.duplicateBmidRef.current[i].year && quarter === data.duplicateBmidRef.current[i].quarter) {
+                    //             //if the open window has year and quarter the same as the ones of the copies
+                    //            console.log(data.duplicateBmidRef.current[i].year);
+                    //            console.log(data.duplicateBmidRef.current[i].quarter);
+                    //            //then update 'update' and then refetch data
+                    //            setupdate((previousData) => previousData + 1);
+                    //         }
+                    //     }
+                    // }
+                    if (sheetBmid.includes(newValue) || sheetBmid.includes(data.previousData.value)) {
+                        setupdate((previousData) => previousData + 1);
+                    }
+                }
             }
         });
 
@@ -193,7 +197,6 @@ function Spreadsheet() {
                 className: 'custom-table',
                 afterGetCellMeta: function (row, col, cellProperties) {
                     const cellValue = this.getDataAtCell(row, col);
-
                     if (col === 1) {
                         const bmidValues = this.getDataAtCol(col);
                         setsheetBmid(bmidValues);
@@ -242,11 +245,11 @@ function Spreadsheet() {
                     let previousData;
                     if (source !== 'loadData' && changes) {
                         const updateRequests = changes.map(change => {
-                            // if (change[1] === 1) {
-                            //     setbmid(change[3] == null ? "" : change[3]);
-                            //     setyears(year);
-                            //     setquarters(quarter);
-                            // }
+                            if (change[1] === 1) {
+                                setbmid(change[3] == null ? "" : change[3]);
+                                setyears(year);
+                                setquarters(quarter);
+                            }
                             updateData = {
                                 rowIndex: change[0],
                                 colIndex: change[1],
@@ -258,7 +261,7 @@ function Spreadsheet() {
                                 value: change[2]
                             }
                             socket.emit('cellUpdate', {updateData, previousData});
-                            // socket.emit('cellUpdate', {updateData, previousData, duplicateBmidRef});
+                            socket.emit('cellUpdate', {updateData, previousData, duplicateBmidRef});
                             return axios.post('http://localhost:3001/principaleCellQuarter', updateData);
                         });
                 
