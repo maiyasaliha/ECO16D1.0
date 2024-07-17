@@ -135,18 +135,19 @@ exports.updateCellQuarterly = async (req, res) => {
 
         await rowData.save();
 
-        const editHistory = new EditHistory({
-            rowIndex: rowIndexInt,
-            colIndex: colIndex,
-            previousValue: previousValue,
-            newValue: newValue,
-            editedBy: userName,
-            year: year,
-            quarter: quarter,
-          });
-      
-          await editHistory.save();
-      
+        if (previousValue !== newValue) {
+            const editHistory = new EditHistory({
+                rowIndex: rowIndexInt,
+                colIndex: colIndex,
+                previousValue: previousValue,
+                newValue: newValue,
+                editedBy: userName,
+                year: year,
+                quarter: quarter,
+              });
+          
+              await editHistory.save();
+        }    
 
         console.log(`Document with _id ${rowData._id} updated with ${keyToUpdate} successfully.`);
         res.status(200).json({ message: 'Cell updated successfully.' });
