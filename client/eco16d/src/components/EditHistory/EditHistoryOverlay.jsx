@@ -25,7 +25,7 @@ function EditHistoryOverlay() {
                 Edit History
             </Button>
             <Modal
-                visible={visible}
+                open={visible}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 footer={null}
