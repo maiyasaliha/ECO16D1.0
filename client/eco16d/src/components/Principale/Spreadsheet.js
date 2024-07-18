@@ -147,6 +147,7 @@ function Spreadsheet() {
                 customBorders: customBorders,
                 columns: getColumns(organisation),
                 className: 'custom-table',
+                dropdownMenu: true,
                 afterGetCellMeta: function (row, col, cellProperties) {
                     const cellValue = this.getDataAtCell(row, col);
                     if (col === 1) {
@@ -195,7 +196,7 @@ function Spreadsheet() {
                     let updateData;
                     let previousData;
                     if (source !== 'loadData' && changes) {
-                        const updateRequests = changes.map(change => {
+                        const updateRequests = changes.map(async change => {
                             updateData = {
                                 rowIndex: change[0],
                                 colIndex: change[1],
@@ -207,25 +208,40 @@ function Spreadsheet() {
                             previousData = {
                                 value: change[2]
                             }
-                            console.log(userData?.name + ' made the following edits:');
-                            console.log(previousData.value + " changed to " 
-                                + updateData.newValue + " at row " + (updateData.rowIndex + 1) + ", column " 
-                                + getColHeader(updateData.colIndex));
-                            socket.emit('cellUpdate', {updateData, previousData});
-                            console.log(updateData);
-                            return axios.post('http://localhost:3001/principaleCellQuarter', updateData);
+                            try {
+                                await axios.post('http://localhost:3001/principaleHistory', {
+                                    rowIndex: updateData.rowIndex,
+                                    colIndex: updateData.colIndex,
+                                    previousValue: previousData.value,
+                                    newValue: updateData.newValue,
+                                    userName: updateData.userName,
+                                    year: updateData.year,
+                                    quarter: updateData.quarter
+                                });
+
+                                console.log(userData?.name + ' made the following edits:');
+                                console.log(previousData.value + " changed to " 
+                                    + updateData.newValue + " at row " + (updateData.rowIndex + 1) + ", column " 
+                                    + getColHeader(updateData.colIndex));
+                                
+                                console.log(updateData);                                
+                                socket.emit('cellUpdate', { updateData, previousData });
+                                await axios.post('http://localhost:3001/principaleCellQuarter', updateData);
+
+                            } catch (err) {
+                                console.error('Error logging edit history or updating data:', err);
+                            }
                         });
-                
-                
-                        axios.all(updateRequests)
-                            .then(axios.spread((...responses) => {
+
+                        Promise.all(updateRequests)
+                            .then(() => {
                                 console.log('All cells updated successfully.');
-                            }))
+                            })
                             .catch(err => {
                                 console.log('Error updating data:', err);
                             });
                     }
-                }                
+                }
             });
 
             setHotInstance(hot);

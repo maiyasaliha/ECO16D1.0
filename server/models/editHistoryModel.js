@@ -11,11 +11,9 @@ const userSchema = new mongoose.Schema({
     },
     previousValue: {
         type: String,
-        required: true,
     },
     newValue: {
         type: String,
-        required: true,
     },
     editedBy: {
         type: String,

@@ -25,8 +25,8 @@ exports.getCellRowsQuarter = async (req, res) => {
         const startDateString = constructDateString(startMonth, year, '01');
         const endDateString = constructDateString(endMonth, year, endDayOfMonth);
 
-        console.log('Start Date:', startDateString);
-        console.log('End Date:', endDateString);
+        // console.log('Start Date:', startDateString);
+        // console.log('End Date:', endDateString);
 
         const allDocuments = await Principale.find();
 
@@ -92,7 +92,7 @@ exports.updateCell = async (req, res) => {
 
 exports.updateCellQuarterly = async (req, res) => {
     try {
-        const { rowIndex, colIndex, newValue, year, quarter, userName } = req.body;
+        const { rowIndex, colIndex, newValue, year, quarter } = req.body;
 
         if (!year || !quarter) {
             return res.status(400).json({ error: 'Year and quarter are required' });
@@ -131,29 +131,53 @@ exports.updateCellQuarterly = async (req, res) => {
         const keyToUpdate = keys[colIndex + 1];
         const previousValue = rowData[keyToUpdate];
 
-        rowData[keyToUpdate] = newValue;
-
-        await rowData.save();
-
         if (previousValue !== newValue) {
-            const editHistory = new EditHistory({
-                rowIndex: rowIndexInt,
-                colIndex: colIndex,
-                previousValue: previousValue,
-                newValue: newValue,
-                editedBy: userName,
-                year: year,
-                quarter: quarter,
-              });
-          
-              await editHistory.save();
-        }    
+            rowData[keyToUpdate] = newValue;
+            await rowData.save();
+            console.log(`Document with _id ${rowData._id} updated with ${keyToUpdate} successfully.`);
+            res.status(200).json({ message: 'Cell updated successfully.' });
+        } else {
+            console.log('New value is same as previous value.');
+            return res.status(200).json({ message: 'No change in value, value not updated.' });
+        }
 
-        console.log(`Document with _id ${rowData._id} updated with ${keyToUpdate} successfully.`);
-        res.status(200).json({ message: 'Cell updated successfully.' });
     } catch (error) {
         console.error('Error updating cell data:', error);
         res.status(500).json({ error: 'An error occurred while updating cell data.' });
+    }
+};
+
+exports.logEditHistory = async (req, res) => {
+    try {
+        const { rowIndex, colIndex, previousValue, newValue, userName, year, quarter } = req.body;
+
+        console.log("request is");
+        console.log(req.body);
+        if (previousValue === undefined || previousValue === null) {
+            return res.status(400).json({ error: 'previousValue is required' });
+        }
+
+        if (previousValue !== newValue) {
+            const editHistory = new EditHistory({
+                rowIndex,
+                colIndex,
+                previousValue,
+                newValue,
+                editedBy: userName,
+                year,
+                quarter,
+            });
+
+            await editHistory.save();
+            console.log('Edit history saved successfully.');
+            return res.status(200).json({ message: 'Edit history logged successfully.' });
+        } else {
+            console.log('No change in value, edit history not logged.');
+            return res.status(200).json({ message: 'No change in value, edit history not logged.' });
+        }
+    } catch (error) {
+        console.error('Error logging edit history:', error);
+        res.status(500).json({ error: 'An error occurred while logging edit history.' });
     }
 };
 
