@@ -175,3 +175,14 @@ exports.getAllBMIDsId = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
+
+exports.add1000CellRow = async (req, res) => {
+    try {
+        const records = Array(1000).fill({});
+    
+        await Colis.insertMany(records);
+        res.status(201).send({ message: '1000 records created successfully' });
+      } catch (error) {
+        res.status(500).send({ message: 'Error creating records', error });
+      }
+};

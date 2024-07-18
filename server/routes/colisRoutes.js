@@ -10,5 +10,7 @@ router.post('/colisCell', colisController.updateCell);
 router.post('/colisCellQuarter', colisController.updateCellQuarterly);
 router.get('/colisBmids', colisController.getAllBMIDs);
 router.get('/colisBmidsId', colisController.getAllBMIDsId);
+router.post('/1000colisRows', colisController.add1000CellRow);
+
 
 module.exports = router;
