@@ -185,7 +185,6 @@ function Spreadsheet() {
                     }
                 },
                 contextMenu: true,
-                dropdownMenu: true,
                 licenseKey: 'non-commercial-and-evaluation',
                 language: 'en-US',
                 manualRowResize: true,
