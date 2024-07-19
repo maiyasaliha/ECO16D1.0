@@ -27,6 +27,7 @@ function Spreadsheet() {
     const [colisBmids, setColisBmids] = useState([]);
     const [searchParams] = useSearchParams();
     const [update, setupdate] = useState(0);
+    const [version, setversion] = useState(0);
 
     const organisation = searchParams.get('organisation');
     const { year, quarter } = useDate();
@@ -82,6 +83,7 @@ function Spreadsheet() {
                     setHaveData(false);
                 } else {
                     const extractedData = response.data;
+                    // console.log(extractedData);
                     const extractedPBMIDsId = principaleBmid.data;
                     const extractedPBMIDs = extractedPBMIDsId.map(set => set.BMID);
                     const extractedCBMIDs = colisBmid.data;
@@ -111,6 +113,20 @@ function Spreadsheet() {
         });
     }
 
+    useEffect(() => {
+        const saveData = async () => {
+            if (data) {
+                const version = {
+                    dataArray: data,
+                    userName: userData?.name
+                }
+                axios.post('http://localhost:3001/version', version);
+            }
+        }
+        saveData();
+
+    }, [version])
+    
     useEffect(() => {
         if (hotElementRef.current && data.length > 0 && !hotInstance) {
             const mappedData = data.map(row => [
@@ -208,6 +224,7 @@ function Spreadsheet() {
                                 value: change[2]
                             }
                             socket.emit('cellUpdate', {updateData, previousData});
+                            setversion(prevVersion => prevVersion + 1);
                             return axios.post('http://localhost:3001/principaleCellQuarter', updateData);
                         });
                 
