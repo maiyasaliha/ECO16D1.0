@@ -31,8 +31,21 @@ exports.getCellRowsQuarter = async (req, res) => {
         const allDocuments = await Principale.find();
 
         const filteredRows = allDocuments.filter(doc => {
+            console.log("Document:");
+            console.log(doc);
+
             const dateAjoutee = parseDateString(doc.dateAjoutee);
-            return dateAjoutee >= parseDateString(startDateString) && dateAjoutee <= parseDateString(endDateString);
+            const isWithinDateRange = dateAjoutee >= parseDateString(startDateString) && dateAjoutee <= parseDateString(endDateString);
+            console.log('Date Added:', dateAjoutee);
+            console.log('Is Within Date Range:', isWithinDateRange);
+
+            const isRowEmpty = Object.values(doc).every(value => {
+                console.log('Value:', value);
+                return value === null || value === '' || value === undefined;
+            });
+            console.log('Is Row Empty:', isRowEmpty);
+
+            return isWithinDateRange || isRowEmpty;
         });
 
         console.log('Filtered Rows:', filteredRows.length);
@@ -226,3 +239,17 @@ exports.getAllBMIDsId = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
+<<<<<<< Updated upstream
+=======
+
+exports.add1000CellRow = async (req, res) => {
+    try {
+        const records = Array(10).fill({});
+    
+        await Principale.insertMany(records);
+        res.status(201).send({ message: '1000 records created successfully' });
+      } catch (error) {
+        res.status(500).send({ message: 'Error creating records', error });
+      }
+};
+>>>>>>> Stashed changes
