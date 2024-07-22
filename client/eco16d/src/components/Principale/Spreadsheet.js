@@ -114,16 +114,18 @@ function Spreadsheet() {
     }
 
     useEffect(() => {
-        const saveData = async () => {
-            if (data) {
+        if (data) {
+            const saveData = async () => {
                 const version = {
                     dataArray: data,
                     userName: userData?.name
                 }
+                console.log("saving version");
+                console.log(version);
                 axios.post('http://localhost:3001/version', version);
             }
+            saveData();
         }
-        saveData();
 
     }, [version])
     
