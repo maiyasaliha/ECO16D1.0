@@ -25,3 +25,18 @@ exports.saveVersion = async (req, res) => {
         res.status(500).json({ error: 'An error occurred while saving version.' });
     }
 };
+
+exports.getAllVersions = async (req, res) => {
+    try {
+        const versions = await Version.find().sort({ versionNumber: -1 });
+        if (versions.length === 0) {
+            return res.status(404).json({ message: 'No versions found.' });
+        }
+
+        console.log(versions.length);
+        res.status(200).json(versions);
+    } catch (error) {
+        console.error('Error fetching versions:', error);
+        res.status(500).json({ error: 'An error occurred while fetching the versions.' });
+    }
+};

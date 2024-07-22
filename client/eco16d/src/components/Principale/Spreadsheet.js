@@ -114,7 +114,7 @@ function Spreadsheet() {
     }
 
     useEffect(() => {
-        if (data) {
+        if (data.length !== 0) {
             const saveData = async () => {
                 const version = {
                     dataArray: data,
