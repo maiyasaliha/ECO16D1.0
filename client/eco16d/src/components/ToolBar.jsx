@@ -39,7 +39,7 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
           <Link to={`/colis?organisation=${organisation}`}>COLIS MANQUANTS</Link>
         </Button>
       </div>
-      <VersionHistoryOverlay selectedCell={selectedCell} />
+      {!eco ? <VersionHistoryOverlay selectedCell={selectedCell} /> : null}
       <div>
         <Button onClick={onYearClick(year - 1)}>{year - 1}</Button>
         <Button
