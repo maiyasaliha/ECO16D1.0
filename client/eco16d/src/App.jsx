@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { Register } from './pages/Register';
 import { Login } from './pages/Login';
@@ -11,6 +11,7 @@ import EcoSpreadsheet from './components/Eco/EcoSpreadsheet';
 
 function App() {
   const { isAuthenticated } = useAuth();
+  const [selectedCell, setSelectedCell] = useState(null);
 
   return (
     <DateProvider>
@@ -37,7 +38,7 @@ function App() {
             <Route 
               path= '/principale' 
               element={
-                isAuthenticated ? <Spreadsheet /> : <Navigate to='/login' />
+                isAuthenticated ? <Spreadsheet selectedCell={selectedCell} setSelectedCell={setSelectedCell}/> : <Navigate to='/login' />
               }  
             />
             <Route 

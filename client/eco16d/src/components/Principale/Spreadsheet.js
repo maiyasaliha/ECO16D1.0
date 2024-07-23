@@ -7,14 +7,14 @@ import { useSearchParams } from 'react-router-dom';
 import './principaleStyles.css';
 import { nestedHeaders, getColumns } from './PrincipaleSheetStructure';
 import { getColorClassForCb, getColorClassForDd, getColorClassForBMID, getColorClassForIMEI } from './ConditionalColoring'
-import { validate, getCompliance, getLocked, getWaybill, getWaybill13 } from './ValidateFunctions';
+import { validate, getCompliance, getLocked, getWaybill, getWaybill13, getColumnHeader } from './ValidateFunctions';
 import ToolBar from '../ToolBar';
 import { useDate } from '../../contexts/DateContext';
 import { useAuth } from '../../contexts/AuthContext';
 
 const socket = io('http://localhost:3001');
 
-function Spreadsheet() {
+function Spreadsheet({selectedCell, setSelectedCell}) {
     const [hotInstance, setHotInstance] = useState(null);
     const [data, setData] = useState([]);
     const [haveData, setHaveData] = useState(false);
@@ -194,6 +194,7 @@ function Spreadsheet() {
                 allowHtml: true,
                 afterChange: (changes, source) => {
                     let updateData;
+                    let versionData;
                     let previousData;
                     if (source !== 'loadData' && changes) {
                         const updateRequests = changes.map(change => {
@@ -210,6 +211,20 @@ function Spreadsheet() {
                             socket.emit('cellUpdate', {updateData, previousData});
                             return axios.post('http://localhost:3001/principaleCellQuarter', updateData);
                         });
+
+                        const saveversion = changes.map(change => {
+                            versionData = {
+                                columnName: getColumnHeader(change[1]),
+                                rowNumber: change[0] + 1,
+                                oldValue: change[2] == null ? "" : change[2],
+                                newValue: change[3] == null ? "" : change[3],
+                                userName: userData?.name
+                            };
+                            console.log("version is ");
+                            console.log(versionData);
+                            return axios.post('http://localhost:3001/versions', versionData);
+                            // return;
+                        });
                 
                 
                         axios.all(updateRequests)
@@ -219,8 +234,23 @@ function Spreadsheet() {
                             .catch(err => {
                                 console.log('Error updating data:', err);
                             });
+
+                        axios.all(saveversion)
+                            .then(axios.spread((...responses) => {
+                                console.log('All versions updated successfully.');
+                            }))
+                            .catch(err => {
+                                console.log('Error updating data:', err);
+                            });
                     }
-                }                
+                },
+                afterOnCellMouseDown: (event, coords, td) => {
+                    const colHeaders = hot.getColHeader();
+                    const colName = colHeaders[coords.col];
+                    const rowNum = coords.row + 1
+                    console.log(`Column: ${colName}, Row: ${rowNum}`);
+                    setSelectedCell({column: colName, row: rowNum});
+                }             
             });
 
             setHotInstance(hot);
@@ -240,7 +270,7 @@ function Spreadsheet() {
 
     return (
         <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
-            <ToolBar principale={true}/>
+            <ToolBar principale={true} selectedCell={selectedCell} />
             {!haveData ? (
                 <div style={{ textAlign: 'center', marginTop: '120px' }}>No data for specified range</div>
             ) : (

@@ -7,6 +7,7 @@ const authRouter = require('./routes/authRoutes');
 const principaleRouter = require('./routes/principaleRoutes');
 const ecoRouter = require('./routes/ecoRoutes');
 const colisRouter = require('./routes/colisRoutes');
+const versionsRouter = require('./routes/versionsRoutes');
 
 const app = express();
 const server = http.createServer(app);
@@ -29,6 +30,7 @@ app.use('/', authRouter);
 app.use('/', principaleRouter);
 app.use('/', ecoRouter);
 app.use('/', colisRouter);
+app.use('/', versionsRouter);
 
 mongoose.connect('mongodb://localhost:27017/ECO16D')
 .then(() => console.log('Connected to MongoDB!'))
