@@ -239,8 +239,6 @@ exports.getAllBMIDsId = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
-<<<<<<< Updated upstream
-=======
 
 exports.add1000CellRow = async (req, res) => {
     try {
@@ -252,4 +250,3 @@ exports.add1000CellRow = async (req, res) => {
         res.status(500).send({ message: 'Error creating records', error });
       }
 };
->>>>>>> Stashed changes
