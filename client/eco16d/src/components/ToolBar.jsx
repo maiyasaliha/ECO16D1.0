@@ -4,8 +4,9 @@ import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { useDate } from '../contexts/DateContext';
 import './ToolBar.css';
+import VersionHistoryOverlay from './VersionHistory/VersionHistoryOverlay';
 
-function ToolBar({ principale, eco, colis }) {
+function ToolBar({ principale, eco, colis, selectedCell }) {
   const { userData } = useAuth();
   const organisation = userData?.organisation;
 
@@ -38,6 +39,7 @@ function ToolBar({ principale, eco, colis }) {
           <Link to={`/colis?organisation=${organisation}`}>COLIS MANQUANTS</Link>
         </Button>
       </div>
+      {!eco ? <VersionHistoryOverlay selectedCell={selectedCell} /> : null}
       <div>
         <Button onClick={onYearClick(year - 1)}>{year - 1}</Button>
         <Button

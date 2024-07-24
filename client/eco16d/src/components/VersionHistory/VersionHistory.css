@@ -1,0 +1,12 @@
+.version-button {
+    color: #A9A9A9;
+    border: none;
+    background: transparent;
+    text-align: left;
+    font-size: 1rem; 
+}
+
+.version-button:hover {
+    color: black;
+    transition: color 0.3s ease;
+}

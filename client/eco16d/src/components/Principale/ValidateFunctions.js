@@ -51,4 +51,21 @@ function getWaybill13(cellValue, value) {
     }
 }
 
-export { validate, getCompliance, getLocked, getWaybill, getWaybill13 };
+function getColumnHeader(index) {
+    const headers = [
+        'date ajoutée', 'BMID', 'Nom du client', 'Raison du retour', 'BM Raison du retour', 'SKU', 'Nom du produit', 
+        'IMEI', 'Transporteur', 'Numéro de suivi', 'Customer Informed about non-compliance', 'Customer informed if locked?', 
+        'Refunded', 'Returned to SG', 'Date returned to SG', 'Waybill No.', 'Date de réception Axe', 'Contenu conforme ?', 
+        'IMEI de réception', 'État de l`appareil', 'Commentaires (Rayures ? Bosses ?)', 
+        'Lien Google pour les images (https://drive.google.com/drive/folders/1SNzn0LkNwHqi_IO4i-FcuWr7ytwRjS3D?usp=sharing)'
+    ];
+
+    if (index < 0 || index >= headers.length) {
+        return "Index out of range";
+    }
+
+    return headers[index];
+}
+
+
+export { validate, getCompliance, getLocked, getWaybill, getWaybill13, getColumnHeader };
