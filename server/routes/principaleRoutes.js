@@ -9,6 +9,7 @@ router.post('/principaleCell', principaleController.updateCell);
 router.post('/principaleCellQuarter', principaleController.updateCellQuarterly);
 router.get('/principaleBmids', principaleController.getAllBMIDs);
 router.get('/principaleBmidsId', principaleController.getAllBMIDsId);
+router.get('/principaleEmpty', principaleController.getEmptyRows);
 
 
 

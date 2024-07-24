@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { useDate } from '../contexts/DateContext';
+import { PlusOutlined } from '@ant-design/icons';
 import './ToolBar.css';
 import VersionHistoryOverlay from './VersionHistory/VersionHistoryOverlay';
 
@@ -10,15 +11,22 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
   const { userData } = useAuth();
   const organisation = userData?.organisation;
 
-  const { year, setYear, quarter, setQuarter } = useDate();
+  const { year, setYear, quarter, setQuarter, newPage, setnewPage } = useDate();
 
   const onQuarterClick = (selectedQuarter) => () => {
     setQuarter(selectedQuarter);
+    setnewPage(false);
   };
 
   const onYearClick = (selectedYear) => () => {
     setYear(selectedYear);
+    setnewPage(false);
   };
+
+  const onNewClick = () => {
+    setnewPage(true);
+    setQuarter();
+  }
 
   return (
     <div className='toolbar'>
@@ -41,6 +49,12 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
       </div>
       {!eco ? <VersionHistoryOverlay selectedCell={selectedCell} /> : null}
       <div>
+      <Button
+          type={newPage ? 'primary' : 'default'}
+          icon={<PlusOutlined />}
+          onClick={onNewClick}
+        >
+        </Button>
         <Button onClick={onYearClick(year - 1)}>{year - 1}</Button>
         <Button
           type={quarter === 1 ? 'primary' : 'default'}

@@ -29,7 +29,7 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
     const [update, setupdate] = useState(0);
 
     const organisation = searchParams.get('organisation');
-    const { year, quarter } = useDate();
+    const { year, quarter, newPage } = useDate();
     const { userData } = useAuth();
 
       useEffect(() => {
@@ -74,7 +74,12 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
         const fetchData = async () => {
             try {
                 setHaveData(false);
-                const response = await axios.get(`http://localhost:3001/principaleQuarter?year=${year}&quarter=${quarter}`);
+                let response;
+                if (newPage) {
+                    response = await axios.get('http://localhost:3001/principaleEmpty');
+                } else {
+                    response = await axios.get(`http://localhost:3001/principaleQuarter?year=${year}&quarter=${quarter}`);
+                }
                 const principaleBmid = await axios.get('http://localhost:3001/principaleBmidsId');
                 const colisBmid = await axios.get('http://localhost:3001/colisBmids');
                 
@@ -85,6 +90,7 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                     const extractedPBMIDsId = principaleBmid.data;
                     const extractedPBMIDs = extractedPBMIDsId.map(set => set.BMID);
                     const extractedCBMIDs = colisBmid.data;
+                
                     setData(extractedData);
                     setPrincipaleBmidsId(extractedPBMIDsId);
                     setPrincipaleBmids(extractedPBMIDs);
