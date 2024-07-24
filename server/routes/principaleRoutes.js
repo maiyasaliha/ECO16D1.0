@@ -10,7 +10,7 @@ router.post('/principaleCellQuarter', principaleController.updateCellQuarterly);
 router.get('/principaleBmids', principaleController.getAllBMIDs);
 router.get('/principaleBmidsId', principaleController.getAllBMIDsId);
 router.get('/principaleEmpty', principaleController.getEmptyRows);
-
+router.post('/100principaleRows', principaleController.add100CellRow);
 
 
 module.exports = router;

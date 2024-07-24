@@ -200,3 +200,14 @@ exports.getEmptyRows = async (req, res) => {
         res.status(500).json({ error: 'Could not fetch empty rows documents' });
     }
 };
+
+exports.add100CellRow = async (req, res) => {
+    try {
+        const records = Array(100).fill({});
+
+        await Principale.insertMany(records);
+        res.status(201).send({ message: '100 records created successfully' });
+      } catch (error) {
+        res.status(500).send({ message: 'Error creating records', error });
+      }
+};
