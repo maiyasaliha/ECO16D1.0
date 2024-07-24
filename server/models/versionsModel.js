@@ -22,7 +22,12 @@ const versionSchema = new mongoose.Schema({
     userName: {
         type: String,
         required: true,
+    },
+    organisation: {
+        type: String,
+        required: true,
     }
+
 });
 
 const Version = mongoose.model('Version', versionSchema);

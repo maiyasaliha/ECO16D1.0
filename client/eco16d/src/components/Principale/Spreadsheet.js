@@ -218,12 +218,12 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                                 rowNumber: change[0] + 1,
                                 oldValue: change[2] == null ? "" : change[2],
                                 newValue: change[3] == null ? "" : change[3],
-                                userName: userData?.name
+                                userName: userData?.name,
+                                organisation: organisation
                             };
                             console.log("version is ");
                             console.log(versionData);
                             return axios.post('http://localhost:3001/versions', versionData);
-                            // return;
                         });
                 
                 
