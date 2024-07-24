@@ -4,31 +4,46 @@ exports.createVersion = async (req, res) => {
     const { columnName, rowNumber, oldValue, newValue, userName, organisation } = req.body;
 
     try {
-        const latestVersion = await Version.findOne({
+        const latestMatchingVersion = await Version.findOne({
             columnName,
             rowNumber,
             oldValue,
             newValue
         }).sort({ timestamp: -1 });
 
+        const latestVersion = await Version.findOne().sort({ timestamp: -1 });
+
         if (!isValidColumn(organisation, columnName)) {
             return res.status(200).json({
                 message: 'Invalid version.',
             });
         }
-        if (latestVersion) {
+        if (latestMatchingVersion) {
             const currentTimestamp = new Date();
-            const latestTimestamp = latestVersion.timestamp;
+            const latestTimestamp = latestMatchingVersion.timestamp;
             const timeDifference = currentTimestamp - latestTimestamp;
 
             const minuteInMillis = 60 * 1000;
             if (timeDifference < minuteInMillis) {
                 return res.status(200).json({
                     message: 'Latest version found within a minute. No new version created.',
-                    version: latestVersion
+                    version: latestMatchingVersion
                 });
             }
         }
+        if (
+            latestVersion &&
+            latestVersion.columnName === columnName &&
+            latestVersion.rowNumber === rowNumber &&
+            latestVersion.oldValue === oldValue &&
+            latestVersion.newValue === newValue
+        ) {
+            return res.status(200).json({
+                message: 'Latest version found. No new version created.',
+                version: latestVersion
+            });
+        }
+
         if (newValue === oldValue) {
             return res.status(200).json({
                 message: 'No change made. Version not saved',
