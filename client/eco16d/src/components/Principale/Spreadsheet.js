@@ -183,7 +183,7 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                         cellProperties.className = cellClass;
                     } else if (col === 13) {
                         const compareValue = this.getDataAtCell(row, 15);
-                        const cellClass = getColorClassForCb(getWaybill13(cellValue, compareValue));
+                        const cellClass = getColorClassForCb(getWaybill13(cellValue, compareValue, newPage));
                         cellProperties.className = cellClass;
                     } else if (col === 17 || col === 19) {
                         const cellClass = getColorClassForDd(cellValue);
