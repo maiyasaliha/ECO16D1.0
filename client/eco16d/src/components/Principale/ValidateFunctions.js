@@ -43,10 +43,7 @@ function getWaybill(cellValue, value, oow) {
     }
 }
 
-function getWaybill13(cellValue, value, newPage) {
-    if (newPage) {
-        return "";
-    }
+function getWaybill13(cellValue, value) {
     if (value !== "" || isTrue(cellValue)) {
         return cellValue;
     } else {

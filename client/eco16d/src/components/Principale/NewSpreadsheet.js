@@ -14,7 +14,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const socket = io('http://localhost:3001');
 
-function Spreadsheet({selectedCell, setSelectedCell}) {
+function NewSpreadsheet({selectedCell, setSelectedCell}) {
     const [hotInstance, setHotInstance] = useState(null);
     const [data, setData] = useState([]);
     const [haveData, setHaveData] = useState(false);
@@ -183,7 +183,7 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                         cellProperties.className = cellClass;
                     } else if (col === 13) {
                         const compareValue = this.getDataAtCell(row, 15);
-                        const cellClass = getColorClassForCb(getWaybill13(cellValue, compareValue));
+                        const cellClass = getColorClassForCb(getWaybill13(cellValue, compareValue, newPage));
                         cellProperties.className = cellClass;
                     } else if (col === 17 || col === 19) {
                         const cellClass = getColorClassForDd(cellValue);
@@ -314,4 +314,4 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
     );
 }
 
-export default Spreadsheet;
+export default NewSpreadsheet;

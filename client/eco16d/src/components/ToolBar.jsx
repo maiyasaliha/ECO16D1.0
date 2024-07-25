@@ -15,18 +15,16 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
 
   const onQuarterClick = (selectedQuarter) => () => {
     setQuarter(selectedQuarter);
+    setnewPage(false);
   };
 
   const onYearClick = (selectedYear) => () => {
     setYear(selectedYear);
-    setnewPage(false);
-    console.log(newPage);
   };
 
   const onNewClick = () => {
     setnewPage(true);
-    setQuarter();
-    console.log(newPage);
+    setQuarter(0);
   }
 
   return (
