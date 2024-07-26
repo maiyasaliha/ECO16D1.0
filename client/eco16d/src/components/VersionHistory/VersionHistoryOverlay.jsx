@@ -3,7 +3,7 @@ import { Button, Drawer } from 'antd';
 import { HistoryOutlined } from '@ant-design/icons';
 import VersionHistory from './VersionHistory';
 
-function VersionHistoryOverlay({ selectedCell }) {
+function VersionHistoryOverlay({ selectedCell, sheet }) {
     const [visible, setVisible] = useState(false);
     const [pressed, setPressed] = useState(0);
 
@@ -27,7 +27,7 @@ function VersionHistoryOverlay({ selectedCell }) {
                 open={visible}
                 width={400}
             >
-                <VersionHistory pressed={pressed} selectedCell={selectedCell} />
+                <VersionHistory pressed={pressed} selectedCell={selectedCell} sheet={sheet} />
             </Drawer>
         </div>
     );

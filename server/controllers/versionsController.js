@@ -1,19 +1,20 @@
 const Version = require('../models/versionsModel'); 
 
 exports.createVersion = async (req, res) => {
-    const { columnName, rowNumber, oldValue, newValue, userName, organisation } = req.body;
+    const { columnName, rowNumber, oldValue, newValue, userName, organisation, sheet } = req.body;
 
     try {
         const latestMatchingVersion = await Version.findOne({
             columnName,
             rowNumber,
             oldValue,
-            newValue
+            newValue,
+            sheet
         }).sort({ timestamp: -1 });
 
         const latestVersion = await Version.findOne().sort({ timestamp: -1 });
 
-        if (!isValidColumn(organisation, columnName)) {
+        if (!isValidColumn(organisation, columnName, sheet)) {
             return res.status(200).json({
                 message: 'Invalid version.',
             });
@@ -36,7 +37,8 @@ exports.createVersion = async (req, res) => {
             latestVersion.columnName === columnName &&
             latestVersion.rowNumber === rowNumber &&
             latestVersion.oldValue === oldValue &&
-            latestVersion.newValue === newValue
+            latestVersion.newValue === newValue &&
+            latestVersion.sheet === sheet
         ) {
             return res.status(200).json({
                 message: 'Latest version found. No new version created.',
@@ -56,7 +58,8 @@ exports.createVersion = async (req, res) => {
             oldValue,
             newValue,
             userName,
-            organisation
+            organisation,
+            sheet
         });
         console.log("version is ");
         console.log(version);
@@ -70,31 +73,43 @@ exports.createVersion = async (req, res) => {
 };
 
 exports.getVersions = async (req, res) => {
-    const { columnName, rowNumber } = req.query;
+    const { columnName, rowNumber, sheet } = req.query;
 
     try {
-        const versions = await Version.find({ columnName, rowNumber }).sort({ timestamp: -1 });
+        const versions = await Version.find({ columnName, rowNumber, sheet }).sort({ timestamp: -1 });
         res.status(200).json(versions);
     } catch (error) {
         res.status(500).json({ message: 'Failed to fetch version entries', error });
     }
 };
 
-function isValidColumn(organisation, columnName) {
-    const ecoheaders = [
+function isValidColumn(organisation, columnName, sheet) {
+    const ecoheadersp = [
         'date ajoutée', 'BMID', 'Nom du client', 'Raison du retour', 'BM Raison du retour', 'SKU', 'Nom du produit', 
         'IMEI', 'Transporteur', 'Numéro de suivi', 'Customer Informed about non-compliance', 'Customer informed if locked?', 
         'Refunded', 'Returned to SG', 'Date returned to SG', 'Waybill No.'
     ];
-    const axeheaders = [
+    const axeheadersp = [
         'Date de réception Axe', 'Contenu conforme ?', 
         'IMEI de réception', 'État de l`appareil', 'Commentaires (Rayures ? Bosses ?)', 
         'Lien Google pour les images (https://drive.google.com/drive/folders/1SNzn0LkNwHqi_IO4i-FcuWr7ytwRjS3D?usp=sharing)'
     ];
-    if (organisation === 'ECO') {
-        return ecoheaders.includes(columnName);        
+    const ecoheadersc = [
+        'INFORMATIONS CRÉÉES SUR LA PAGE PRINCIPALE'
+    ];
+    const axeheadersc = [
+        'date créée', 'BMID', 'Nom du client'
+    ];
+    if (organisation === 'ECO' && sheet === "principale") {
+        return ecoheadersp.includes(columnName);        
     }
-    if (organisation === 'AXE') {
-        return axeheaders.includes(columnName); 
+    if (organisation === 'AXE' && sheet === "principale") {
+        return axeheadersp.includes(columnName); 
+    }
+    if (organisation === 'ECO' && sheet === "colis") {
+        return ecoheadersc.includes(columnName);        
+    }
+    if (organisation === 'AXE' && sheet === "colis") {
+        return axeheadersc.includes(columnName); 
     }
 }
