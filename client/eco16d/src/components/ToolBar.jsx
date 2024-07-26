@@ -27,6 +27,15 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
     setQuarter(0);
   }
 
+  const findSheet = () => {
+    if (principale) {
+      return "principale";
+    }
+    if (colis) {
+      return "colis";
+    }
+  }
+
   return (
     <div className='toolbar'>
       <div>
@@ -46,7 +55,7 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
           <Link to={`/colis?organisation=${organisation}`}>COLIS MANQUANTS</Link>
         </Button>
       </div>
-      {!eco ? <VersionHistoryOverlay selectedCell={selectedCell} /> : null}
+      {!eco ? <VersionHistoryOverlay selectedCell={selectedCell} sheet={findSheet()} /> : null}
       <div>
       <Button
           type={newPage ? 'primary' : 'default'}

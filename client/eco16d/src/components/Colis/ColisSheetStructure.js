@@ -37,4 +37,16 @@ function getColumns(organisation) {
     }
 }
 
-export {nestedHeaders, getColumns};
+function getColumnHeader(index) {
+    const headers = [
+        'date créée', 'BMID', 'Nom du client', 'INFORMATIONS CRÉÉES SUR LA PAGE PRINCIPALE'
+    ];
+
+    if (index < 0 || index >= headers.length) {
+        return "Index out of range";
+    }
+
+    return headers[index];
+}
+
+export {nestedHeaders, getColumns, getColumnHeader};

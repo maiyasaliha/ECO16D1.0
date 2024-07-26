@@ -256,7 +256,8 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                                 oldValue: change[2] == null ? "" : change[2],
                                 newValue: change[3] == null ? "" : change[3],
                                 userName: userData?.name,
-                                organisation: organisation
+                                organisation: organisation,
+                                sheet: "principale"
                             };
                             console.log("version is ");
                             console.log(versionData);
