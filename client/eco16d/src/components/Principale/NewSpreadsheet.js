@@ -29,7 +29,7 @@ function NewSpreadsheet({selectedCell, setSelectedCell}) {
     const [update, setupdate] = useState(0);
 
     const organisation = searchParams.get('organisation');
-    const { year, quarter, newPage } = useDate();
+    const { year, quarter } = useDate();
     const { userData } = useAuth();
 
       useEffect(() => {
@@ -74,12 +74,7 @@ function NewSpreadsheet({selectedCell, setSelectedCell}) {
         const fetchData = async () => {
             try {
                 setHaveData(false);
-                let response;
-                if (newPage) {
-                    response = await axios.get('http://localhost:3001/principaleEmpty');
-                } else {
-                    response = await axios.get(`http://localhost:3001/principaleQuarter?year=${year}&quarter=${quarter}`);
-                }
+                const response = await axios.get('http://localhost:3001/principaleEmpty');
                 const principaleBmid = await axios.get('http://localhost:3001/principaleBmidsId');
                 const colisBmid = await axios.get('http://localhost:3001/colisBmids');
                 
@@ -104,7 +99,7 @@ function NewSpreadsheet({selectedCell, setSelectedCell}) {
         };
 
         fetchData();
-    }, [year, quarter, update, newPage]);
+    }, [year, quarter, update]);
 
     for (let row = 0; row < rows; row++) {
         customBorders.push({
@@ -183,7 +178,7 @@ function NewSpreadsheet({selectedCell, setSelectedCell}) {
                         cellProperties.className = cellClass;
                     } else if (col === 13) {
                         const compareValue = this.getDataAtCell(row, 15);
-                        const cellClass = getColorClassForCb(getWaybill13(cellValue, compareValue, newPage));
+                        const cellClass = getColorClassForCb(getWaybill13(cellValue, compareValue));
                         cellProperties.className = cellClass;
                     } else if (col === 17 || col === 19) {
                         const cellClass = getColorClassForDd(cellValue);

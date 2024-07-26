@@ -53,6 +53,7 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
           icon={<PlusOutlined />}
           onClick={onNewClick}
         >
+          <Link to="/new">New</Link>
         </Button>
         <Button onClick={onYearClick(year - 1)}>{year - 1}</Button>
         <Button
