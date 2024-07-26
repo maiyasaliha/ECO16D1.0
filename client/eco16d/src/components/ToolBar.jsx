@@ -20,6 +20,15 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
     setYear(selectedYear);
   };
 
+  const findSheet = () => {
+    if (principale) {
+      return "principale";
+    }
+    if (colis) {
+      return "colis";
+    }
+  }
+
   return (
     <div className='toolbar'>
       <div>
@@ -39,7 +48,7 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
           <Link to={`/colis?organisation=${organisation}`}>COLIS MANQUANTS</Link>
         </Button>
       </div>
-      {!eco ? <VersionHistoryOverlay selectedCell={selectedCell} /> : null}
+      {!eco ? <VersionHistoryOverlay selectedCell={selectedCell} sheet={findSheet()} /> : null}
       <div>
         <Button onClick={onYearClick(year - 1)}>{year - 1}</Button>
         <Button

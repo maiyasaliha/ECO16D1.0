@@ -44,7 +44,7 @@ function App() {
             <Route 
               path= '/colis' 
               element={
-                isAuthenticated ? <ColisSpreadsheet /> : <Navigate to='/login' />
+                isAuthenticated ? <ColisSpreadsheet selectedCell={selectedCell} setSelectedCell={setSelectedCell}/> : <Navigate to='/login' />
               }  
             />
             <Route 

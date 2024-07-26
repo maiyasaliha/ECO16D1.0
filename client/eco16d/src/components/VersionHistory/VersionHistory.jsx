@@ -3,13 +3,13 @@ import axios from 'axios';
 import { Table } from 'antd';
 import './VersionHistory.css';
 
-function VersionHistory({ pressed, selectedCell }) {
+function VersionHistory({ pressed, selectedCell, sheet }) {
     const [versionHistory, setVersionHistory] = useState([]);
 
     useEffect(() => {
         const fetchVersionHistory = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/versions?columnName=${selectedCell.column}&rowNumber=${selectedCell.row}`);
+                const response = await axios.get(`http://localhost:3001/versions?columnName=${selectedCell.column}&rowNumber=${selectedCell.row}&sheet=${sheet}`);
                 setVersionHistory(response.data);
             } catch (error) {
                 console.error('Error fetching edit history:', error);
