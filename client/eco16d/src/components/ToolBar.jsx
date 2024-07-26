@@ -16,15 +16,18 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
   const onQuarterClick = (selectedQuarter) => () => {
     setQuarter(selectedQuarter);
     setnewPage(false);
+    console.log("clicking quarter: " + selectedQuarter)
   };
 
   const onYearClick = (selectedYear) => () => {
     setYear(selectedYear);
+    console.log("clicking year: " + selectedYear)
   };
 
   const onNewClick = () => {
     setnewPage(true);
     setQuarter(0);
+    console.log("clicking new: ")
   }
 
   const findSheet = () => {
@@ -55,15 +58,15 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
           <Link to={`/colis?organisation=${organisation}`}>COLIS MANQUANTS</Link>
         </Button>
       </div>
-      {!eco ? <VersionHistoryOverlay selectedCell={selectedCell} sheet={findSheet()} /> : null}
+      {eco || newPage ? null : <VersionHistoryOverlay selectedCell={selectedCell} sheet={findSheet()} />}
       <div>
-      <Button
+      {!eco ? <Button
           type={newPage ? 'primary' : 'default'}
           icon={<PlusOutlined />}
           onClick={onNewClick}
         >
-          <Link to="/new">New</Link>
-        </Button>
+          {principale ? <Link to="/newPrincipale">New</Link> : colis? <Link to="/newColis">New</Link> : null}
+        </Button> : null}
         <Button onClick={onYearClick(year - 1)}>{year - 1}</Button>
         <Button
           type={quarter === 1 ? 'primary' : 'default'}

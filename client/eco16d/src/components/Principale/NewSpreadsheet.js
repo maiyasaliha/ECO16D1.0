@@ -31,6 +31,7 @@ function NewSpreadsheet({selectedCell, setSelectedCell}) {
     const organisation = searchParams.get('organisation');
     const { year, quarter } = useDate();
     const { userData } = useAuth();
+    console.log("new principale sheet");
 
       useEffect(() => {
         socket.on('connect', () => {
@@ -195,13 +196,11 @@ function NewSpreadsheet({selectedCell, setSelectedCell}) {
                 allowHtml: true,
                 afterChange: (changes, source) => {
                     let updateData;
-                    let versionData;
                     let previousData;
                     if (source !== 'loadData' && changes) {
                         const getYear = (colIndex, value) => {
                             if (colIndex === 0) {
                                 const [day, month, year] = value.split('/').map(Number);
-                                const quarter = Math.ceil(month / 3);
                                 return year;
                             }
                             if (year) {
@@ -229,8 +228,8 @@ function NewSpreadsheet({selectedCell, setSelectedCell}) {
                                 rowIndex: change[0],
                                 colIndex: change[1],
                                 newValue: change[3] == null ? "" : change[3],
-                                year: year,
-                                quarter: quarter
+                                year: getYear(),
+                                quarter: getQuarter()
                             };
                             previousData = {
                                 value: change[2]
@@ -240,33 +239,10 @@ function NewSpreadsheet({selectedCell, setSelectedCell}) {
                             socket.emit('cellUpdate', {updateData, previousData});
                             return axios.post('http://localhost:3001/principaleCellQuarter', updateData);
                         });
-
-                        const saveversion = changes.map(change => {
-                            versionData = {
-                                columnName: getColumnHeader(change[1]),
-                                rowNumber: change[0] + 1,
-                                oldValue: change[2] == null ? "" : change[2],
-                                newValue: change[3] == null ? "" : change[3],
-                                userName: userData?.name,
-                                organisation: organisation
-                            };
-                            console.log("version is ");
-                            console.log(versionData);
-                            return axios.post('http://localhost:3001/versions', versionData);
-                        });
-                
                 
                         axios.all(updateRequests)
                             .then(axios.spread((...responses) => {
                                 console.log('All cells updated successfully.');
-                            }))
-                            .catch(err => {
-                                console.log('Error updating data:', err);
-                            });
-
-                        axios.all(saveversion)
-                            .then(axios.spread((...responses) => {
-                                console.log('All versions updated successfully.');
                             }))
                             .catch(err => {
                                 console.log('Error updating data:', err);

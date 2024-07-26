@@ -1,7 +1,7 @@
 const Version = require('../models/versionsModel'); 
 
 exports.createVersion = async (req, res) => {
-    const { columnName, rowNumber, oldValue, newValue, userName, organisation, sheet } = req.body;
+    const { columnName, rowNumber, oldValue, newValue, userName, organisation, sheet, year, quarter } = req.body;
 
     try {
         const latestMatchingVersion = await Version.findOne({
@@ -9,7 +9,9 @@ exports.createVersion = async (req, res) => {
             rowNumber,
             oldValue,
             newValue,
-            sheet
+            sheet,
+            year,
+            quarter
         }).sort({ timestamp: -1 });
 
         const latestVersion = await Version.findOne().sort({ timestamp: -1 });
@@ -38,7 +40,9 @@ exports.createVersion = async (req, res) => {
             latestVersion.rowNumber === rowNumber &&
             latestVersion.oldValue === oldValue &&
             latestVersion.newValue === newValue &&
-            latestVersion.sheet === sheet
+            latestVersion.sheet === sheet &&
+            latestVersion.year === year &&
+            latestVersion.quarter === quarter
         ) {
             return res.status(200).json({
                 message: 'Latest version found. No new version created.',
@@ -59,7 +63,9 @@ exports.createVersion = async (req, res) => {
             newValue,
             userName,
             organisation,
-            sheet
+            sheet,
+            year,
+            quarter
         });
         console.log("version is ");
         console.log(version);
@@ -73,10 +79,10 @@ exports.createVersion = async (req, res) => {
 };
 
 exports.getVersions = async (req, res) => {
-    const { columnName, rowNumber, sheet } = req.query;
+    const { columnName, rowNumber, sheet, year, quarter } = req.query;
 
     try {
-        const versions = await Version.find({ columnName, rowNumber, sheet }).sort({ timestamp: -1 });
+        const versions = await Version.find({ columnName, rowNumber, sheet, year, quarter }).sort({ timestamp: -1 });
         res.status(200).json(versions);
     } catch (error) {
         res.status(500).json({ message: 'Failed to fetch version entries', error });

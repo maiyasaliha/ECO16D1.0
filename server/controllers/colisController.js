@@ -175,3 +175,29 @@ exports.getAllBMIDsId = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
+
+exports.getEmptyRows = async (req, res) => {
+    try {
+        const allDocuments = await Colis.find();
+        const emptyRows = allDocuments.filter(doc => {
+            const fields = doc.toObject();
+            return Object.keys(fields).every(key => key === '_id' || key === '__v' || !fields[key]);
+        });
+
+        res.status(200).json(emptyRows);
+    } catch (error) {
+        console.error('Error fetching empty rows:', error);
+        res.status(500).json({ error: 'Could not fetch empty rows documents' });
+    }
+};
+
+exports.add100CellRow = async (req, res) => {
+    try {
+        const records = Array(100).fill({});
+
+        await Colis.insertMany(records);
+        res.status(201).send({ message: '100 records created successfully' });
+      } catch (error) {
+        res.status(500).send({ message: 'Error creating records', error });
+      }
+};

@@ -13,7 +13,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const socket = io('http://localhost:3001');
 
-function ColisSpreadsheet({selectedCell, setSelectedCell}) {
+function NewColisSpreadsheet({selectedCell, setSelectedCell}) {
     const [hotInstance, setHotInstance] = useState(null);
     const [data, setData] = useState([]);
     const [haveData, setHaveData] = useState(false);
@@ -28,7 +28,7 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
     const [update, setupdate] = useState(0);
 
     const organisation = searchParams.get('organisation');
-    const { year, quarter, newPage } = useDate();
+    const { year, quarter } = useDate();
     const { userData } = useAuth();
 
     useEffect(() => {
@@ -75,12 +75,7 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
         const fetchData = async () => {
             try {
                 setHaveData(false);
-                let response;
-                if (newPage) {
-                    response = await axios.get('http://localhost:3001/colisEmpty');
-                } else {
-                    response = await axios.get(`http://localhost:3001/colisQuarter?year=${year}&quarter=${quarter}`);
-                }
+                const response = await axios.get('http://localhost:3001/principaleEmpty');
                 const principaleBmid = await axios.get('http://localhost:3001/principaleBmids');
                 const colisBmid = await axios.get('http://localhost:3001/colisBmidsId');
 
@@ -123,9 +118,7 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
                 row.dateCreee,
                 row.BMID,
                 row.nomDuClient,
-                row.informations,
-                row._id
-            ]);
+                row.informations            ]);
 
             const hot = new Handsontable(hotElementRef.current, {
                 data: mappedData,
@@ -156,7 +149,6 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
                 allowHtml: true,
                 afterChange: (changes, source) => {
                     let updateData;
-                    let versionData;
                     let previousData;
                     if (source !== 'loadData' && changes) {
                         const updateRequests = changes.map(change => {
@@ -173,35 +165,10 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
                             socket.emit('cellUpdate', {updateData, previousData});
                             return axios.post('http://localhost:3001/colisCellQuarter', updateData);
                         });
-
-                        const saveversion = changes.map(change => {
-                            versionData = {
-                                columnName: getColumnHeader(change[1]),
-                                rowNumber: change[0] + 1,
-                                oldValue: change[2] == null ? "" : change[2],
-                                newValue: change[3] == null ? "" : change[3],
-                                userName: userData?.name,
-                                organisation: organisation,
-                                sheet: "colis",
-                                year: year,
-                                quarter: quarter
-                            };
-                            console.log("version is ");
-                            console.log(versionData);
-                            return axios.post('http://localhost:3001/versions', versionData);
-                        });
                 
                         axios.all(updateRequests)
                             .then(axios.spread((...responses) => {
                                 console.log('All cells updated successfully.');
-                            }))
-                            .catch(err => {
-                                console.log('Error updating data:', err);
-                            });
-
-                        axios.all(saveversion)
-                            .then(axios.spread((...responses) => {
-                                console.log('All versions updated successfully.');
                             }))
                             .catch(err => {
                                 console.log('Error updating data:', err);
@@ -244,4 +211,4 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
     );
 }
 
-export default ColisSpreadsheet;
+export default NewColisSpreadsheet;

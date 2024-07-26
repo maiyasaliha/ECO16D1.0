@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Table } from 'antd';
+import { useDate } from '../../contexts/DateContext';
 import './VersionHistory.css';
 
 function VersionHistory({ pressed, selectedCell, sheet }) {
     const [versionHistory, setVersionHistory] = useState([]);
+    const { year, quarter } = useDate();
 
     useEffect(() => {
         const fetchVersionHistory = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/versions?columnName=${selectedCell.column}&rowNumber=${selectedCell.row}&sheet=${sheet}`);
+                const response = await axios.get(`http://localhost:3001/versions?columnName=${selectedCell.column}&rowNumber=${selectedCell.row}&sheet=${sheet}&year=${year}&quarter=${quarter}`);
                 setVersionHistory(response.data);
             } catch (error) {
                 console.error('Error fetching edit history:', error);
