@@ -26,6 +26,10 @@ const versionSchema = new mongoose.Schema({
     organisation: {
         type: String,
         required: true,
+    },
+    sheet: {
+        type: String,
+        required: true,
     }
 
 });
