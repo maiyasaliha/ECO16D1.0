@@ -118,7 +118,8 @@ function NewColisSpreadsheet({selectedCell, setSelectedCell}) {
                 row.dateCreee,
                 row.BMID,
                 row.nomDuClient,
-                row.informations            ]);
+                row.informations            
+            ]);
 
             const hot = new Handsontable(hotElementRef.current, {
                 data: mappedData,
