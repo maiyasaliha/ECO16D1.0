@@ -6,12 +6,11 @@ const DateContext = createContext();
 export function DateProvider({ children }) {
   const [year, setYear] = useState(getYear());
   const [quarter, setQuarter] = useState(getQuarter());
-  const [newPage, setnewPage] = useState(getNewPage());
 
 
 
   return (
-    <DateContext.Provider value={{ year, setYear, quarter, setQuarter, newPage, setnewPage }}>
+    <DateContext.Provider value={{ year, setYear, quarter, setQuarter }}>
       {children}
     </DateContext.Provider>
   );

@@ -29,7 +29,7 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
     const [update, setupdate] = useState(0);
 
     const organisation = searchParams.get('organisation');
-    const { year, quarter, newPage } = useDate();
+    const { year, quarter } = useDate();
     const { userData } = useAuth();
 
       useEffect(() => {
@@ -74,12 +74,7 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
         const fetchData = async () => {
             try {
                 setHaveData(false);
-                let response;
-                if (newPage) {
-                    response = await axios.get('http://localhost:3001/principaleEmpty');
-                } else {
-                    response = await axios.get(`http://localhost:3001/principaleQuarter?year=${year}&quarter=${quarter}`);
-                }
+                const response = await axios.get(`http://localhost:3001/principaleQuarter?year=${year}&quarter=${quarter}`);
                 const principaleBmid = await axios.get('http://localhost:3001/principaleBmidsId');
                 const colisBmid = await axios.get('http://localhost:3001/colisBmids');
                 
@@ -104,7 +99,7 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
         };
 
         fetchData();
-    }, [year, quarter, update, newPage]);
+    }, [year, quarter, update]);
 
     for (let row = 0; row < rows; row++) {
         customBorders.push({
@@ -205,7 +200,6 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                     let updateData;
                     let versionData;
                     let previousData;
-                    let link;
                     if (source !== 'loadData' && changes) {
                         const getYear = (colIndex, value) => {
                             if (year) {
@@ -234,17 +228,12 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                             }
                         };
                         const updateRequests = changes.map(change => {
-                            if(newPage && change[1] === 0) {
-                                link = 'principaleEmpty';
-                            } else {
-                                link = 'principaleCellQuarter';
-                            }
                             updateData = {
                                 rowIndex: change[0],
                                 colIndex: change[1],
                                 newValue: change[3] == null ? "" : change[3],
-                                year: getYear(change[1], change[3] == null ? "" : change[3]),
-                                quarter: getQuarter(change[1], change[3] == null ? "" : change[3])
+                                year: year,
+                                quarter: quarter
                             };
                             previousData = {
                                 value: change[2]
@@ -252,7 +241,7 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                             console.log("updateData");
                             console.log(updateData);
                             socket.emit('cellUpdate', {updateData, previousData});
-                            return axios.post(`http://localhost:3001/${link}`, updateData);
+                            return axios.post('http://localhost:3001/principaleCellQuarter', updateData);
                         });
 
                         const saveversion = changes.map(change => {

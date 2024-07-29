@@ -114,22 +114,29 @@ exports.updateCellQuarterly = async (req, res) => {
 
         const allDocuments = await Principale.find();
 
+        const emptyRows = allDocuments.filter(doc => {
+            const fields = doc.toObject();
+            return Object.keys(fields).every(key => key === '_id' || key === '__v' || !fields[key]);
+        });
         const filteredRows = allDocuments.filter(doc => {
             const dateAjoutee = parseDateString(doc.dateAjoutee);
             return dateAjoutee >= parseDateString(startDateString) && dateAjoutee <= parseDateString(endDateString);
         });
 
-        if (filteredRows.length === 0) {
+        const combinedRows = [...filteredRows, ...emptyRows];
+        console.log('Filtered Rows:', combinedRows.length);
+
+        if (combinedRows.length === 0) {
             return res.status(404).json({ error: 'No data found for the given year and quarter.' });
         }
 
         const rowIndexInt = parseInt(rowIndex, 10) || 0;
 
-        if (rowIndexInt >= filteredRows.length) {
+        if (rowIndexInt >= combinedRows.length) {
             return res.status(404).json({ error: 'No data found for the given rowIndex.' });
         }
 
-        const rowData = filteredRows[rowIndexInt];
+        const rowData = combinedRows[rowIndexInt];
         const keys = Object.keys(rowData.toObject());
         const keyToUpdate = keys[colIndex + 1];
 
