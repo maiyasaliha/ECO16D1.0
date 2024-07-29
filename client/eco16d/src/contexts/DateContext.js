@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { getYear, getQuarter, getNewPage } from '../EcoSetup';
+import { getYear, getQuarter } from '../EcoSetup';
 
 const DateContext = createContext();
 
