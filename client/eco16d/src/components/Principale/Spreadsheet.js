@@ -178,7 +178,7 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                         cellProperties.className = cellClass;
                     } else if (col === 13) {
                         const compareValue = this.getDataAtCell(row, 15);
-                        let cellClass = '';
+                        let cellClass = 'centered-checkbox';
                         if (cellValue !== '') {
                             cellClass = getColorClassForCb(getWaybill13(cellValue, compareValue));
                         }
@@ -201,32 +201,6 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                     let versionData;
                     let previousData;
                     if (source !== 'loadData' && changes) {
-                        const getYear = (colIndex, value) => {
-                            if (year) {
-                                return year;
-                            }
-                            if (colIndex === 0) {
-                                const [day, month, year] = value.split('/').map(Number);
-                                const quarter = Math.ceil(month / 3);
-                                return year;
-                            }
-                            else {
-                                return "";
-                            }
-                        };
-                        const getQuarter = (colIndex, value) => {
-                            if (quarter) {
-                                return quarter;
-                            }
-                            if (colIndex === 0) {
-                                const [day, month, year] = value.split('/').map(Number);
-                                const quarter = Math.ceil(month / 3);
-                                return quarter;
-                            }
-                            else {
-                                return "";
-                            }
-                        };
                         const updateRequests = changes.map(change => {
                             updateData = {
                                 rowIndex: change[0],
