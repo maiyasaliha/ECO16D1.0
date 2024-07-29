@@ -29,7 +29,7 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
     const [update, setupdate] = useState(0);
 
     const organisation = searchParams.get('organisation');
-    const { year, quarter } = useDate();
+    const { year, quarter, add } = useDate();
     const { userData } = useAuth();
 
       useEffect(() => {
@@ -99,7 +99,7 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
         };
 
         fetchData();
-    }, [year, quarter, update]);
+    }, [year, quarter, update, add]);
 
     for (let row = 0; row < rows; row++) {
         customBorders.push({

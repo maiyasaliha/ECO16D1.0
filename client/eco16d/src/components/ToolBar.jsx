@@ -12,7 +12,7 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
   const { userData } = useAuth();
   const organisation = userData?.organisation;
 
-  const { year, setYear, quarter, setQuarter } = useDate();
+  const { year, setYear, quarter, setQuarter, setadd } = useDate();
 
   const onQuarterClick = (selectedQuarter) => () => {
     setQuarter(selectedQuarter);
@@ -26,9 +26,11 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
 
   const on100Click = () => {
     if (principale) {
+      setadd();
       return axios.post('http://localhost:3001/100principaleRows');
     }
     if (colis) {
+      setadd();
       return axios.post('http://localhost:3001/100colisRows');
     }
   }
