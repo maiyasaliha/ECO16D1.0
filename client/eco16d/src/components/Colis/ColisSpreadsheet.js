@@ -104,7 +104,7 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
         };
 
         fetchData();
-    }, [year, quarter, update]);
+    }, [year, quarter, update, newPage]);
 
     for (let row = 0; row < rows; row++) {
         customBorders.push({
