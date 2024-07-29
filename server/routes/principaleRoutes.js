@@ -11,6 +11,7 @@ router.get('/principaleBmids', principaleController.getAllBMIDs);
 router.get('/principaleBmidsId', principaleController.getAllBMIDsId);
 router.get('/principaleEmpty', principaleController.getEmptyRows);
 router.post('/100principaleRows', principaleController.add100CellRow);
+router.post('/principaleEmpty', principaleController.updateCellEmptyRow);
 
 
 module.exports = router;

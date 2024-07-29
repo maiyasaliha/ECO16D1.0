@@ -28,14 +28,19 @@ exports.getCellRowsQuarter = async (req, res) => {
 
         const allDocuments = await Principale.find();
 
+        const emptyRows = allDocuments.filter(doc => {
+            const fields = doc.toObject();
+            return Object.keys(fields).every(key => key === '_id' || key === '__v' || !fields[key]);
+        });
         const filteredRows = allDocuments.filter(doc => {
             const dateAjoutee = parseDateString(doc.dateAjoutee);
             return dateAjoutee >= parseDateString(startDateString) && dateAjoutee <= parseDateString(endDateString);
         });
 
-        console.log('Filtered Rows:', filteredRows.length);
+        const combinedRows = [...filteredRows, ...emptyRows];
+        console.log('Filtered Rows:', combinedRows.length);
 
-        res.status(200).json(filteredRows);
+        res.status(200).json(combinedRows);
     } catch (error) {
         console.error('Error fetching cell rows:', error);
         res.status(500).json({ error: 'Could not fetch Cell Rows documents' });
@@ -210,4 +215,43 @@ exports.add100CellRow = async (req, res) => {
       } catch (error) {
         res.status(500).send({ message: 'Error creating records', error });
       }
+};
+
+exports.updateCellEmptyRow = async (req, res) => {
+    try {
+        const { rowIndex, colIndex, newValue } = req.body;
+
+        if (rowIndex == null || colIndex == null || newValue == null) {
+            return res.status(400).json({ error: 'rowIndex, colIndex, and newValue are required' });
+        }
+
+        const allDocuments = await Principale.find();
+        const emptyRows = allDocuments.filter(doc => {
+            const fields = doc.toObject();
+            return Object.keys(fields).every(key => key === '_id' || key === '__v' || !fields[key]);
+        });
+
+        if (emptyRows.length === 0) {
+            return res.status(404).json({ error: 'No empty rows found.' });
+        }
+
+        const rowIndexInt = parseInt(rowIndex, 10);
+        if (rowIndexInt >= emptyRows.length) {
+            return res.status(404).json({ error: 'No data found for the given rowIndex.' });
+        }
+
+        const rowData = emptyRows[rowIndexInt];
+        const keys = Object.keys(rowData.toObject());
+        const keyToUpdate = keys[colIndex + 1];
+
+        rowData[keyToUpdate] = newValue;
+
+        await rowData.save();
+
+        console.log(`Document with _id ${rowData._id} updated with ${keyToUpdate} successfully.`);
+        res.status(200).json({ message: 'Cell updated successfully.' });
+    } catch (error) {
+        console.error('Error updating cell data:', error);
+        res.status(500).json({ error: 'An error occurred while updating cell data.' });
+    }
 };

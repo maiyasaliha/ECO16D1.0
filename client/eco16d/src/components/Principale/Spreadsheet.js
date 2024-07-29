@@ -205,14 +205,15 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                     let updateData;
                     let versionData;
                     let previousData;
+                    let link;
                     if (source !== 'loadData' && changes) {
                         const getYear = (colIndex, value) => {
+                            if (year) {
+                                return year;
+                            }
                             if (colIndex === 0) {
                                 const [day, month, year] = value.split('/').map(Number);
                                 const quarter = Math.ceil(month / 3);
-                                return year;
-                            }
-                            if (year) {
                                 return year;
                             }
                             else {
@@ -220,12 +221,12 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                             }
                         };
                         const getQuarter = (colIndex, value) => {
+                            if (quarter) {
+                                return quarter;
+                            }
                             if (colIndex === 0) {
                                 const [day, month, year] = value.split('/').map(Number);
                                 const quarter = Math.ceil(month / 3);
-                                return quarter;
-                            }
-                            if (quarter) {
                                 return quarter;
                             }
                             else {
@@ -233,12 +234,17 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                             }
                         };
                         const updateRequests = changes.map(change => {
+                            if(newPage && change[1] === 0) {
+                                link = 'principaleEmpty';
+                            } else {
+                                link = 'principaleCellQuarter';
+                            }
                             updateData = {
                                 rowIndex: change[0],
                                 colIndex: change[1],
                                 newValue: change[3] == null ? "" : change[3],
-                                year: year,
-                                quarter: quarter
+                                year: getYear(change[1], change[3] == null ? "" : change[3]),
+                                quarter: getQuarter(change[1], change[3] == null ? "" : change[3])
                             };
                             previousData = {
                                 value: change[2]
@@ -246,7 +252,7 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                             console.log("updateData");
                             console.log(updateData);
                             socket.emit('cellUpdate', {updateData, previousData});
-                            return axios.post('http://localhost:3001/principaleCellQuarter', updateData);
+                            return axios.post(`http://localhost:3001/${link}`, updateData);
                         });
 
                         const saveversion = changes.map(change => {
