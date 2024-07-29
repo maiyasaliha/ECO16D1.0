@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
@@ -12,21 +12,24 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
   const organisation = userData?.organisation;
 
   const { year, setYear, quarter, setQuarter, newPage, setnewPage } = useDate();
+  const [quarterClick, setquarterClick] = useState(true);
 
   const onQuarterClick = (selectedQuarter) => () => {
     setQuarter(selectedQuarter);
+    setquarterClick(true);
     setnewPage(false);
     console.log("clicking quarter: " + selectedQuarter)
   };
 
   const onYearClick = (selectedYear) => () => {
     setYear(selectedYear);
+    newPage ? setquarterClick(false) : setquarterClick(true);
     console.log("clicking year: " + selectedYear)
   };
 
   const onNewClick = () => {
-    setnewPage(true);
-    setQuarter(0);
+    setnewPage(!newPage);
+    setquarterClick(false);
     console.log("clicking new: ")
   }
 
@@ -69,25 +72,25 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
         </Button> : null}
         <Button onClick={onYearClick(year - 1)}>{year - 1}</Button>
         <Button
-          type={quarter === 1 ? 'primary' : 'default'}
+          type={quarterClick && quarter === 1 ? 'primary' : 'default'}
           onClick={onQuarterClick(1)}
         >
           Jan-Mar
         </Button>
         <Button
-          type={quarter === 2 ? 'primary' : 'default'}
+          type={quarterClick && quarter === 2 ? 'primary' : 'default'}
           onClick={onQuarterClick(2)}
         >
           Apr-Jun
         </Button>
         <Button
-          type={quarter === 3 ? 'primary' : 'default'}
+          type={quarterClick && quarter === 3 ? 'primary' : 'default'}
           onClick={onQuarterClick(3)}
         >
           Jul-Sep
         </Button>
         <Button
-          type={quarter === 4 ? 'primary' : 'default'}
+          type={quarterClick && quarter === 4 ? 'primary' : 'default'}
           onClick={onQuarterClick(4)}
         >
           Oct-Dec
