@@ -8,8 +8,6 @@ import { DateProvider } from './contexts/DateContext';
 import HomePage from './pages/HomePage';
 import ColisSpreadsheet from './components/Colis/ColisSpreadsheet';
 import EcoSpreadsheet from './components/Eco/EcoSpreadsheet';
-import NewSpreadsheet from './components/Principale/NewSpreadsheet';
-import NewColisSpreadsheet from './components/Colis/NewColisSpreadsheet';
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -58,18 +56,6 @@ function App() {
               path= '/eco' 
               element={
                 isAuthenticated ? <EcoSpreadsheet /> : <Navigate to='/login' />
-              }  
-            />
-            <Route 
-              path= '/newPrincipale' 
-              element={
-                isAuthenticated ? <NewSpreadsheet selectedCell={selectedCell} setSelectedCell={setSelectedCell}/> : <Navigate to='/login' />
-              }  
-            />
-            <Route 
-              path= '/newColis' 
-              element={
-                isAuthenticated ? <NewColisSpreadsheet selectedCell={selectedCell} setSelectedCell={setSelectedCell}/> : <Navigate to='/login' />
               }  
             />
         </Routes>
