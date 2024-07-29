@@ -31,12 +31,20 @@ exports.getCellRowsQuarter = async (req, res) => {
 
         const allDocuments = await Colis.find();
 
+        const emptyRows = allDocuments.filter(doc => {
+            const fields = doc.toObject();
+            return Object.keys(fields).every(key => key === '_id' || key === '__v' || !fields[key]);
+        });
+
         const filteredRows = allDocuments.filter(doc => {
             const dateCreee = parseDateString(doc.dateCreee);
             return dateCreee >= parseDateString(startDateString) && dateCreee <= parseDateString(endDateString);
         });
 
-        res.status(200).json(filteredRows);
+        const combinedRows = [...filteredRows, ...emptyRows];
+        console.log('Filtered Rows:', combinedRows.length);
+
+        res.status(200).json(combinedRows);
     } catch (error) {
         console.error('Error fetching cell rows:', error);
         res.status(500).json({ error: 'Could not fetch Cell Rows documents' });
@@ -121,22 +129,30 @@ exports.updateCellQuarterly = async (req, res) => {
 
         const allDocuments = await Colis.find();
 
+        const emptyRows = allDocuments.filter(doc => {
+            const fields = doc.toObject();
+            return Object.keys(fields).every(key => key === '_id' || key === '__v' || !fields[key]);
+        });
+
         const filteredRows = allDocuments.filter(doc => {
             const dateCreee = parseDateString(doc.dateCreee);
             return dateCreee >= parseDateString(startDateString) && dateCreee <= parseDateString(endDateString);
         });
 
-        if (filteredRows.length === 0) {
+        const combinedRows = [...filteredRows, ...emptyRows];
+        console.log('Filtered Rows:', combinedRows.length);
+
+        if (combinedRows.length === 0) {
             return res.status(404).json({ error: 'No data found for the given year and quarter.' });
         }
 
         const rowIndexInt = parseInt(rowIndex, 10) || 0;
 
-        if (rowIndexInt >= filteredRows.length) {
+        if (rowIndexInt >= combinedRows.length) {
             return res.status(404).json({ error: 'No data found for the given rowIndex.' });
         }
 
-        const rowData = filteredRows[rowIndexInt];
+        const rowData = combinedRows[rowIndexInt];
         const keys = Object.keys(rowData.toObject());
         const keyToUpdate = keys[colIndex + 1];
         

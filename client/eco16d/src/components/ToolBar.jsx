@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { useDate } from '../contexts/DateContext';
 import { PlusOutlined } from '@ant-design/icons';
 import './ToolBar.css';
+import axios from 'axios';
 import VersionHistoryOverlay from './VersionHistory/VersionHistoryOverlay';
 
 function ToolBar({ principale, eco, colis, selectedCell }) {
@@ -22,6 +23,15 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
     setYear(selectedYear);
     console.log("clicking year: " + selectedYear)
   };
+
+  const on100Click = () => {
+    if (principale) {
+      return axios.post('http://localhost:3001/100principaleRows');
+    }
+    if (colis) {
+      return axios.post('http://localhost:3001/100colisRows');
+    }
+  }
 
   const findSheet = () => {
     if (principale) {
@@ -53,6 +63,13 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
       </div>
       {eco ? null : <VersionHistoryOverlay selectedCell={selectedCell} sheet={findSheet()} />}
       <div>
+        {!eco ? <Button
+          type='dashed'
+          icon={<PlusOutlined />}
+          onClick={on100Click}
+        >
+          Add 100 rows
+        </Button> : null}
         <Button 
           onClick={onYearClick(year - 1)}>{year - 1}
         </Button>

@@ -28,7 +28,7 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
     const [update, setupdate] = useState(0);
 
     const organisation = searchParams.get('organisation');
-    const { year, quarter, newPage } = useDate();
+    const { year, quarter } = useDate();
     const { userData } = useAuth();
 
     useEffect(() => {
@@ -75,12 +75,7 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
         const fetchData = async () => {
             try {
                 setHaveData(false);
-                let response;
-                if (newPage) {
-                    response = await axios.get('http://localhost:3001/colisEmpty');
-                } else {
-                    response = await axios.get(`http://localhost:3001/colisQuarter?year=${year}&quarter=${quarter}`);
-                }
+                const response = await axios.get(`http://localhost:3001/colisQuarter?year=${year}&quarter=${quarter}`);
                 const principaleBmid = await axios.get('http://localhost:3001/principaleBmids');
                 const colisBmid = await axios.get('http://localhost:3001/colisBmidsId');
 
@@ -104,7 +99,7 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
         };
 
         fetchData();
-    }, [year, quarter, update, newPage]);
+    }, [year, quarter, update]);
 
     for (let row = 0; row < rows; row++) {
         customBorders.push({
