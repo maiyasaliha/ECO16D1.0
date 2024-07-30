@@ -8,7 +8,7 @@ import './ToolBar.css';
 import axios from 'axios';
 import VersionHistoryOverlay from './VersionHistory/VersionHistoryOverlay';
 
-function ToolBar({ principale, eco, colis, selectedCell }) {
+function ToolBar({ principale, eco, colis, selectedCell, version }) {
   const { userData } = useAuth();
   const organisation = userData?.organisation;
 
@@ -63,7 +63,7 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
           <Link to={`/colis?organisation=${organisation}`}>COLIS MANQUANTS</Link>
         </Button>
       </div>
-      {eco ? null : <VersionHistoryOverlay selectedCell={selectedCell} sheet={findSheet()} />}
+      {eco || !version ? null : <VersionHistoryOverlay selectedCell={selectedCell} sheet={findSheet()} />}
       <div>
         {!eco ? <Button
           type='dashed'

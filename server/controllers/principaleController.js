@@ -40,7 +40,12 @@ exports.getCellRowsQuarter = async (req, res) => {
         const combinedRows = [...filteredRows, ...emptyRows];
         console.log('Filtered Rows:', combinedRows.length);
 
-        res.status(200).json(combinedRows);
+        const responseData = {
+            hasData: filteredRows.length > 0,
+            combinedRows: combinedRows
+        };
+
+        res.status(200).json(responseData);
     } catch (error) {
         console.error('Error fetching cell rows:', error);
         res.status(500).json({ error: 'Could not fetch Cell Rows documents' });
@@ -118,12 +123,13 @@ exports.updateCellQuarterly = async (req, res) => {
             const fields = doc.toObject();
             return Object.keys(fields).every(key => key === '_id' || key === '__v' || !fields[key]);
         });
-        const filteredRows = allDocuments.filter(doc => {
-            const dateAjoutee = parseDateString(doc.dateAjoutee);
-            return dateAjoutee >= parseDateString(startDateString) && dateAjoutee <= parseDateString(endDateString);
-        });
+        const filteredRows = allDocuments
+            .filter(doc => {
+                const dateAjoutee = parseDateString(doc.dateAjoutee);
+                return dateAjoutee >= parseDateString(startDateString) && dateAjoutee <= parseDateString(endDateString);
+            })
+            .sort((a, b) => parseDateString(a.dateAjoutee) - parseDateString(b.dateAjoutee));
 
-        //sort the filtered rows
         const combinedRows = [...filteredRows, ...emptyRows];
         console.log('Filtered Rows:', combinedRows.length);
 

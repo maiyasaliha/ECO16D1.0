@@ -44,7 +44,12 @@ exports.getCellRowsQuarter = async (req, res) => {
         const combinedRows = [...filteredRows, ...emptyRows];
         console.log('Filtered Rows:', combinedRows.length);
 
-        res.status(200).json(combinedRows);
+        const responseData = {
+            hasData: filteredRows.length > 0,
+            combinedRows: combinedRows
+        };
+
+        res.status(200).json(responseData);
     } catch (error) {
         console.error('Error fetching cell rows:', error);
         res.status(500).json({ error: 'Could not fetch Cell Rows documents' });

@@ -27,6 +27,7 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
     const [colisBmids, setColisBmids] = useState([]);
     const [searchParams] = useSearchParams();
     const [update, setupdate] = useState(0);
+    const [version, setversion] = useState(false);
 
     const organisation = searchParams.get('organisation');
     const { year, quarter, add } = useDate();
@@ -86,11 +87,13 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                     const extractedPBMIDs = extractedPBMIDsId.map(set => set.BMID);
                     const extractedCBMIDs = colisBmid.data;
                 
-                    setData(extractedData);
+                    setData(extractedData.combinedRows);
+                    setversion(extractedData.hasData);
+                    console.log(extractedData.hasData);
                     setPrincipaleBmidsId(extractedPBMIDsId);
                     setPrincipaleBmids(extractedPBMIDs);
                     setColisBmids(extractedCBMIDs);
-                    setRows(extractedData.length);
+                    setRows(extractedData.combinedRows.length);
                     setHaveData(true);
                 }
             } catch (error) {
@@ -279,7 +282,7 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
 
     return (
         <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
-            <ToolBar principale={true} selectedCell={selectedCell} />
+            <ToolBar principale={true} selectedCell={selectedCell} version={version} />
             {!haveData ? (
                 <div style={{ textAlign: 'center', marginTop: '120px' }}>No data for specified range</div>
             ) : (

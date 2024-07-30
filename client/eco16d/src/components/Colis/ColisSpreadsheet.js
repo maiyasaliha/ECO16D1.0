@@ -26,6 +26,7 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
     const [searchParams] = useSearchParams();
     const [sheetBmid, setsheetBmid] = useState([]);
     const [update, setupdate] = useState(0);
+    const [version, setversion] = useState(false);
 
     const organisation = searchParams.get('organisation');
     const { year, quarter, add } = useDate();
@@ -86,7 +87,8 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
                     const extractedPBMIDs = principaleBmid.data;
                     const extractedCBMIDsId = colisBmid.data;
                     const extractedCBMIDs = extractedCBMIDsId.map(set => set.BMID);
-                    setData(extractedData);
+                    setData(extractedData.combinedRows);
+                    setversion(extractedData.hasData);
                     setPrincipaleBmids(extractedPBMIDs);
                     setColisBmids(extractedCBMIDs);
                     setColisBmidsId(extractedCBMIDsId);
@@ -229,7 +231,7 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
 
     return (
         <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
-            <ToolBar colis={true} selectedCell={selectedCell}/>
+            <ToolBar colis={true} selectedCell={selectedCell} version={version}/>
             {!haveData ? (
                 <div style={{ textAlign: 'center', marginTop: '120px' }}>No data for specified range</div>
             ) : (
