@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./client/eco16d
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3000:3000
+
+  backend:
+    build:
+      context: ./server
+    environment:
+      NODE_ENV: production
+      MONGO_URL: mongodb://mongo:27017/ECO16D
+    ports:
+      - 3001:3001
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
