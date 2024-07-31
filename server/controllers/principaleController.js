@@ -128,7 +128,7 @@ exports.updateCellQuarterly = async (req, res) => {
                 const dateAjoutee = parseDateString(doc.dateAjoutee);
                 return dateAjoutee >= parseDateString(startDateString) && dateAjoutee <= parseDateString(endDateString);
             })
-            .sort((a, b) => parseDateString(a.dateAjoutee) - parseDateString(b.dateAjoutee));
+            // .sort((a, b) => parseDateString(a.dateAjoutee) - parseDateString(b.dateAjoutee));
 
         const combinedRows = [...filteredRows, ...emptyRows];
         console.log('Filtered Rows:', combinedRows.length);
