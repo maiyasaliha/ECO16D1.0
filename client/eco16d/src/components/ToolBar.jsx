@@ -66,7 +66,7 @@ function ToolBar({ principale, eco, colis, selectedCell, version }) {
         </Button>
       </div>
       {eco || !version ? null : <VersionHistoryOverlay selectedCell={selectedCell} sheet={findSheet()} />}
-      {eco || !version ? null : <SearchResultsDrawer sheet={findSheet()} />}
+      {eco ? null : <SearchResultsDrawer sheet={findSheet()} />}
       <div>
         {!eco ? (
           <Button
