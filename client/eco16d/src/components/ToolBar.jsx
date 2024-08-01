@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Button } from 'antd';
+import { Button, Input } from 'antd';
 import { Link } from 'react-router-dom';
 import { useDate } from '../contexts/DateContext';
 import { PlusOutlined } from '@ant-design/icons';
+import { SearchBar } from '../'
 import './ToolBar.css';
 import axios from 'axios';
 import VersionHistoryOverlay from './VersionHistory/VersionHistoryOverlay';
+import SearchResultsDrawer from './SearchResultsDrawer/SearchResultsDrawer';
 
 function ToolBar({ principale, eco, colis, selectedCell, version }) {
   const { userData } = useAuth();
   const organisation = userData?.organisation;
-
   const { year, setYear, quarter, setQuarter, setadd } = useDate();
-
+  const [searchResults, setSearchResults] = useState([]);
+  
   const onQuarterClick = (selectedQuarter) => () => {
     setQuarter(selectedQuarter);
     console.log("clicking quarter: " + selectedQuarter)
@@ -33,7 +35,7 @@ function ToolBar({ principale, eco, colis, selectedCell, version }) {
       setadd();
       return axios.post('http://localhost:3001/100colisRows');
     }
-  }
+  };
 
   const findSheet = () => {
     if (principale) {
@@ -42,7 +44,7 @@ function ToolBar({ principale, eco, colis, selectedCell, version }) {
     if (colis) {
       return "colis";
     }
-  }
+  };
 
   return (
     <div className='toolbar'>
@@ -64,14 +66,17 @@ function ToolBar({ principale, eco, colis, selectedCell, version }) {
         </Button>
       </div>
       {eco || !version ? null : <VersionHistoryOverlay selectedCell={selectedCell} sheet={findSheet()} />}
+      {eco || !version ? null : <SearchResultsDrawer sheet={findSheet()} />}
       <div>
-        {!eco ? <Button
-          type='dashed'
-          icon={<PlusOutlined />}
-          onClick={on100Click}
-        >
-          Add 100 rows
-        </Button> : null}
+        {!eco ? (
+          <Button
+            type='dashed'
+            icon={<PlusOutlined />}
+            onClick={on100Click}
+          >
+            Add 100 rows
+          </Button>
+        ) : null}
         <Button 
           onClick={onYearClick(year - 1)}>{year - 1}
         </Button>
