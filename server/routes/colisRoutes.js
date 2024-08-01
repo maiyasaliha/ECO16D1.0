@@ -12,5 +12,6 @@ router.get('/colisBmids', colisController.getAllBMIDs);
 router.get('/colisBmidsId', colisController.getAllBMIDsId);
 router.get('/colisEmpty', colisController.getEmptyRows);
 router.post('/100colisRows', colisController.add100CellRow);
+router.get('/searchcolis', colisController.searchKeyword);
 
 module.exports = router;

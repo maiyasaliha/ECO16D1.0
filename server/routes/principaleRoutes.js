@@ -12,7 +12,7 @@ router.get('/principaleBmidsId', principaleController.getAllBMIDsId);
 router.get('/principaleEmpty', principaleController.getEmptyRows);
 router.post('/100principaleRows', principaleController.add100CellRow);
 router.post('/principaleEmpty', principaleController.updateCellEmptyRow);
-router.get('/search', principaleController.searchKeyword);
+router.get('/searchprincipale', principaleController.searchKeyword);
 
 
 module.exports = router;

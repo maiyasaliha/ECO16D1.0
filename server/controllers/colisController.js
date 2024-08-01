@@ -222,3 +222,34 @@ exports.add100CellRow = async (req, res) => {
         res.status(500).send({ message: 'Error creating records', error });
       }
 };
+
+function createSearchRegex(keyword) {
+    return new RegExp(keyword, 'i');
+}
+
+exports.searchKeyword = async (req, res) => {
+    try {
+        const { keyword } = req.query;
+        if (!keyword) {
+            return res.status(400).json({ error: 'Keyword is required' });
+        }
+
+        const searchRegex = createSearchRegex(keyword);
+
+        const searchCriteria = {
+            $or: [
+                { dateCreee: { $regex: searchRegex } },
+                { BMID: { $regex: searchRegex } },
+                { nomDuClient: { $regex: searchRegex } },
+                { informations: { $regex: searchRegex } }
+            ],
+        };
+
+        const matchingDocuments = await Colis.find(searchCriteria);
+
+        res.status(200).json(matchingDocuments);
+    } catch (error) {
+        console.error('Error searching documents:', error);
+        res.status(500).json({ error: 'An error occurred while searching for documents' });
+    }
+};
