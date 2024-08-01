@@ -31,12 +31,25 @@ exports.getCellRowsQuarter = async (req, res) => {
 
         const allDocuments = await Colis.find();
 
+        const emptyRows = allDocuments.filter(doc => {
+            const fields = doc.toObject();
+            return Object.keys(fields).every(key => key === '_id' || key === '__v' || !fields[key]);
+        });
+
         const filteredRows = allDocuments.filter(doc => {
             const dateCreee = parseDateString(doc.dateCreee);
             return dateCreee >= parseDateString(startDateString) && dateCreee <= parseDateString(endDateString);
         });
 
-        res.status(200).json(filteredRows);
+        const combinedRows = [...filteredRows, ...emptyRows];
+        console.log('Filtered Rows:', combinedRows.length);
+
+        const responseData = {
+            hasData: filteredRows.length > 0,
+            combinedRows: combinedRows
+        };
+
+        res.status(200).json(responseData);
     } catch (error) {
         console.error('Error fetching cell rows:', error);
         res.status(500).json({ error: 'Could not fetch Cell Rows documents' });
@@ -121,22 +134,30 @@ exports.updateCellQuarterly = async (req, res) => {
 
         const allDocuments = await Colis.find();
 
+        const emptyRows = allDocuments.filter(doc => {
+            const fields = doc.toObject();
+            return Object.keys(fields).every(key => key === '_id' || key === '__v' || !fields[key]);
+        });
+
         const filteredRows = allDocuments.filter(doc => {
             const dateCreee = parseDateString(doc.dateCreee);
             return dateCreee >= parseDateString(startDateString) && dateCreee <= parseDateString(endDateString);
         });
 
-        if (filteredRows.length === 0) {
+        const combinedRows = [...filteredRows, ...emptyRows];
+        console.log('Filtered Rows:', combinedRows.length);
+
+        if (combinedRows.length === 0) {
             return res.status(404).json({ error: 'No data found for the given year and quarter.' });
         }
 
         const rowIndexInt = parseInt(rowIndex, 10) || 0;
 
-        if (rowIndexInt >= filteredRows.length) {
+        if (rowIndexInt >= combinedRows.length) {
             return res.status(404).json({ error: 'No data found for the given rowIndex.' });
         }
 
-        const rowData = filteredRows[rowIndexInt];
+        const rowData = combinedRows[rowIndexInt];
         const keys = Object.keys(rowData.toObject());
         const keyToUpdate = keys[colIndex + 1];
         
@@ -173,5 +194,62 @@ exports.getAllBMIDsId = async (req, res) => {
     } catch (error) {
         console.error('Error fetching all BMIDs:', error);
         res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
+exports.getEmptyRows = async (req, res) => {
+    try {
+        const allDocuments = await Colis.find();
+        const emptyRows = allDocuments.filter(doc => {
+            const fields = doc.toObject();
+            return Object.keys(fields).every(key => key === '_id' || key === '__v' || !fields[key]);
+        });
+
+        res.status(200).json(emptyRows);
+    } catch (error) {
+        console.error('Error fetching empty rows:', error);
+        res.status(500).json({ error: 'Could not fetch empty rows documents' });
+    }
+};
+
+exports.add100CellRow = async (req, res) => {
+    try {
+        const records = Array(100).fill({});
+
+        await Colis.insertMany(records);
+        res.status(201).send({ message: '100 records created successfully' });
+      } catch (error) {
+        res.status(500).send({ message: 'Error creating records', error });
+      }
+};
+
+function createSearchRegex(keyword) {
+    return new RegExp(keyword, 'i');
+}
+
+exports.searchKeyword = async (req, res) => {
+    try {
+        const { keyword } = req.query;
+        if (!keyword) {
+            return res.status(400).json({ error: 'Keyword is required' });
+        }
+
+        const searchRegex = createSearchRegex(keyword);
+
+        const searchCriteria = {
+            $or: [
+                { dateCreee: { $regex: searchRegex } },
+                { BMID: { $regex: searchRegex } },
+                { nomDuClient: { $regex: searchRegex } },
+                { informations: { $regex: searchRegex } }
+            ],
+        };
+
+        const matchingDocuments = await Colis.find(searchCriteria);
+
+        res.status(200).json(matchingDocuments);
+    } catch (error) {
+        console.error('Error searching documents:', error);
+        res.status(500).json({ error: 'An error occurred while searching for documents' });
     }
 };

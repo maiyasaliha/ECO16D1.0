@@ -38,7 +38,12 @@ function App() {
             <Route 
               path= '/principale' 
               element={
-                isAuthenticated ? <Spreadsheet selectedCell={selectedCell} setSelectedCell={setSelectedCell}/> : <Navigate to='/login' />
+                isAuthenticated 
+                ? <Spreadsheet 
+                    selectedCell={selectedCell} 
+                    setSelectedCell={setSelectedCell}
+                  /> 
+                : <Navigate to='/login' />
               }  
             />
             <Route 

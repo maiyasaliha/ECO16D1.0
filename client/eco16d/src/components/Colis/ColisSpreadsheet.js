@@ -26,9 +26,10 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
     const [searchParams] = useSearchParams();
     const [sheetBmid, setsheetBmid] = useState([]);
     const [update, setupdate] = useState(0);
+    const [version, setversion] = useState(false);
 
     const organisation = searchParams.get('organisation');
-    const { year, quarter } = useDate();
+    const { year, quarter, add } = useDate();
     const { userData } = useAuth();
 
     useEffect(() => {
@@ -41,13 +42,16 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
             if (hotInstance) {
                 const { rowIndex, colIndex, newValue } = data.updateData;
 
-                if (newValue !== data.previousData.value 
-                    && year === data.updateData.year 
-                    && quarter === data.updateData.quarter) {
-                    console.log("setting");
-                    hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
+                if ("colis" === data.updateData.sheet) {
+                    if (newValue !== data.previousData.value 
+                        && year === data.updateData.year 
+                        && quarter === data.updateData.quarter) {
+                        console.log("setting");
+                        hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
+                    }
                 }
                 if (colIndex === 1) {
+                    console.log("BMID column Edited");
                     if (sheetBmid.includes(newValue) || sheetBmid.includes(data.previousData.value)) {
                         setupdate((previousData) => previousData + 1);
                     }
@@ -86,7 +90,8 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
                     const extractedPBMIDs = principaleBmid.data;
                     const extractedCBMIDsId = colisBmid.data;
                     const extractedCBMIDs = extractedCBMIDsId.map(set => set.BMID);
-                    setData(extractedData);
+                    setData(extractedData.combinedRows);
+                    setversion(extractedData.hasData);
                     setPrincipaleBmids(extractedPBMIDs);
                     setColisBmids(extractedCBMIDs);
                     setColisBmidsId(extractedCBMIDsId);
@@ -99,7 +104,7 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
         };
 
         fetchData();
-    }, [year, quarter, update]);
+    }, [year, quarter, update, add]);
 
     for (let row = 0; row < rows; row++) {
         customBorders.push({
@@ -160,7 +165,8 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
                                 colIndex: change[1],
                                 newValue: change[3] == null ? "" : change[3],
                                 year: year,
-                                quarter: quarter
+                                quarter: quarter,
+                                sheet: "colis",
                             };
                             previousData = {
                                 value: change[2]
@@ -177,7 +183,9 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
                                 newValue: change[3] == null ? "" : change[3],
                                 userName: userData?.name,
                                 organisation: organisation,
-                                sheet: "colis"
+                                sheet: "colis",
+                                year: year,
+                                quarter: quarter
                             };
                             console.log("version is ");
                             console.log(versionData);
@@ -227,7 +235,7 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
 
     return (
         <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
-            <ToolBar colis={true} selectedCell={selectedCell}/>
+            <ToolBar colis={true} selectedCell={selectedCell} version={version}/>
             {!haveData ? (
                 <div style={{ textAlign: 'center', marginTop: '120px' }}>No data for specified range</div>
             ) : (

@@ -30,8 +30,15 @@ const versionSchema = new mongoose.Schema({
     sheet: {
         type: String,
         required: true,
+    },
+    year: {
+        type: Number,
+        required: true,
+    },
+    quarter: {
+        type: Number,
+        required: true,
     }
-
 });
 
 const Version = mongoose.model('Version', versionSchema);

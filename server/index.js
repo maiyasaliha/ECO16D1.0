@@ -33,6 +33,7 @@ app.use('/', colisRouter);
 app.use('/', versionsRouter);
 
 mongoose.connect('mongodb://localhost:27017/ECO16D')
+// mongoose.connect('mongodb://mongo:27017/ECO16D')
 .then(() => console.log('Connected to MongoDB!'))
 .catch((error) => console.error('Failed to connect to MongoDB:', error));
 

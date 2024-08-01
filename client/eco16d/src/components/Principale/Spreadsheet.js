@@ -27,9 +27,10 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
     const [colisBmids, setColisBmids] = useState([]);
     const [searchParams] = useSearchParams();
     const [update, setupdate] = useState(0);
+    const [version, setversion] = useState(false);
 
     const organisation = searchParams.get('organisation');
-    const { year, quarter } = useDate();
+    const { year, quarter, add } = useDate();
     const { userData } = useAuth();
 
       useEffect(() => {
@@ -41,12 +42,15 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
 
             if (hotInstance) {
                 const { rowIndex, colIndex, newValue } = data.updateData;
-                if (newValue !== data.previousData.value 
-                    && year === data.updateData.year 
-                    && quarter === data.updateData.quarter) {
-                    hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
+                if ("principale" === data.updateData.sheet) {
+                    if (newValue !== data.previousData.value 
+                        && year === data.updateData.year 
+                        && quarter === data.updateData.quarter) {
+                        hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
+                    }
                 }
                 if (colIndex === 1) {
+                    console.log("BMID column Edited");
                     if (sheetBmid.includes(newValue) || sheetBmid.includes(data.previousData.value)) {
                         setupdate((previousData) => previousData + 1);
                     }
@@ -85,11 +89,14 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                     const extractedPBMIDsId = principaleBmid.data;
                     const extractedPBMIDs = extractedPBMIDsId.map(set => set.BMID);
                     const extractedCBMIDs = colisBmid.data;
-                    setData(extractedData);
+                
+                    setData(extractedData.combinedRows);
+                    setversion(extractedData.hasData);
+                    console.log(extractedData.hasData);
                     setPrincipaleBmidsId(extractedPBMIDsId);
                     setPrincipaleBmids(extractedPBMIDs);
                     setColisBmids(extractedCBMIDs);
-                    setRows(extractedData.length);
+                    setRows(extractedData.combinedRows.length);
                     setHaveData(true);
                 }
             } catch (error) {
@@ -98,7 +105,7 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
         };
 
         fetchData();
-    }, [year, quarter, update]);
+    }, [year, quarter, update, add]);
 
     for (let row = 0; row < rows; row++) {
         customBorders.push({
@@ -177,7 +184,10 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                         cellProperties.className = cellClass;
                     } else if (col === 13) {
                         const compareValue = this.getDataAtCell(row, 15);
-                        const cellClass = getColorClassForCb(getWaybill13(cellValue, compareValue));
+                        let cellClass = 'centered-checkbox';
+                        if (cellValue !== '') {
+                            cellClass = getColorClassForCb(getWaybill13(cellValue, compareValue));
+                        }
                         cellProperties.className = cellClass;
                     } else if (col === 17 || col === 19) {
                         const cellClass = getColorClassForDd(cellValue);
@@ -203,11 +213,14 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                                 colIndex: change[1],
                                 newValue: change[3] == null ? "" : change[3],
                                 year: year,
-                                quarter: quarter
+                                quarter: quarter,
+                                sheet: "principale",
                             };
                             previousData = {
                                 value: change[2]
                             }
+                            console.log("updateData");
+                            console.log(updateData);
                             socket.emit('cellUpdate', {updateData, previousData});
                             return axios.post('http://localhost:3001/principaleCellQuarter', updateData);
                         });
@@ -220,7 +233,9 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                                 newValue: change[3] == null ? "" : change[3],
                                 userName: userData?.name,
                                 organisation: organisation,
-                                sheet: "principale"
+                                sheet: "principale",
+                                year: year,
+                                quarter: quarter
                             };
                             console.log("version is ");
                             console.log(versionData);
@@ -271,7 +286,7 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
 
     return (
         <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
-            <ToolBar principale={true} selectedCell={selectedCell} />
+            <ToolBar principale={true} selectedCell={selectedCell} version={version} />
             {!haveData ? (
                 <div style={{ textAlign: 'center', marginTop: '120px' }}>No data for specified range</div>
             ) : (

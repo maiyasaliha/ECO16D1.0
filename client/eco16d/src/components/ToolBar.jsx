@@ -1,23 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Button } from 'antd';
+import { Button, Input } from 'antd';
 import { Link } from 'react-router-dom';
 import { useDate } from '../contexts/DateContext';
+import { PlusOutlined } from '@ant-design/icons';
+import { SearchBar } from '../'
 import './ToolBar.css';
+import axios from 'axios';
 import VersionHistoryOverlay from './VersionHistory/VersionHistoryOverlay';
+import SearchResultsDrawer from './SearchResultsDrawer/SearchResultsDrawer';
 
-function ToolBar({ principale, eco, colis, selectedCell }) {
+function ToolBar({ principale, eco, colis, selectedCell, version }) {
   const { userData } = useAuth();
   const organisation = userData?.organisation;
-
-  const { year, setYear, quarter, setQuarter } = useDate();
-
+  const { year, setYear, quarter, setQuarter, setadd } = useDate();
+  const [searchResults, setSearchResults] = useState([]);
+  
   const onQuarterClick = (selectedQuarter) => () => {
     setQuarter(selectedQuarter);
+    console.log("clicking quarter: " + selectedQuarter)
   };
 
   const onYearClick = (selectedYear) => () => {
     setYear(selectedYear);
+    console.log("clicking year: " + selectedYear)
+  };
+
+  const on100Click = () => {
+    if (principale) {
+      setadd();
+      return axios.post('http://localhost:3001/100principaleRows');
+    }
+    if (colis) {
+      setadd();
+      return axios.post('http://localhost:3001/100colisRows');
+    }
   };
 
   const findSheet = () => {
@@ -27,7 +44,7 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
     if (colis) {
       return "colis";
     }
-  }
+  };
 
   return (
     <div className='toolbar'>
@@ -48,9 +65,21 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
           <Link to={`/colis?organisation=${organisation}`}>COLIS MANQUANTS</Link>
         </Button>
       </div>
-      {!eco ? <VersionHistoryOverlay selectedCell={selectedCell} sheet={findSheet()} /> : null}
+      {eco || !version ? null : <VersionHistoryOverlay selectedCell={selectedCell} sheet={findSheet()} />}
+      {eco ? null : <SearchResultsDrawer sheet={findSheet()} />}
       <div>
-        <Button onClick={onYearClick(year - 1)}>{year - 1}</Button>
+        {!eco ? (
+          <Button
+            type='dashed'
+            icon={<PlusOutlined />}
+            onClick={on100Click}
+          >
+            Add 100 rows
+          </Button>
+        ) : null}
+        <Button 
+          onClick={onYearClick(year - 1)}>{year - 1}
+        </Button>
         <Button
           type={quarter === 1 ? 'primary' : 'default'}
           onClick={onQuarterClick(1)}
@@ -75,7 +104,9 @@ function ToolBar({ principale, eco, colis, selectedCell }) {
         >
           Oct-Dec
         </Button>
-        <Button onClick={onYearClick(year + 1)}>{year + 1}</Button>
+        <Button 
+          onClick={onYearClick(year + 1)}>{year + 1}
+        </Button>
       </div>
     </div>
   );
