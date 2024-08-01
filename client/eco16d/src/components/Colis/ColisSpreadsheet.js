@@ -42,15 +42,17 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
             if (hotInstance) {
                 const { rowIndex, colIndex, newValue } = data.updateData;
 
-                if (newValue !== data.previousData.value 
-                    && year === data.updateData.year 
-                    && quarter === data.updateData.quarter) {
-                    console.log("setting");
-                    hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
-                }
-                if (colIndex === 1) {
-                    if (sheetBmid.includes(newValue) || sheetBmid.includes(data.previousData.value)) {
-                        setupdate((previousData) => previousData + 1);
+                if ("colis" === data.updateData.sheet) {
+                    if (newValue !== data.previousData.value 
+                        && year === data.updateData.year 
+                        && quarter === data.updateData.quarter) {
+                        console.log("setting");
+                        hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
+                    }
+                    if (colIndex === 1) {
+                        if (sheetBmid.includes(newValue) || sheetBmid.includes(data.previousData.value)) {
+                            setupdate((previousData) => previousData + 1);
+                        }
                     }
                 }
             }
@@ -162,7 +164,8 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
                                 colIndex: change[1],
                                 newValue: change[3] == null ? "" : change[3],
                                 year: year,
-                                quarter: quarter
+                                quarter: quarter,
+                                sheet: "colis",
                             };
                             previousData = {
                                 value: change[2]
