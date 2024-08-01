@@ -48,10 +48,11 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                         && quarter === data.updateData.quarter) {
                         hotInstance.setDataAtCell(rowIndex, colIndex, newValue);
                     }
-                    if (colIndex === 1) {
-                        if (sheetBmid.includes(newValue) || sheetBmid.includes(data.previousData.value)) {
-                            setupdate((previousData) => previousData + 1);
-                        }
+                }
+                if (colIndex === 1) {
+                    console.log("BMID column Edited");
+                    if (sheetBmid.includes(newValue) || sheetBmid.includes(data.previousData.value)) {
+                        setupdate((previousData) => previousData + 1);
                     }
                 }
             }
