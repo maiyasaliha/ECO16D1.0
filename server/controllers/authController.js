@@ -85,7 +85,7 @@ exports.login = async (req, res, next) => {
 
 exports.getAllUsers = async (req, res, next) => {
     try {
-        const users = await User.find().select('-password');
+        const users = await User.find({ role: 'user' }).select('-password');
 
         res.status(200).json({
             status: 'success',
