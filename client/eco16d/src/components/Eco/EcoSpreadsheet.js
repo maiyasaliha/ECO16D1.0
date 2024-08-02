@@ -24,9 +24,9 @@ function EcoSpreadsheet() {
                     '7', '3', '9', '10', '11', '12'
                 ];
                 sethaveData(false);
-                const requests = endpoints.map(endpoint => axios.get(`http://localhost:3001/eco?year=${year}&quarter=${quarter}&column=${endpoint}`));
+                const requests = endpoints.map(endpoint => axios.get(`${API_URL}:3001/eco?year=${year}&quarter=${quarter}&column=${endpoint}`));
                 const responses = await Promise.all(requests);
-                const returnsBmid = await axios.get(`http://localhost:3001/eco?year=${year}&quarter=${quarter}&column=8`);
+                const returnsBmid = await axios.get(`${API_URL}:3001/eco?year=${year}&quarter=${quarter}&column=8`);
                 const extractedBMIDs = returnsBmid.data;
                 const combinedData = responses.reduce((acc, response, index) => {
                     const colData = response.data;

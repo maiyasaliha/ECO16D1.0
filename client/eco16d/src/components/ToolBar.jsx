@@ -9,6 +9,7 @@ import './ToolBar.css';
 import axios from 'axios';
 import VersionHistoryOverlay from './VersionHistory/VersionHistoryOverlay';
 import SearchResultsDrawer from './SearchResultsDrawer/SearchResultsDrawer';
+import { API_URL } from '../EcoSetup';
 
 function ToolBar({ principale, eco, colis, selectedCell, version }) {
   const { userData } = useAuth();
@@ -29,11 +30,11 @@ function ToolBar({ principale, eco, colis, selectedCell, version }) {
   const on100Click = () => {
     if (principale) {
       setadd();
-      return axios.post('http://localhost:3001/100principaleRows');
+      return axios.post(`${API_URL}:3001/100principaleRows`);
     }
     if (colis) {
       setadd();
-      return axios.post('http://localhost:3001/100colisRows');
+      return axios.post(`${API_URL}:3001/100colisRows`);
     }
   };
 

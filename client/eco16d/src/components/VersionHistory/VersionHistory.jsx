@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Table } from 'antd';
 import { useDate } from '../../contexts/DateContext';
 import './VersionHistory.css';
+import { API_URL } from '../../EcoSetup';
 
 function VersionHistory({ pressed, selectedCell, sheet }) {
     const [versionHistory, setVersionHistory] = useState([]);
@@ -11,7 +12,7 @@ function VersionHistory({ pressed, selectedCell, sheet }) {
     useEffect(() => {
         const fetchVersionHistory = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/versions?columnName=${selectedCell.column}&rowNumber=${selectedCell.row}&sheet=${sheet}&year=${year}&quarter=${quarter}`);
+                const response = await axios.get(`${API_URL}:3001/versions?columnName=${selectedCell.column}&rowNumber=${selectedCell.row}&sheet=${sheet}&year=${year}&quarter=${quarter}`);
                 setVersionHistory(response.data);
             } catch (error) {
                 console.error('Error fetching edit history:', error);

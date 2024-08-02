@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Button, Card, Typography, Table, message } from 'antd';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { API_URL } from '../EcoSetup';
 
 function Dashboard() {
     const { userData, logout } = useAuth();
@@ -17,7 +18,7 @@ function Dashboard() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/users');
+                const response = await axios.get(`${API_URL}:3001/users`);
                 setUsers(response.data.data.users);
             } catch (error) {
                 console.error('Error fetching users:', error);
@@ -29,7 +30,7 @@ function Dashboard() {
 
     const verifyUser = async (userId) => {
         try {
-            await axios.patch(`http://localhost:3001/verifyUser/${userId}`);
+            await axios.patch(`${API_URL}:3001/verifyUser/${userId}`);
             message.success('User verified successfully');
             setUsers(users.map(user => user._id === userId ? { ...user, isVerified: true } : user));
         } catch (error) {
