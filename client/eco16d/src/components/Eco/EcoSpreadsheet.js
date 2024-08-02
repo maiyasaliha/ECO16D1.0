@@ -7,6 +7,7 @@ import { columnHeaders, columns } from './EcoSheetStructure';
 import ToolBar from '../ToolBar';
 import { getColorClassForIMEI } from './ConditionalColoring';
 import { useDate } from '../../contexts/DateContext';
+import { API_URL } from '../../EcoSetup';
 
 function EcoSpreadsheet() {
     const [hotInstance, setHotInstance] = useState(null);
