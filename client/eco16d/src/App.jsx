@@ -8,9 +8,11 @@ import { DateProvider } from './contexts/DateContext';
 import HomePage from './pages/HomePage';
 import ColisSpreadsheet from './components/Colis/ColisSpreadsheet';
 import EcoSpreadsheet from './components/Eco/EcoSpreadsheet';
+import Dashboard from './pages/Dashboard';
+import UnverifiedPage from './pages/UnverifiedPage';
 
 function App() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, userData } = useAuth();
   const [selectedCell, setSelectedCell] = useState(null);
 
   return (
@@ -32,7 +34,10 @@ function App() {
             <Route 
               path= '/home' 
               element={
-                isAuthenticated ? <HomePage /> : <Navigate to='/login' />
+                userData?.role === "admin" ? <Dashboard /> :
+                !isAuthenticated ? <Navigate to='/login' /> :
+                userData?.isVerified?
+                <HomePage /> : <UnverifiedPage />
               }  
             />
             <Route 

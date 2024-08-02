@@ -74,10 +74,51 @@ exports.login = async (req, res, next) => {
                 name: user.name,
                 email: user.email,
                 organisation: user.organisation,
-                role: user.role
+                role: user.role,
+                isVerified: user.isVerified
             }
         });
     } catch (error) {
         next(error);
     }
 }
+
+exports.getAllUsers = async (req, res, next) => {
+    try {
+        const users = await User.find({ role: 'user' }).select('-password');
+
+        res.status(200).json({
+            status: 'success',
+            results: users.length,
+            data: {
+                users
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.updateUserVerification = async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+
+        const user = await User.findByIdAndUpdate(userId, { isVerified: true });
+
+        if (!user) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'User not found'
+            });
+        }
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                user
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
