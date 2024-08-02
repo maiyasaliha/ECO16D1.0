@@ -11,8 +11,9 @@ import { validate, getCompliance, getLocked, getWaybill, getWaybill13, getColumn
 import ToolBar from '../ToolBar';
 import { useDate } from '../../contexts/DateContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { API_URL } from '../../EcoSetup';
 
-const socket = io('http://localhost:3001');
+const socket = io(`${API_URL}:3001`);
 
 function Spreadsheet({selectedCell, setSelectedCell}) {
     const [hotInstance, setHotInstance] = useState(null);
@@ -78,9 +79,9 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
         const fetchData = async () => {
             try {
                 setHaveData(false);
-                const response = await axios.get(`http://localhost:3001/principaleQuarter?year=${year}&quarter=${quarter}`);
-                const principaleBmid = await axios.get('http://localhost:3001/principaleBmidsId');
-                const colisBmid = await axios.get('http://localhost:3001/colisBmids');
+                const response = await axios.get(`${API_URL}:3001/principaleQuarter?year=${year}&quarter=${quarter}`);
+                const principaleBmid = await axios.get(`${API_URL}:3001/principaleBmidsId`);
+                const colisBmid = await axios.get(`${API_URL}:3001/colisBmids`);
                 
                 if (response.data.length === 0) {
                     setHaveData(false);
@@ -222,7 +223,7 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                             console.log("updateData");
                             console.log(updateData);
                             socket.emit('cellUpdate', {updateData, previousData});
-                            return axios.post('http://localhost:3001/principaleCellQuarter', updateData);
+                            return axios.post(`${API_URL}:3001/principaleCellQuarter`, updateData);
                         });
 
                         const saveversion = changes.map(change => {
@@ -239,7 +240,7 @@ function Spreadsheet({selectedCell, setSelectedCell}) {
                             };
                             console.log("version is ");
                             console.log(versionData);
-                            return axios.post('http://localhost:3001/versions', versionData);
+                            return axios.post(`${API_URL}:3001/versions`, versionData);
                         });
                 
                 

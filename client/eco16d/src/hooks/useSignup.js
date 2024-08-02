@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { message } from 'antd';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
+import { API_URL } from '../EcoSetup';
 
 const useSignup = () => {
     const { login } = useAuth();
@@ -17,7 +18,7 @@ const useSignup = () => {
             setError(null);
             setLoading(true);
         
-            const res = await axios.post('http://localhost:3001/signup', values);
+            const res = await axios.post(`${API_URL}:3001/signup`, values);
         
             const data = res.data;
             if (res.status === 201) {

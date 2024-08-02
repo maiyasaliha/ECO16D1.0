@@ -3,6 +3,7 @@ import { Button, Drawer, Input, Table } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { pcolumns, ccolumns } from './SearchTablesStructure';
+import { API_URL } from '../../EcoSetup';
 const { Search } = Input;
 
 function SearchResultsDrawer({sheet}) {
@@ -19,7 +20,7 @@ function SearchResultsDrawer({sheet}) {
 
   const onSearch = async (value) => {
     try {
-      const response = await axios.get(`http://localhost:3001/search${sheet}?keyword=${value}`);
+      const response = await axios.get(`${API_URL}:3001/search${sheet}?keyword=${value}`);
       setSearchResults(response.data);
       console.log('Search results:', response.data);
     } catch (error) {

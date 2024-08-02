@@ -2,6 +2,8 @@ let year = 2023;
 let quarter = 4;
 let add = 0;
 
+const API_URL = 'http://192.168.1.168';
+
 function getYear() {
     return year;
 }
@@ -26,4 +28,4 @@ function setAdd() {
     add++;
 }
 
-export { getQuarter, getYear, getAdd, setQuarter, setYear, setAdd };
+export { API_URL, getQuarter, getYear, getAdd, setQuarter, setYear, setAdd };

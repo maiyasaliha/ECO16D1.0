@@ -17,7 +17,7 @@ app.use(express.json());
 
 const io = socketIo(server, {
     cors: {
-        origin: 'http://localhost:3000',
+        origin: 'http://192.168.1.168:3000',
         methods: ['GET', 'POST']
     }
 });

@@ -10,8 +10,9 @@ import { getColorClassForBMID } from './ConditionalColoring'
 import ToolBar from '../ToolBar';
 import { useDate } from '../../contexts/DateContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { API_URL } from '../../EcoSetup';
 
-const socket = io('http://localhost:3001');
+const socket = io(`${API_URL}:3001`);
 
 function ColisSpreadsheet({selectedCell, setSelectedCell}) {
     const [hotInstance, setHotInstance] = useState(null);
@@ -79,9 +80,9 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
         const fetchData = async () => {
             try {
                 setHaveData(false);
-                const response = await axios.get(`http://localhost:3001/colisQuarter?year=${year}&quarter=${quarter}`);
-                const principaleBmid = await axios.get('http://localhost:3001/principaleBmids');
-                const colisBmid = await axios.get('http://localhost:3001/colisBmidsId');
+                const response = await axios.get(`${API_URL}:3001/colisQuarter?year=${year}&quarter=${quarter}`);
+                const principaleBmid = await axios.get(`${API_URL}:3001/principaleBmids`);
+                const colisBmid = await axios.get(`${API_URL}:3001/colisBmidsId`);
 
                 if (response.data.length === 0) {
                     setHaveData(false);
@@ -172,7 +173,7 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
                                 value: change[2]
                             }
                             socket.emit('cellUpdate', {updateData, previousData});
-                            return axios.post('http://localhost:3001/colisCellQuarter', updateData);
+                            return axios.post(`${API_URL}:3001/colisCellQuarter`, updateData);
                         });
 
                         const saveversion = changes.map(change => {
@@ -189,7 +190,7 @@ function ColisSpreadsheet({selectedCell, setSelectedCell}) {
                             };
                             console.log("version is ");
                             console.log(versionData);
-                            return axios.post('http://localhost:3001/versions', versionData);
+                            return axios.post(`${API_URL}:3001/versions`, versionData);
                         });
                 
                         axios.all(updateRequests)
